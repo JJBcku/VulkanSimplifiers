@@ -9,7 +9,7 @@ namespace VulkanSimplified
 	{
 		SDL_Window* _window;
 
-		SDL_Window* CreateWindow(WindowCreationData data);
+		SDL_Window* CreateWindow(WindowCreationData data) const;
 		void DestroyWindow();
 
 	public:

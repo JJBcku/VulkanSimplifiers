@@ -16,7 +16,7 @@ namespace VulkanSimplified
 		DestroyWindow();
 	}
 
-	SDL_Window* WindowSimplifier::CreateWindow(WindowCreationData data)
+	SDL_Window* WindowSimplifier::CreateWindow(WindowCreationData data) const
 	{
 		Uint32 flags = SDL_WINDOW_VULKAN;
 
