@@ -10,4 +10,9 @@
 // add headers that you want to pre-compile here
 #include "framework.h"
 
+#include <stdint.h>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_vulkan.h>
+
 #endif //PCH_H
