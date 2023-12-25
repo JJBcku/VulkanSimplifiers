@@ -1,14 +1,28 @@
 #pragma once
 
-struct AppData
+namespace VulkanSimplified
 {
-	const char* appTitle;
-	uint32_t appVersion;
-	uint32_t minVulkanVersion;
-};
+	struct AppData
+	{
+		const char* appTitle;
+		uint8_t appVersion[4];
+		uint8_t minVulkanVersion[4];
+	};
 
-struct WindowData
-{
-	const char* windowTitle;
-	int32_t windowWidth, windowHeight;
-};
+	enum class WindowProperties : size_t
+	{
+		NONE = 0,
+		RESIZABLE = 1,
+		BORDERLESS = 2,
+		FULLSCREEN = 4,
+		FULSCREEN_BORDERLESS = 8
+	};
+
+	struct WindowCreationData
+	{
+		const char* windowTitle;
+		int32_t windowWidth, windowHeight;
+
+		WindowProperties properties;
+	};
+}

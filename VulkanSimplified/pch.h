@@ -11,6 +11,9 @@
 #include "framework.h"
 
 #include <stdint.h>
+#include <vector>
+#include <stdexcept>
+#include <memory>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>
