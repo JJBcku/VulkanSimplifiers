@@ -34,7 +34,7 @@ namespace VulkanSimplified
 			flags |= SDL_WINDOW_FULLSCREEN;
 			break;
 		case WindowProperties::FULSCREEN_BORDERLESS:
-			flags |= SDL_WINDOW_FULLSCREEN | SDL_WINDOW_BORDERLESS;
+			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_BORDERLESS;
 			break;
 		default:
 			throw std::runtime_error("Error: Unknown window creation properties!");
