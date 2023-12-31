@@ -42,6 +42,9 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files\PreComp</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanCoreSimplifier.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicsSimplifier.cpp">
@@ -52,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\PreComp</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanCoreSimplifier.cpp">
+      <Filter>Source Files\Basics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

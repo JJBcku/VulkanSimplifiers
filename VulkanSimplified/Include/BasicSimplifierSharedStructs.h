@@ -2,11 +2,20 @@
 
 namespace VulkanSimplified
 {
+	struct VersionArray
+	{
+		uint8_t major, minor, patch, variant;
+	};
+
 	struct AppData
 	{
 		const char* appTitle;
-		uint8_t appVersion[4];
-		uint8_t minVulkanVersion[4];
+		VersionArray appVersion;
+		VersionArray minVulkanVersion;
+
+		const char* engineTitle;
+		VersionArray engineVersion;
+		char padding[4];
 	};
 
 	enum class WindowProperties : size_t

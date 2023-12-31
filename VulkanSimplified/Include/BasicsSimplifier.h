@@ -4,14 +4,16 @@
 
 namespace VulkanSimplified
 {
+	class VulkanCoreSimplifier;
 	class WindowSimplifier;
 
 	class BasicsSimplifier
 	{
+		std::unique_ptr<VulkanCoreSimplifier> _core;
 		std::unique_ptr<WindowSimplifier> _windows;
 
 	public:
-		BasicsSimplifier(WindowCreationData data);
+		BasicsSimplifier(WindowCreationData windowSettings, AppData appSettings);
 		~BasicsSimplifier();
 
 		BasicsSimplifier(const BasicsSimplifier&) = delete;
