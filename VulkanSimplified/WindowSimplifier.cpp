@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "WindowSimplifier.h"
 
-#include "Include/BasicSimplifierListsPositionClasses.h"
 #include "Include/BasicSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
