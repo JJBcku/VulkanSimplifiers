@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Include/BasicSimplifierSharedStructs.h"
+#include "Include/BasicsSimplifierSharedStructs.h"
+#include "Include/BasicsSimplifierSharedEnums.h"
 
 namespace VulkanSimplified
 {
@@ -11,6 +12,8 @@ namespace VulkanSimplified
 		VkInstance _instance;
 		char extraPadding[sizeof(size_t)];
 		VkDebugUtilsMessengerEXT _debugMessenger;
+
+		std::function<intmax_t(SimplifiedDeviceInfo&)> _scoringFunction;
 
 		std::vector<VkExtensionProperties> _availableExtensions;
 		std::vector<VkLayerProperties> _availableLayers;
@@ -36,6 +39,8 @@ namespace VulkanSimplified
 
 		VulkanCoreSimplifier(AppData appSettings);
 		~VulkanCoreSimplifier();
+
+		VkInstance GetInstance() const;
 	};
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(DEBUG_UTILS)

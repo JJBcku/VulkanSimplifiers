@@ -15,6 +15,8 @@
 #include <stdexcept>
 #include <memory>
 #include <iostream>
+#include <functional>
+#include <limits>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>

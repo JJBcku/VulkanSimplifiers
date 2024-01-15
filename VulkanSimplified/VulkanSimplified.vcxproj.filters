@@ -27,7 +27,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\BasicSimplifierSharedStructs.h">
+    <ClInclude Include="Include\BasicsSimplifierSharedStructs.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\BasicsSimplifier.h">
@@ -45,6 +45,12 @@
     <ClInclude Include="VulkanCoreSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="Include\BasicsSimplifierSharedEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceSimplifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicsSimplifier.cpp">
@@ -58,6 +64,12 @@
     </ClCompile>
     <ClCompile Include="VulkanCoreSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicsSimplifierSharedStructs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceSimplifier.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

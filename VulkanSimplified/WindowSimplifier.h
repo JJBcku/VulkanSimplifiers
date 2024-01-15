@@ -9,11 +9,15 @@ namespace VulkanSimplified
 	{
 		SDL_Window* _window;
 
+		VkSurfaceKHR _surface;
+
 		SDL_Window* CreateWindow(WindowCreationData data) const;
 		void DestroyWindow();
 
 	public:
 		WindowSimplifier(WindowCreationData data);
 		~WindowSimplifier();
+
+		SDL_Window* GetWindow() const;
 	};
 }

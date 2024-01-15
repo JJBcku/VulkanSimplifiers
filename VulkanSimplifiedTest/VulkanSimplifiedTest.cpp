@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <BasicsSimplifierSharedStructs.h>
 #include <BasicsSimplifier.h>
 
 int main()

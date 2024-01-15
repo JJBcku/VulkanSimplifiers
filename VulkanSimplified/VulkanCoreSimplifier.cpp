@@ -252,6 +252,11 @@ namespace VulkanSimplified
 		}
 	}
 
+	VkInstance VulkanCoreSimplifier::GetInstance() const
+	{
+		return _instance;
+	}
+
 #if defined(_DEBUG) || defined(DEBUG) || defined(DEBUG_UTILS)
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT,
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*)

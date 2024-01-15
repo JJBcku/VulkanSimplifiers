@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "WindowSimplifier.h"
 
-#include "Include/BasicSimplifierSharedStructs.h"
+#include "Include/BasicsSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
@@ -13,6 +13,11 @@ namespace VulkanSimplified
 	WindowSimplifier::~WindowSimplifier()
 	{
 		DestroyWindow();
+	}
+
+	SDL_Window* WindowSimplifier::GetWindow() const
+	{
+		return _window;
 	}
 
 	SDL_Window* WindowSimplifier::CreateWindow(WindowCreationData data) const

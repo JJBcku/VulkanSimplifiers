@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BasicsSimplifierSharedEnums.h"
+
 namespace VulkanSimplified
 {
 	struct VersionArray
@@ -33,5 +35,24 @@ namespace VulkanSimplified
 		int32_t windowWidth, windowHeight;
 
 		WindowProperties properties;
+	};
+
+	struct AvailableColorsList
+	{
+		bool NormalColor, HDRColor, OneAndHalfColor, DoubleColor;
+	};
+
+	struct AvailableCompressedTexturesList
+	{
+		bool bc, etc2ANDeac, astc_LDR, astc_HDR;
+	};
+
+	struct SimplifiedDeviceInfo
+	{
+		AvailableColorsList renderingColorList;
+		//AvailableCompressedTexturesList compressedTexturesList;
+
+		bool unrestrictedDepth;
+		
 	};
 }
