@@ -10,6 +10,8 @@ namespace VulkanSimplified
         SurfaceSimplifier(SDL_Window* window, const VkInstance instance);
         ~SurfaceSimplifier();
 
+        VkSurfaceKHR GetSurface() const;
+
         void PreDestructionCall(const VkInstance instance);
     };
 }

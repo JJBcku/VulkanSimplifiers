@@ -19,6 +19,11 @@ namespace VulkanSimplified
     {
     }
 
+    VkSurfaceKHR SurfaceSimplifier::GetSurface() const
+    {
+        return _surface;
+    }
+
     void SurfaceSimplifier::PreDestructionCall(const VkInstance instance)
     {
         if (_surface != VK_NULL_HANDLE)

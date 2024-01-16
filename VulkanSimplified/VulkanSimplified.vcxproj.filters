@@ -46,10 +46,10 @@
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\BasicsSimplifierSharedEnums.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="SurfaceSimplifier.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Basics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -66,10 +66,10 @@
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="BasicsSimplifierSharedStructs.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="SurfaceSimplifier.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Basics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
