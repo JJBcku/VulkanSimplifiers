@@ -8,6 +8,7 @@ namespace VulkanSimplified
 	WindowSimplifier::WindowSimplifier(WindowCreationData data)
 	{
 		_window = CreateWindow(data);
+		padding = 0;
 	}
 
 	WindowSimplifier::~WindowSimplifier()

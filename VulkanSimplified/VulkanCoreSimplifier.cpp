@@ -257,6 +257,11 @@ namespace VulkanSimplified
 		return _instance;
 	}
 
+	uint32_t VulkanCoreSimplifier::GetUsedApiVersion() const
+	{
+		return _usedVersion;
+	}
+
 #if defined(_DEBUG) || defined(DEBUG) || defined(DEBUG_UTILS)
 	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT, VkDebugUtilsMessageTypeFlagsEXT,
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void*)

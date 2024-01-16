@@ -8,6 +8,7 @@ namespace VulkanSimplified
 	class WindowSimplifier
 	{
 		SDL_Window* _window;
+		size_t padding;
 
 		VkSurfaceKHR _surface;
 

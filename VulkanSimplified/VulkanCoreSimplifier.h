@@ -13,8 +13,6 @@ namespace VulkanSimplified
 		char extraPadding[sizeof(size_t)];
 		VkDebugUtilsMessengerEXT _debugMessenger;
 
-		std::function<intmax_t(SimplifiedDeviceInfo&)> _scoringFunction;
-
 		std::vector<VkExtensionProperties> _availableExtensions;
 		std::vector<VkLayerProperties> _availableLayers;
 		uint32_t _usedVersion;
@@ -36,11 +34,11 @@ namespace VulkanSimplified
 		void CheckForLayerAndExtensionAvailability(std::vector<const char*> requestedExt, std::vector<const char*> requestedLayers);
 
 	public:
-
 		VulkanCoreSimplifier(AppData appSettings);
 		~VulkanCoreSimplifier();
 
 		VkInstance GetInstance() const;
+		uint32_t GetUsedApiVersion() const;
 	};
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(DEBUG_UTILS)

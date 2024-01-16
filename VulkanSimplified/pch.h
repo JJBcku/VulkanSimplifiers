@@ -16,6 +16,7 @@
 #include <memory>
 #include <iostream>
 #include <functional>
+#include <optional>
 #include <limits>
 
 #include <SDL2/SDL.h>

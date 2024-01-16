@@ -4,18 +4,14 @@
 
 namespace VulkanSimplified
 {
-	class VulkanCoreSimplifier;
-	class WindowSimplifier;
-	class SurfaceSimplifier;
+	class BasicsSimplifierInternal;
 
 	struct WindowCreationData;
 	struct AppData;
 
 	class BasicsSimplifier
 	{
-		std::unique_ptr<VulkanCoreSimplifier> _core;
-		std::unique_ptr<WindowSimplifier> _windows;
-		std::unique_ptr<SurfaceSimplifier> _surface;
+		std::unique_ptr<BasicsSimplifierInternal> _internal;
 
 	public:
 		BasicsSimplifier(WindowCreationData windowSettings, AppData appSettings);
