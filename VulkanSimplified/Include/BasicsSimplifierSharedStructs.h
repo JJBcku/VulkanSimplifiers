@@ -64,6 +64,8 @@ namespace VulkanSimplified
 
 		uint32_t deviceApiVersion;
 		uint32_t upadding;
+
+		VkDeviceSize nonLocalMemorySize, localMemorySize, sharedMemorySize;
 		
 		SimplifiedDeviceInfo();
 	};

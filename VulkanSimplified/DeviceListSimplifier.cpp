@@ -81,7 +81,7 @@ namespace VulkanSimplified
 			ret.transferFamily = graphicQueue.value();
 		}
 
-		if (tranferQueue.has_value())
+		if (computeQueue.has_value())
 		{
 			ret.transferFamily = computeQueue.value();
 			ret.computeFamily = computeQueue.value();
@@ -190,6 +190,110 @@ namespace VulkanSimplified
 			info.queueFamilies = QueryFamiliesSupport(device, surface);
 			info.features = QueryDeviceFeatures(device);
 			info.properties = QueryDeviceProperties(device);
+		}
+	}
+
+	SimplifiedDeviceInfo DeviceListSimplifier::SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const
+	{
+		SimplifiedDeviceInfo ret;
+
+		ret.deviceApiVersion = deviceInfo.properties.properties.apiVersion;
+		ret.discreteGPU = deviceInfo.properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+
+		auto& extensions = deviceInfo.properties.availableExtensions;
+		for (size_t i = 0; i < extensions.size(); ++i)
+		{
+			if (strcmp(extensions[i].extensionName, VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME))
+			{
+				ret.unrestrictedDepth = true;
+				break;
+			}
+		}
+
+		VkFormatFeatureFlags requiredFormatFlags = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT | VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
+		requiredFormatFlags = requiredFormatFlags | VK_FORMAT_FEATURE_BLIT_SRC_BIT | VK_FORMAT_FEATURE_BLIT_DST_BIT;
+		requiredFormatFlags = requiredFormatFlags | VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BLEND_BIT;
+
+		auto& formats = deviceInfo.swapChainSupport.formats;
+		for (size_t i = 0; i < formats.size(); ++i)
+		{
+			VkFormatProperties formatProperties{};
+
+			vkGetPhysicalDeviceFormatProperties(deviceInfo.device, formats[i].format, &formatProperties);
+
+			if ((formatProperties.optimalTilingFeatures & requiredFormatFlags) != requiredFormatFlags)
+				continue;
+
+			if (formats[i].colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR)
+			{
+				if (formats[i].format == VK_FORMAT_R8G8B8A8_UNORM)
+				{
+					ret.renderingColorList.NormalColor = true;
+				}
+				else if (formats[i].format == VK_FORMAT_B8G8R8A8_UNORM)
+				{
+					ret.renderingColorList.NormalColor = true;
+				}
+				else if (formats[i].format == VK_FORMAT_A2B10G10R10_UNORM_PACK32)
+				{
+					ret.renderingColorList.HDRColor = true;
+				}
+				else if (formats[i].format == VK_FORMAT_A2R10G10B10_UNORM_PACK32)
+				{
+					ret.renderingColorList.HDRColor = true;
+				}
+				else if (formats[i].format == VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16)
+				{
+					ret.renderingColorList.OneAndHalfColor = true;
+				}
+				else if (formats[i].format == VK_FORMAT_R16G16B16A16_UNORM)
+				{
+					ret.renderingColorList.DoubleColor = true;
+				}
+			}
+		}
+
+		VkMemoryPropertyFlags deviceLocalMemoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+		VkMemoryPropertyFlags NOTdeviceLocalMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags sharedMemoryMemoryProperties = deviceLocalMemoryProperties | NOTdeviceLocalMemoryProperties;
+
+		VkMemoryPropertyFlags deviceLocalMemoryRejectedProperties = NOTdeviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags NOTdeviceLocalMemoryRejectedProperties = deviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags sharedMemoryMemoryRejectedProperties = VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+
+		auto& memoryInfo = deviceInfo.properties.memory;
+		for (uint32_t i = 0; i < memoryInfo.memoryHeapCount; ++i)
+		{
+			for (uint32_t j = 0; j < memoryInfo.memoryTypeCount; ++j)
+			{
+				if (memoryInfo.memoryTypes[j].heapIndex != i)
+					continue;
+
+				if ((memoryInfo.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+				{
+					if ((memoryInfo.memoryTypes[j].propertyFlags & deviceLocalMemoryProperties) == deviceLocalMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & deviceLocalMemoryRejectedProperties) == 0)
+					{
+						if (ret.localMemorySize < memoryInfo.memoryHeaps[i].size)
+						{
+							ret.localMemorySize = memoryInfo.memoryHeaps[i].size;
+						}
+					}
+					else if ((memoryInfo.memoryTypes[j].propertyFlags & sharedMemoryMemoryProperties) == sharedMemoryMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & sharedMemoryMemoryRejectedProperties) == 0)
+					{
+						if (ret.sharedMemorySize < memoryInfo.memoryHeaps[i].size)
+						{
+							ret.sharedMemorySize = memoryInfo.memoryHeaps[i].size;
+						}
+					}
+				}
+				else if (memoryInfo.memoryHeaps[i].flags == 0 && (memoryInfo.memoryTypes[j].propertyFlags & NOTdeviceLocalMemoryProperties) == NOTdeviceLocalMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & NOTdeviceLocalMemoryRejectedProperties) == 0)
+				{
+					if (ret.nonLocalMemorySize < memoryInfo.memoryHeaps[i].size)
+					{
+						ret.nonLocalMemorySize = memoryInfo.memoryHeaps[i].size;
+					}
+				}
+			}
 		}
 	}
 
