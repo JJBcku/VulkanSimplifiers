@@ -4,6 +4,8 @@
 
 namespace VulkanSimplified
 {
+	using IDType = uint64_t;
+
 	struct VersionArray
 	{
 		uint8_t major, minor, patch, variant;
@@ -40,11 +42,15 @@ namespace VulkanSimplified
 	struct AvailableColorsList
 	{
 		bool NormalColor, HDRColor, OneAndHalfColor, DoubleColor;
+
+		AvailableColorsList();
 	};
 
 	struct AvailableCompressedTexturesList
 	{
 		bool bc, etc2ANDeac, astc_LDR, astc_HDR;
+
+		AvailableCompressedTexturesList();
 	};
 
 	struct SimplifiedDeviceInfo
@@ -52,7 +58,13 @@ namespace VulkanSimplified
 		AvailableColorsList renderingColorList;
 		//AvailableCompressedTexturesList compressedTexturesList;
 
-		bool unrestrictedDepth;
+		bool unrestrictedDepth, discreteGPU;
+
+		char padding[2];
+
+		uint32_t deviceApiVersion;
+		uint32_t upadding;
 		
+		SimplifiedDeviceInfo();
 	};
 }

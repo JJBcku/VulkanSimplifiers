@@ -73,6 +73,8 @@ namespace VulkanSimplified
 
 		void EnumeratePhysicalDevices(VkInstance instance, VkSurfaceKHR surface);
 
+		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
+
 	public:
 		DeviceListSimplifier(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface);
 		~DeviceListSimplifier();

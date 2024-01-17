@@ -51,10 +51,13 @@
     <ClInclude Include="SurfaceSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceListSimplifier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BasicsSimplifierInternal.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceListSimplifier.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanSimplifierListTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,10 +80,13 @@
     <ClCompile Include="SurfaceSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceListSimplifier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BasicsSimplifierInternal.cpp">
+      <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceListSimplifier.cpp">
+      <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanSimplfierListTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
