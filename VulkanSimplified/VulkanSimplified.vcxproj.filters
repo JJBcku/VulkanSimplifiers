@@ -57,7 +57,7 @@
     <ClInclude Include="DeviceListSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanSimplifierListTemplate.h">
+    <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

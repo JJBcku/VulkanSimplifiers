@@ -295,13 +295,19 @@ namespace VulkanSimplified
 				}
 			}
 		}
+
+		return ret;
 	}
 
-	DeviceListSimplifier::DeviceListSimplifier(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface)
+	constexpr size_t scoringFunctionReserve = 0x10;
+
+	DeviceListSimplifier::DeviceListSimplifier(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface) : _scoringFunctions(scoringFunctionReserve)
 	{
 		_apiVersion = apiVersion;
 		padding = 0;
 		EnumeratePhysicalDevices(instance, surface);
+
+		_deviceScoresList.reserve(_deviceList.size() * scoringFunctionReserve);
 	}
 
 	DeviceListSimplifier::~DeviceListSimplifier()

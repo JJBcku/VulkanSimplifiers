@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Include/VulkanSimplifierListTemplate.h"
+
 namespace VulkanSimplified
 {
 	struct QueueFamilies
@@ -60,7 +62,8 @@ namespace VulkanSimplified
 
 	class DeviceListSimplifier
 	{
-		std::vector<std::function<intmax_t(const SimplifiedDeviceInfo&)>> _scoringFunctions;
+		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
+		std::vector<std::pair<IDType, intmax_t>> _deviceScoresList;
 
 		std::vector<DeviceInfo> _deviceList;
 
@@ -78,5 +81,11 @@ namespace VulkanSimplified
 	public:
 		DeviceListSimplifier(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface);
 		~DeviceListSimplifier();
+
+		DeviceListSimplifier(const DeviceListSimplifier&) = delete;
+		DeviceListSimplifier(DeviceListSimplifier&&) = delete;
+
+		DeviceListSimplifier& operator=(const DeviceListSimplifier&) = delete;
+		DeviceListSimplifier& operator=(DeviceListSimplifier&&) = delete;
 	};
 }

@@ -2,12 +2,33 @@
 
 namespace VulkanSimplified
 {
-	using IDType = uint64_t;
+	template<class T>
+	class ListObjectID
+	{
+		uint64_t id;
+
+	public:
+		ListObjectID() { id = std::numeric_limits<decltype(id)>::min(); }
+		ListObjectID(const ListObjectID& other) { id = other.id; }
+		ListObjectID(ListObjectID&& other)
+		{
+			id = other.id++;
+
+			if (id == std::numeric_limits<IDType>::max() && other.id == std::numeric_limits<IDType>::min())
+				throw std::runtime_error("ListTemplate ID overflow error");
+		}
+
+		ListObjectID<T>& operator=(const ListObjectID<T>& other) { id = other.id; };
+		ListObjectID<T>& operator=(ListObjectID<T>&&) = delete;
+
+		bool operator==(const ListObjectID<T>& other) const { return id == other.id; }
+		std::strong_ordering operator<=>(const ListObjectID<T>&) const = default;
+	};
 
 	template<class T>
 	class ListObjectTemplate
 	{
-		IDType _objectID;
+		ListObjectID<T> _objectID;
 		std::optional<T> _object;
 
 		void ThrowOnHasValue()
@@ -18,16 +39,12 @@ namespace VulkanSimplified
 
 	public:
 
-		ListObjectTemplate(IDType objectID, const T& object)
+		ListObjectTemplate(ListObjectID<T>&& objectID, const T& object) : _objectID(std::move(objectID)), _object(object)
 		{
-			_objectID = objectID;
-			_object = object;
 		}
 
-		ListObjectTemplate(IDType objectID, T&& object)
+		ListObjectTemplate(ListObjectID<T>&& objectID, T&& object) : _objectID(std::move(objectID)), _object(std::move(object))
 		{
-			_objectID = objectID;
-			_object = std::move(object);
 		}
 
 		void ReplaceValue(const T& object)
@@ -44,7 +61,7 @@ namespace VulkanSimplified
 			_object = std::move(object);
 		}
 
-		IDType GetObjectID() { return _objectID; }
+		const ListObjectID<T> GetObjectID() { return _objectID; }
 
 		std::optional<T>& GetObject() { return _object; }
 		const std::optional<T>& GetConstObject() { return _object; }
@@ -54,36 +71,30 @@ namespace VulkanSimplified
 
 		void DeleteObject() { _object.reset(); }
 
-		bool operator==(bool has_value) { return _object.has_value() == has_value; }
-		bool operator==(IDType ID) { return ID == _objectID; }
+		bool operator==(bool has_value) const { return _object.has_value() == has_value; }
+		bool operator==(const ListObjectID<T>& ID) const { return ID == _objectID; }
 	};
 
 	template <class T>
 	class ListTemplate
 	{
-		IDType _lastID;
-		IDType _nextID;
+		ListObjectID<T> _nextID;
 		std::vector<ListObjectTemplate<T>> _list;
 		std::vector<size_t> _deletedList;
 
-		uint64_t GetAndIncrementID()
-		{
-			_lastID = _nextID;
-			_nextID++;
-
-			if (_nextID == std::numeric_limits<IDType>::min() && _lastID == std::numeric_limits<IDType>::max())
-				throw std::runtime_error("ListTemplate ID overflow error");
-		}
-
 	public:
 
-		ListTemplate(size_t reserve = 0)
+		ListTemplate(size_t reserve = 0) : _nextID()
 		{
-			_lastID = 0;
-			_nextID = 0;
 			_list.reserve(reserve);
 			_deletedList.reserve(reserve);
 		}
+
+		ListTemplate(const ListTemplate<T>&) = delete;
+		ListTemplate(ListTemplate<T>&&) = delete;
+
+		ListTemplate<T>& operator=(const ListTemplate<T>&) = delete;
+		ListTemplate<T>& operator=(ListTemplate<T>&&) = delete;
 
 		void ReserveAdditional(size_t add)
 		{
@@ -106,7 +117,7 @@ namespace VulkanSimplified
 			}
 		}
 
-		IDType AddObject(const T& value, size_t add = 0)
+		const ListObjectID<T> AddObject(const T& value, size_t add = 0)
 		{
 			if (!_deletedList.empty())
 			{
@@ -119,12 +130,12 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(GetAndIncrementID(), value);
+				_list.emplace_back(std::move(_nextID), value);
 				return _list.back().GetObjectID();
 			}
 		}
 
-		IDType AddObject(T&& value, size_t add = 0)
+		const ListObjectID<T> AddObject(T&& value, size_t add = 0)
 		{
 			if (!_deletedList.empty())
 			{
@@ -137,12 +148,12 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(GetAndIncrementID(), std::move(value));
+				_list.emplace_back(std::move(_nextID), std::move(value));
 				return _list.back().GetObjectID();
 			}
 		}
 
-		bool RemoveObject(IDType objectID, bool throwOnIDNotFound = true)
+		bool RemoveObject(ListObjectID<T> objectID, bool throwOnIDNotFound = true)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -208,7 +219,7 @@ namespace VulkanSimplified
 			_deletedList.clear();
 		}
 
-		std::optional<T>& GetObject(IDType objectID)
+		std::optional<T>& GetObject(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -218,7 +229,7 @@ namespace VulkanSimplified
 			return it->GetObject();
 		}
 
-		const std::optional<T>& GetConstObject(IDType objectID)
+		const std::optional<T>& GetConstObject(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -228,7 +239,7 @@ namespace VulkanSimplified
 			return it->GetConstObject();
 		}
 
-		std::optional<T> GetObjectCopy(IDType objectID)
+		std::optional<T> GetObjectCopy(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -237,5 +248,11 @@ namespace VulkanSimplified
 
 			return it->GetObjectCopy();
 		}
+
+		size_t GetSize() const { return _list.size(); }
+		size_t GetUsedSize() const { assert(_list.size() - _deletedList.size() <= _list.size()); return _list.size() - _deletedList.size(); }
+		size_t GetCapacity() const { return _list.capacity(); }
+		size_t GetUnusedCapacity() const { assert( _list.capacity() - _list.size() <= _list.capacity()); return _list.capacity() - _list.size(); }
+		size_t GetUnusedAndDeletedCapacity() const { assert( GetUnusedCapacity() + _deletedList.size() >= _deletedList.size()); return GetUnusedCapacity() + _deletedList.size(); }
 	};
 }
