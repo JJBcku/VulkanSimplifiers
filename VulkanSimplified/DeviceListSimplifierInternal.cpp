@@ -322,7 +322,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> DeviceListSimplifierInternal::AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function)
+	ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> DeviceListSimplifierInternal::AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore)
 	{
 		auto ret = _scoringFunctions.AddObject(function);
 
@@ -336,7 +336,12 @@ namespace VulkanSimplified
 
 		for (size_t i = 0; i < _deviceList.size(); ++i)
 		{
-			scoreList.emplace_back(ret, i, function(SimplifyDeviceInfo(_deviceList[i])));
+			auto score = function(SimplifyDeviceInfo(_deviceList[i]));
+
+			if (score >= minScore)
+			{
+				scoreList.emplace_back(ret, i, score);
+			}
 		}
 
 		std::stable_sort(scoreList.begin(), scoreList.end());

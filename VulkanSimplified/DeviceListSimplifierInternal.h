@@ -107,6 +107,6 @@ namespace VulkanSimplified
 		DeviceListSimplifierInternal& operator=(const DeviceListSimplifierInternal&) = delete;
 		DeviceListSimplifierInternal& operator=(DeviceListSimplifierInternal&&) = delete;
 
-		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function);
+		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore);
 	};
 }

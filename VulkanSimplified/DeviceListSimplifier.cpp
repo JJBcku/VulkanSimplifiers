@@ -14,9 +14,9 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> DeviceListSimplifier::AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function)
+	ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> DeviceListSimplifier::AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore)
 	{
-		return _internal.AddScoringFunction(function);
+		return _internal.AddScoringFunction(function, minScore);
 	}
 
 }

@@ -36,7 +36,7 @@ int main()
 
         auto deviceList = main->GetDeviceListSimplifier();
 
-        auto scoringID = deviceList.AddScoringFunction(GPURatingFunction);
+        auto scoringID = deviceList.AddScoringFunction(GPURatingFunction, 0);
 
         main.reset();
     }
