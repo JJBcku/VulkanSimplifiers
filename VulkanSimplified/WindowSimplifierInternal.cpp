@@ -1,27 +1,27 @@
 #include "pch.h"
-#include "WindowSimplifier.h"
+#include "WindowSimplifierInternal.h"
 
 #include "Include/BasicsSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
-	WindowSimplifier::WindowSimplifier(WindowCreationData data)
+	WindowSimplifierInternal::WindowSimplifierInternal(WindowCreationData data)
 	{
 		_window = CreateWindow(data);
 		padding = 0;
 	}
 
-	WindowSimplifier::~WindowSimplifier()
+	WindowSimplifierInternal::~WindowSimplifierInternal()
 	{
 		DestroyWindow();
 	}
 
-	SDL_Window* WindowSimplifier::GetWindow() const
+	SDL_Window* WindowSimplifierInternal::GetWindow() const
 	{
 		return _window;
 	}
 
-	SDL_Window* WindowSimplifier::CreateWindow(WindowCreationData data) const
+	SDL_Window* WindowSimplifierInternal::CreateWindow(WindowCreationData data) const
 	{
 		Uint32 flags = SDL_WINDOW_VULKAN;
 
@@ -53,7 +53,7 @@ namespace VulkanSimplified
 		return window;
 	}
 
-	void WindowSimplifier::DestroyWindow()
+	void WindowSimplifierInternal::DestroyWindow()
 	{
 		if (_window != nullptr)
 		{

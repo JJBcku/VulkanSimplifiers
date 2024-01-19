@@ -5,7 +5,7 @@ namespace VulkanSimplified
 	struct WindowCreationData;
 	class WindowsListPosition;
 
-	class WindowSimplifier
+	class WindowSimplifierInternal
 	{
 		SDL_Window* _window;
 		size_t padding;
@@ -16,8 +16,8 @@ namespace VulkanSimplified
 		void DestroyWindow();
 
 	public:
-		WindowSimplifier(WindowCreationData data);
-		~WindowSimplifier();
+		WindowSimplifierInternal(WindowCreationData data);
+		~WindowSimplifierInternal();
 
 		SDL_Window* GetWindow() const;
 	};

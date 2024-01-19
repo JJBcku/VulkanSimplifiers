@@ -2,9 +2,9 @@
 
 namespace VulkanSimplified
 {
-	class VulkanCoreSimplifier;
-	class WindowSimplifier;
-	class SurfaceSimplifier;
+	class VulkanCoreSimplifierInternal;
+	class WindowSimplifierInternal;
+	class SurfaceSimplifierInternal;
 	class DeviceListSimplifier;
 	class DeviceListSimplifierInternal;
 
@@ -13,9 +13,9 @@ namespace VulkanSimplified
 
 	class BasicsSimplifierInternal
 	{
-		std::unique_ptr<VulkanCoreSimplifier> _core;
-		std::unique_ptr<WindowSimplifier> _windows;
-		std::unique_ptr<SurfaceSimplifier> _surface;
+		std::unique_ptr<VulkanCoreSimplifierInternal> _core;
+		std::unique_ptr<WindowSimplifierInternal> _windows;
+		std::unique_ptr<SurfaceSimplifierInternal> _surface;
 		std::unique_ptr<DeviceListSimplifierInternal> _deviceList;
 
 	public:

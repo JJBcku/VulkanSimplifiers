@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "BasicsSimplifierInternal.h"
 
-#include "VulkanCoreSimplifier.h"
-#include "WindowSimplifier.h"
-#include "SurfaceSimplifier.h"
+#include "VulkanCoreSimplifierInternal.h"
+#include "WindowSimplifierInternal.h"
+#include "SurfaceSimplifierInternal.h"
 #include "DeviceListSimplifierInternal.h"
 
 #include "Include/DeviceListSimplifier.h"
@@ -15,11 +15,11 @@ namespace VulkanSimplified
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 
-		_windows = std::make_unique<WindowSimplifier>(windowSettings);
-		_core = std::make_unique<VulkanCoreSimplifier>(appSettings);
+		_windows = std::make_unique<WindowSimplifierInternal>(windowSettings);
+		_core = std::make_unique<VulkanCoreSimplifierInternal>(appSettings);
 		auto instance = _core->GetInstance();
 
-		_surface = std::make_unique<SurfaceSimplifier>(_windows->GetWindow(), instance);
+		_surface = std::make_unique<SurfaceSimplifierInternal>(_windows->GetWindow(), instance);
 		_deviceList = std::make_unique<DeviceListSimplifierInternal>(_core->GetUsedApiVersion(), instance, _surface->GetSurface());
 	}
 

@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "VulkanCoreSimplifier.h"
+#include "VulkanCoreSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
 
-	uint32_t VulkanCoreSimplifier::GetMaximumAvailableVulkanVersion()  const
+	uint32_t VulkanCoreSimplifierInternal::GetMaximumAvailableVulkanVersion()  const
 	{
 #pragma warning(push)
 #pragma warning(disable : 4191)
@@ -25,12 +25,12 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	uint32_t VulkanCoreSimplifier::ComputeVersionFromVesionArray(VersionArray version)  const
+	uint32_t VulkanCoreSimplifierInternal::ComputeVersionFromVesionArray(VersionArray version)  const
 	{
 		return VK_MAKE_API_VERSION(version.variant, version.major, version.minor, version.patch);
 	}
 
-	void VulkanCoreSimplifier::EnumerateInstanceExtensions()
+	void VulkanCoreSimplifierInternal::EnumerateInstanceExtensions()
 	{
 		uint32_t extCount = 0;
 		vkEnumerateInstanceExtensionProperties(nullptr, &extCount, nullptr);
@@ -39,7 +39,7 @@ namespace VulkanSimplified
 		vkEnumerateInstanceExtensionProperties(nullptr, &extCount, _availableExtensions.data());
 	}
 
-	void VulkanCoreSimplifier::EnumerateLayers()
+	void VulkanCoreSimplifierInternal::EnumerateLayers()
 	{
 		uint32_t layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -47,7 +47,7 @@ namespace VulkanSimplified
 		vkEnumerateInstanceLayerProperties(&layerCount, _availableLayers.data());
 	}
 
-	void VulkanCoreSimplifier::CheckForOptionalExtensions()
+	void VulkanCoreSimplifierInternal::CheckForOptionalExtensions()
 	{
 		for (const auto& ext : _availableExtensions)
 		{
@@ -60,7 +60,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	std::vector<const char*> VulkanCoreSimplifier::ListRequestedExtensions() const
+	std::vector<const char*> VulkanCoreSimplifierInternal::ListRequestedExtensions() const
 	{
 		std::vector<const char*> ret;
 
@@ -81,7 +81,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	std::vector<const char*> VulkanCoreSimplifier::ListRequestedLayers() const
+	std::vector<const char*> VulkanCoreSimplifierInternal::ListRequestedLayers() const
 	{
 		std::vector<const char*> ret;
 
@@ -90,7 +90,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	void VulkanCoreSimplifier::CheckForLayerAndExtensionAvailability(std::vector<const char*> requestedExt, std::vector<const char*> requestedLayers)
+	void VulkanCoreSimplifierInternal::CheckForLayerAndExtensionAvailability(std::vector<const char*> requestedExt, std::vector<const char*> requestedLayers)
 	{
 		if (!requestedExt.empty())
 		{
@@ -157,7 +157,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	VulkanCoreSimplifier::VulkanCoreSimplifier(AppData appSettings)
+	VulkanCoreSimplifierInternal::VulkanCoreSimplifierInternal(AppData appSettings)
 	{
 		_usedVersion = GetMaximumAvailableVulkanVersion();
 		_instance = VK_NULL_HANDLE;
@@ -233,7 +233,7 @@ namespace VulkanSimplified
 
 	}
 
-	VulkanCoreSimplifier::~VulkanCoreSimplifier()
+	VulkanCoreSimplifierInternal::~VulkanCoreSimplifierInternal()
 	{
 		if (_debugMessenger != VK_NULL_HANDLE)
 		{
@@ -252,12 +252,12 @@ namespace VulkanSimplified
 		}
 	}
 
-	VkInstance VulkanCoreSimplifier::GetInstance() const
+	VkInstance VulkanCoreSimplifierInternal::GetInstance() const
 	{
 		return _instance;
 	}
 
-	uint32_t VulkanCoreSimplifier::GetUsedApiVersion() const
+	uint32_t VulkanCoreSimplifierInternal::GetUsedApiVersion() const
 	{
 		return _usedVersion;
 	}

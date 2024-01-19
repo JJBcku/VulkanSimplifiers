@@ -2,13 +2,13 @@
 
 namespace VulkanSimplified
 {
-    class SurfaceSimplifier
+    class SurfaceSimplifierInternal
     {
         VkSurfaceKHR _surface;
 
     public:
-        SurfaceSimplifier(SDL_Window* window, const VkInstance instance);
-        ~SurfaceSimplifier();
+        SurfaceSimplifierInternal(SDL_Window* window, const VkInstance instance);
+        ~SurfaceSimplifierInternal();
 
         VkSurfaceKHR GetSurface() const;
 

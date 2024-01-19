@@ -34,7 +34,7 @@ int main()
 
         std::unique_ptr<BasicsSimplifier> main = std::make_unique<BasicsSimplifier>(windowSettings, appSettings);
 
-        VulkanSimplified::DeviceListSimplifier deviceList = main->GetDeviceListSimplifier();
+        auto deviceList = main->GetDeviceListSimplifier();
 
         auto scoringID = deviceList.AddScoringFunction(GPURatingFunction);
 

@@ -33,7 +33,7 @@
     <ClInclude Include="Include\BasicsSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="WindowSimplifier.h">
+    <ClInclude Include="WindowSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -42,13 +42,13 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files\PreComp</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanCoreSimplifier.h">
+    <ClInclude Include="VulkanCoreSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\BasicsSimplifierSharedEnums.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="SurfaceSimplifier.h">
+    <ClInclude Include="SurfaceSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="BasicsSimplifierInternal.h">
@@ -68,19 +68,19 @@
     <ClCompile Include="BasicsSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="WindowSimplifier.cpp">
+    <ClCompile Include="WindowSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files\PreComp</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanCoreSimplifier.cpp">
+    <ClCompile Include="VulkanCoreSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="BasicsSimplifierSharedStructs.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="SurfaceSimplifier.cpp">
+    <ClCompile Include="SurfaceSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="BasicsSimplifierInternal.cpp">

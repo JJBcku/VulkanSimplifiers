@@ -7,7 +7,7 @@ namespace VulkanSimplified
 {
 	struct VersionArray;
 
-	class VulkanCoreSimplifier
+	class VulkanCoreSimplifierInternal
 	{
 		VkInstance _instance;
 		char extraPadding[sizeof(size_t)];
@@ -34,8 +34,8 @@ namespace VulkanSimplified
 		void CheckForLayerAndExtensionAvailability(std::vector<const char*> requestedExt, std::vector<const char*> requestedLayers);
 
 	public:
-		VulkanCoreSimplifier(AppData appSettings);
-		~VulkanCoreSimplifier();
+		VulkanCoreSimplifierInternal(AppData appSettings);
+		~VulkanCoreSimplifierInternal();
 
 		VkInstance GetInstance() const;
 		uint32_t GetUsedApiVersion() const;
