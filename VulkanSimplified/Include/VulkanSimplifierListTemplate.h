@@ -8,13 +8,13 @@ namespace VulkanSimplified
 		uint64_t id;
 
 	public:
-		ListObjectID() { id = std::numeric_limits<decltype(id)>::min(); }
+		ListObjectID() { id = std::numeric_limits<decltype(id)>::lowest(); }
 		ListObjectID(const ListObjectID& other) = default;
 		ListObjectID(ListObjectID&& other) noexcept(false)
 		{
 			id = other.id++;
 
-			if (id == std::numeric_limits<decltype(id)>::max() && other.id == std::numeric_limits<decltype(id)>::min())
+			if (id == std::numeric_limits<decltype(id)>::max() && other.id == std::numeric_limits<decltype(id)>::lowest())
 				throw std::runtime_error("ListTemplate ID overflow error");
 		}
 
