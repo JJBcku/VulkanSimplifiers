@@ -9,16 +9,16 @@ namespace VulkanSimplified
 
 	public:
 		ListObjectID() { id = std::numeric_limits<decltype(id)>::min(); }
-		ListObjectID(const ListObjectID& other) { id = other.id; }
-		ListObjectID(ListObjectID&& other)
+		ListObjectID(const ListObjectID& other) = default;
+		ListObjectID(ListObjectID&& other) noexcept(false)
 		{
 			id = other.id++;
 
-			if (id == std::numeric_limits<IDType>::max() && other.id == std::numeric_limits<IDType>::min())
+			if (id == std::numeric_limits<decltype(id)>::max() && other.id == std::numeric_limits<decltype(id)>::min())
 				throw std::runtime_error("ListTemplate ID overflow error");
 		}
 
-		ListObjectID<T>& operator=(const ListObjectID<T>& other) { id = other.id; };
+		ListObjectID<T>& operator=(const ListObjectID<T>& other) = default;
 		ListObjectID<T>& operator=(ListObjectID<T>&&) = delete;
 
 		bool operator==(const ListObjectID<T>& other) const { return id == other.id; }
@@ -45,6 +45,20 @@ namespace VulkanSimplified
 
 		ListObjectTemplate(ListObjectID<T>&& objectID, T&& object) : _objectID(std::move(objectID)), _object(std::move(object))
 		{
+		}
+
+		ListObjectTemplate(const ListObjectTemplate<T>&) = default;
+		ListObjectTemplate(ListObjectTemplate<T>&& other)
+		{
+			_objectID = other._objectID;
+			_object = other._object;
+		}
+
+		ListObjectTemplate<T>& operator=(const ListObjectTemplate<T>&) = default;
+		ListObjectTemplate<T>& operator=(ListObjectTemplate<T>&& other)
+		{
+			_objectID = other._objectID;
+			_object = other._object;
 		}
 
 		void ReplaceValue(const T& object)

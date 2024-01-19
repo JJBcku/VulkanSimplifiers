@@ -60,10 +60,29 @@ namespace VulkanSimplified
 
 	struct SimplifiedDeviceInfo;
 
-	class DeviceListSimplifier
+	class DeviceScore
+	{
+		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> _scoringFunction;
+		intmax_t _score;
+		size_t _deviceID, _padding;
+
+	public:
+		DeviceScore(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t deviceID, intmax_t score);
+
+		DeviceScore(const DeviceScore&) = default;
+		DeviceScore(DeviceScore&& other);
+
+		DeviceScore& operator=(const DeviceScore&) = default;
+		DeviceScore& operator=(DeviceScore&& other);
+
+		std::strong_ordering operator<=>(const DeviceScore&) const = default;
+		bool operator==(const DeviceScore&) const = default;
+	};
+
+	class DeviceListSimplifierInternal
 	{
 		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
-		std::vector<std::pair<IDType, intmax_t>> _deviceScoresList;
+		std::vector<DeviceScore> _deviceScoresList;
 
 		std::vector<DeviceInfo> _deviceList;
 
@@ -79,13 +98,15 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
 
 	public:
-		DeviceListSimplifier(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface);
-		~DeviceListSimplifier();
+		DeviceListSimplifierInternal(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface);
+		~DeviceListSimplifierInternal();
 
-		DeviceListSimplifier(const DeviceListSimplifier&) = delete;
-		DeviceListSimplifier(DeviceListSimplifier&&) = delete;
+		DeviceListSimplifierInternal(const DeviceListSimplifierInternal&) = delete;
+		DeviceListSimplifierInternal(DeviceListSimplifierInternal&&) = delete;
 
-		DeviceListSimplifier& operator=(const DeviceListSimplifier&) = delete;
-		DeviceListSimplifier& operator=(DeviceListSimplifier&&) = delete;
+		DeviceListSimplifierInternal& operator=(const DeviceListSimplifierInternal&) = delete;
+		DeviceListSimplifierInternal& operator=(DeviceListSimplifierInternal&&) = delete;
+
+		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function);
 	};
 }

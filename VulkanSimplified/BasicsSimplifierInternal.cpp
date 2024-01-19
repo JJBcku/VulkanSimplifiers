@@ -4,7 +4,9 @@
 #include "VulkanCoreSimplifier.h"
 #include "WindowSimplifier.h"
 #include "SurfaceSimplifier.h"
-#include "DeviceListSimplifier.h"
+#include "DeviceListSimplifierInternal.h"
+
+#include "Include/DeviceListSimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -18,7 +20,7 @@ namespace VulkanSimplified
 		auto instance = _core->GetInstance();
 
 		_surface = std::make_unique<SurfaceSimplifier>(_windows->GetWindow(), instance);
-		_deviceList = std::make_unique<DeviceListSimplifier>(_core->GetUsedApiVersion(), instance, _surface->GetSurface());
+		_deviceList = std::make_unique<DeviceListSimplifierInternal>(_core->GetUsedApiVersion(), instance, _surface->GetSurface());
 	}
 
 	BasicsSimplifierInternal::~BasicsSimplifierInternal()
@@ -28,6 +30,11 @@ namespace VulkanSimplified
 		_core.reset();
 		_windows.reset();
 		SDL_Quit();
+	}
+
+	DeviceListSimplifier BasicsSimplifierInternal::GetDeviceListSimplifier()
+	{
+		return DeviceListSimplifier(*_deviceList);
 	}
 
 }

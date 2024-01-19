@@ -14,4 +14,10 @@ namespace VulkanSimplified
 	{
 		_internal.reset();
 	}
+
+	DeviceListSimplifier BasicsSimplifier::GetDeviceListSimplifier()
+	{
+		return _internal->GetDeviceListSimplifier();
+	}
+
 }

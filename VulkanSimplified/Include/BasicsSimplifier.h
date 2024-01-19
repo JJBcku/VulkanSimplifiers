@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BasicsSimplifierSharedStructs.h"
+#include "DeviceListSimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -19,6 +20,8 @@ namespace VulkanSimplified
 
 		BasicsSimplifier(const BasicsSimplifier&) = delete;
 		BasicsSimplifier& operator= (const BasicsSimplifier&) = delete;
+
+		DeviceListSimplifier GetDeviceListSimplifier();
 	};
 }
 

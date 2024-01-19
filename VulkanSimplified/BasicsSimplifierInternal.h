@@ -6,6 +6,7 @@ namespace VulkanSimplified
 	class WindowSimplifier;
 	class SurfaceSimplifier;
 	class DeviceListSimplifier;
+	class DeviceListSimplifierInternal;
 
 	struct WindowCreationData;
 	struct AppData;
@@ -15,7 +16,7 @@ namespace VulkanSimplified
 		std::unique_ptr<VulkanCoreSimplifier> _core;
 		std::unique_ptr<WindowSimplifier> _windows;
 		std::unique_ptr<SurfaceSimplifier> _surface;
-		std::unique_ptr<DeviceListSimplifier> _deviceList;
+		std::unique_ptr<DeviceListSimplifierInternal> _deviceList;
 
 	public:
 		BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings);
@@ -23,6 +24,8 @@ namespace VulkanSimplified
 
 		BasicsSimplifierInternal(const BasicsSimplifierInternal&) = delete;
 		BasicsSimplifierInternal& operator= (const BasicsSimplifierInternal&) = delete;
+
+		DeviceListSimplifier GetDeviceListSimplifier();
 	};
 }
 

@@ -54,11 +54,14 @@
     <ClInclude Include="BasicsSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceListSimplifier.h">
+    <ClInclude Include="DeviceListSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceListSimplifier.h">
+      <Filter>Header Files\Basics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -83,11 +86,14 @@
     <ClCompile Include="BasicsSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceListSimplifier.cpp">
+    <ClCompile Include="DeviceListSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSimplfierListTemplate.cpp">
+    <ClCompile Include="VulkanSimplifierListTemplate.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceListSimplifier.cpp">
+      <Filter>Source Files\Basics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

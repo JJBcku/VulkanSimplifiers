@@ -2,6 +2,10 @@
 
 #include <BasicsSimplifierSharedStructs.h>
 #include <BasicsSimplifier.h>
+#include <DeviceListSimplifier.h>
+#include <VulkanSimplifierListTemplate.h>
+
+static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 int main()
 {
@@ -30,6 +34,10 @@ int main()
 
         std::unique_ptr<BasicsSimplifier> main = std::make_unique<BasicsSimplifier>(windowSettings, appSettings);
 
+        VulkanSimplified::DeviceListSimplifier deviceList = main->GetDeviceListSimplifier();
+
+        auto scoringID = deviceList.AddScoringFunction(GPURatingFunction);
+
         main.reset();
     }
     catch (std::exception ex)
@@ -40,4 +48,9 @@ int main()
     std::cout << "Vulkan Simplified testing successful!\n";
 
     return 0;
+}
+
+static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo)
+{
+    return deviceInfo.discreteGPU ? 0x10 : 0;
 }
