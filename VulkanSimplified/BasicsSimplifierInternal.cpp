@@ -25,6 +25,7 @@ namespace VulkanSimplified
 
 	BasicsSimplifierInternal::~BasicsSimplifierInternal()
 	{
+		_deviceList.reset();
 		_surface->PreDestructionCall(_core->GetInstance());
 		_surface.reset();
 		_core.reset();

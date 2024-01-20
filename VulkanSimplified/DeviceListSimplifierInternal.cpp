@@ -15,6 +15,7 @@ namespace VulkanSimplified
 
 	DeviceScore::DeviceScore(DeviceScore&& other) noexcept
 	{
+		_padding = 0;
 		_scoringFunction = other._scoringFunction;
 		_score = other._score;
 		_deviceID = other._deviceID;
@@ -27,6 +28,21 @@ namespace VulkanSimplified
 		_deviceID = other._deviceID;
 
 		return *this;
+	}
+
+	bool DeviceScore::operator==(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction) const
+	{
+		return _scoringFunction == scoringFunction;
+	}
+
+	size_t DeviceScore::GetDeviceID() const
+	{
+		return _deviceID;
+	}
+
+	std::strong_ordering DeviceScore::operator<=>(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction) const
+	{
+		return _scoringFunction <=> scoringFunction;
 	}
 
 	SwapChainSupportDetails DeviceListSimplifierInternal::QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) const
@@ -349,6 +365,42 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	ListObjectID<DeviceCoreSimplifierInternal> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
+	{
+		if (position >= _deviceList.size())
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than device list size!");
+
+		auto it = std::find(_deviceScoresList.begin(), _deviceScoresList.end(), scoringFunction);
+
+		size_t currentPos = 0;
+
+		SimplifiedDeviceInfo createDeviceInfo;
+		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+		while (it != _deviceScoresList.end())
+		{
+			if (position == currentPos)
+			{
+				auto& device = _deviceList[it->GetDeviceID()];
+				createDeviceInfo = device.second;
+				physicalDevice = device.first.device;
+				break;
+			}
+			else
+			{
+				currentPos++;
+				it = std::find(it + 1, _deviceScoresList.end(), scoringFunction);
+			}
+		}
+
+		if (currentPos < position)
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than eligible scored devices list size!");
+
+		auto ret = _logicalDevices.AddObject(DeviceCoreSimplifierInternal(physicalDevice, createDeviceInfo, settings));
+
+		return ret;
+	}
+
 	constexpr size_t scoringFunctionReserve = 0x10;
 
 	DeviceListSimplifierInternal::DeviceListSimplifierInternal(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface) : _scoringFunctions(scoringFunctionReserve)
@@ -362,7 +414,7 @@ namespace VulkanSimplified
 
 	DeviceListSimplifierInternal::~DeviceListSimplifierInternal()
 	{
-
+		_logicalDevices.Reset();
 	}
 
 	SwapChainSupportDetails::SwapChainSupportDetails()

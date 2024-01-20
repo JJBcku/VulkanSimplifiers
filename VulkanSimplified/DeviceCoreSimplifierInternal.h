@@ -10,7 +10,7 @@ namespace VulkanSimplified
 
 	class DeviceCoreSimplifierInternal
 	{
-		VkDevice _device;
+		VkDevice _device = VK_NULL_HANDLE;
 		SimplifiedDeviceInfo _info;
 		DeviceSettings _settings;
 
@@ -18,9 +18,16 @@ namespace VulkanSimplified
 
 		VkDeviceQueueCreateInfo CreateQueueInfo(uint32_t queueFamily, const float& priority) const;
 
+		void DestroyDevice();
+
 	public:
-		DeviceCoreSimplifierInternal(VkPhysicalDevice device, SimplifiedDeviceInfo deviceInfo, DeviceSettings deviceSettings);
+		DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings);
+		DeviceCoreSimplifierInternal(const DeviceCoreSimplifierInternal&) noexcept = delete;
+		DeviceCoreSimplifierInternal(DeviceCoreSimplifierInternal&& other) noexcept;
 		~DeviceCoreSimplifierInternal();
+
+		DeviceCoreSimplifierInternal& operator=(const DeviceCoreSimplifierInternal&) noexcept = delete;
+		DeviceCoreSimplifierInternal& operator=(DeviceCoreSimplifierInternal&& other) noexcept;
 	};
 }
 

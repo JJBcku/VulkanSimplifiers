@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "DeviceCoreSimplifierInternal.h"
 
+#include "DeviceListSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
     VkDeviceQueueCreateInfo DeviceCoreSimplifierInternal::CreateQueueInfo(uint32_t queueFamily, const float& priority) const
@@ -16,11 +18,31 @@ namespace VulkanSimplified
         return ret;
     }
 
-    DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, SimplifiedDeviceInfo deviceInfo, DeviceSettings deviceSettings)
+    void DeviceCoreSimplifierInternal::DestroyDevice()
+    {
+        if (_device != VK_NULL_HANDLE)
+        {
+            vkDestroyDevice(_device, nullptr);
+            _device = VK_NULL_HANDLE;
+        }
+    }
+
+    DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
     {
         _device = VK_NULL_HANDLE;
         _info = deviceInfo;
         _settings = deviceSettings;
+
+        _graphicQueue = VK_NULL_HANDLE;
+        _computeQueue = VK_NULL_HANDLE;
+        _transferQueue = VK_NULL_HANDLE;
+        _paddingQueue = VK_NULL_HANDLE;
+
+        VkPhysicalDeviceFeatures enabledFeatures{};
+        VkPhysicalDeviceFeatures2 enabledFeatures2{};
+        VkPhysicalDeviceVulkan11Features features11{};
+        VkPhysicalDeviceVulkan12Features features12{};
+        VkPhysicalDeviceVulkan13Features features13{};
 
         std::vector<VkDeviceQueueCreateInfo> queues;
         queues.reserve(3);
@@ -75,6 +97,30 @@ namespace VulkanSimplified
         if (!_requestedExtensions.empty())
             createInfo.ppEnabledExtensionNames = _requestedExtensions.data();
 
+        if (deviceInfo.deviceApiVersion >= VK_API_VERSION_1_1)
+        {
+            createInfo.pNext = &enabledFeatures2;
+            enabledFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+            enabledFeatures2.pNext = &features11;
+            enabledFeatures2.features = enabledFeatures;
+            features11.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+            
+            if (deviceInfo.deviceApiVersion >= VK_API_VERSION_1_2)
+            {
+                features11.pNext = &features12;
+                features12.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+
+                if (deviceInfo.deviceApiVersion >= VK_API_VERSION_1_3)
+                {
+                    features12.pNext = &features13;
+                    features13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
+                }
+            }
+        } else
+        {
+            createInfo.pEnabledFeatures = &enabledFeatures;
+        }
+
         if (vkCreateDevice(device, &createInfo, nullptr, &_device) != VK_SUCCESS)
         {
             throw std::runtime_error("DeviceCore Error: Program failed to create a device!");
@@ -99,11 +145,51 @@ namespace VulkanSimplified
         }
     }
 
+    DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(DeviceCoreSimplifierInternal&& other) noexcept
+    {
+        DestroyDevice();
+
+        _device = other._device;
+        other._device = VK_NULL_HANDLE;
+
+        _info = other._info;
+        _settings = other._settings;
+
+        _graphicQueue = other._graphicQueue;
+        _computeQueue = other._computeQueue;
+        _transferQueue = other._paddingQueue;
+        _paddingQueue = VK_NULL_HANDLE;
+
+        other._graphicQueue = VK_NULL_HANDLE;
+        other._computeQueue = VK_NULL_HANDLE;
+        other._transferQueue = VK_NULL_HANDLE;
+        _paddingQueue = VK_NULL_HANDLE;
+    }
+
     DeviceCoreSimplifierInternal::~DeviceCoreSimplifierInternal()
     {
-        if (_device != VK_NULL_HANDLE)
-        {
-            vkDestroyDevice(_device, nullptr);
-        }
+        DestroyDevice();
+    }
+
+    DeviceCoreSimplifierInternal& DeviceCoreSimplifierInternal::operator=(DeviceCoreSimplifierInternal&& other) noexcept
+    {
+        DestroyDevice();
+
+        _device = other._device;
+        other._device = VK_NULL_HANDLE;
+
+        _info = other._info;
+        _settings = other._settings;
+
+        _graphicQueue = other._graphicQueue;
+        _computeQueue = other._computeQueue;
+        _transferQueue = other._paddingQueue;
+
+        other._graphicQueue = VK_NULL_HANDLE;
+        other._computeQueue = VK_NULL_HANDLE;
+        other._transferQueue = VK_NULL_HANDLE;
+        _paddingQueue = VK_NULL_HANDLE;
+
+        return *this;
     }
 }

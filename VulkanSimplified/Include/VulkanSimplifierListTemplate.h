@@ -47,18 +47,28 @@ namespace VulkanSimplified
 		{
 		}
 
-		ListObjectTemplate(const ListObjectTemplate<T>&) = default;
-		ListObjectTemplate(ListObjectTemplate<T>&& other)
+		ListObjectTemplate(const ListObjectTemplate<T>& other)
 		{
 			_objectID = other._objectID;
 			_object = other._object;
 		}
 
-		ListObjectTemplate<T>& operator=(const ListObjectTemplate<T>&) = default;
-		ListObjectTemplate<T>& operator=(ListObjectTemplate<T>&& other)
+		ListObjectTemplate(ListObjectTemplate<T>&& other) noexcept
+		{
+			_objectID = other._objectID;
+			_object = std::move(other._object);
+		}
+
+		ListObjectTemplate<T>& operator=(const ListObjectTemplate<T>& other)
 		{
 			_objectID = other._objectID;
 			_object = other._object;
+		}
+
+		ListObjectTemplate<T>& operator=(ListObjectTemplate<T>&& other)
+		{
+			_objectID = other._objectID;
+			_object = std::move(other._object);
 		}
 
 		void ReplaceValue(const T& object)
@@ -102,6 +112,11 @@ namespace VulkanSimplified
 		{
 			_list.reserve(reserve);
 			_deletedList.reserve(reserve);
+		}
+
+		~ListTemplate()
+		{
+			Reset();
 		}
 
 		ListTemplate(const ListTemplate<T>&) = delete;
@@ -268,5 +283,11 @@ namespace VulkanSimplified
 		size_t GetCapacity() const { return _list.capacity(); }
 		size_t GetUnusedCapacity() const { assert( _list.capacity() - _list.size() <= _list.capacity()); return _list.capacity() - _list.size(); }
 		size_t GetUnusedAndDeletedCapacity() const { assert( GetUnusedCapacity() + _deletedList.size() >= _deletedList.size()); return GetUnusedCapacity() + _deletedList.size(); }
+
+		void Reset()
+		{
+			_list.clear();
+			_deletedList.clear();
+		}
 	};
 }

@@ -169,6 +169,11 @@ namespace VulkanSimplified
 			throw std::runtime_error("Error: Highest supported version is lower than minimum required version!");
 		}
 
+		uint32_t maxVersion = ComputeVersionFromVesionArray(appSettings.maxVulkanVersion);
+
+		if (_usedVersion > maxVersion)
+			_usedVersion = maxVersion;
+
 		EnumerateInstanceExtensions();
 		EnumerateLayers();
 

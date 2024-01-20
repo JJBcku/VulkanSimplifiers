@@ -8,7 +8,7 @@ namespace VulkanSimplified
 
 	struct VersionArray
 	{
-		uint8_t major, minor, patch, variant;
+		uint16_t major, minor, patch, variant;
 	};
 
 	struct AppData
@@ -16,10 +16,11 @@ namespace VulkanSimplified
 		const char* appTitle;
 		VersionArray appVersion;
 		VersionArray minVulkanVersion;
+		VersionArray maxVulkanVersion;
 
 		const char* engineTitle;
 		VersionArray engineVersion;
-		char padding[4];
+		//char padding[4];
 	};
 
 	struct WindowCreationData

@@ -3,6 +3,8 @@
 #include "Include/VulkanSimplifierListTemplate.h"
 #include "Include/BasicsSimplifierSharedStructs.h"
 
+#include "DeviceCoreSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 	struct QueueFamilies;
@@ -72,6 +74,11 @@ namespace VulkanSimplified
 
 		std::strong_ordering operator<=>(const DeviceScore&) const = default;
 		bool operator==(const DeviceScore&) const = default;
+
+		std::strong_ordering operator<=>(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction) const;
+		bool operator==(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction) const;
+
+		size_t GetDeviceID() const;
 	};
 
 	class DeviceListSimplifierInternal
@@ -80,6 +87,8 @@ namespace VulkanSimplified
 		std::vector<DeviceScore> _deviceScoresList;
 
 		std::vector<std::pair<DeviceInfo, SimplifiedDeviceInfo>> _deviceList;
+
+		ListTemplate<DeviceCoreSimplifierInternal> _logicalDevices;
 
 		uint32_t _apiVersion, padding;
 
@@ -103,5 +112,6 @@ namespace VulkanSimplified
 		DeviceListSimplifierInternal& operator=(DeviceListSimplifierInternal&&) = delete;
 
 		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore);
+		ListObjectID<DeviceCoreSimplifierInternal> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
 	};
 }
