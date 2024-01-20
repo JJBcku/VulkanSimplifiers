@@ -1,11 +1,14 @@
 #pragma once
 
+#include "DeviceSimplifierSharedEnums.h"
+
 namespace VulkanSimplified
 {
 	struct DeviceSettings
 	{
 		bool depthUnrestricted;
-		char padding[7];
+		bool fillRectangleNV;
+		char padding[6];
 
 		DeviceSettings();
 	};

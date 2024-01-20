@@ -4,12 +4,7 @@
 
 namespace VulkanSimplified
 {
-	struct QueueFamilies
-	{
-		uint64_t graphicsFamily, computeFamily, transferFamily;
-
-		QueueFamilies();
-	};
+	struct QueueFamilies;
 
 	struct SwapChainSupportDetails
 	{
@@ -70,7 +65,7 @@ namespace VulkanSimplified
 		DeviceScore(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t deviceID, intmax_t score);
 
 		DeviceScore(const DeviceScore&) = default;
-		DeviceScore(DeviceScore&& other);
+		DeviceScore(DeviceScore&& other) noexcept;
 
 		DeviceScore& operator=(const DeviceScore&) = default;
 		DeviceScore& operator=(DeviceScore&& other);

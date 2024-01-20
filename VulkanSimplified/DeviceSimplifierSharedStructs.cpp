@@ -6,6 +6,7 @@ namespace VulkanSimplified
 	DeviceSettings::DeviceSettings()
 	{
 		depthUnrestricted = false;
+		fillRectangleNV = false;
 		memset(padding, 0, sizeof(padding));
 	}
 }

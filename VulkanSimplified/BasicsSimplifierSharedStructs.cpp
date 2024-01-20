@@ -23,10 +23,10 @@ namespace VulkanSimplified
     SimplifiedDeviceInfo::SimplifiedDeviceInfo() : renderingColorList()
     {
         unrestrictedDepth = false;
+        fillRectangleNV = false;
         discreteGPU = false;
 
-        padding[0] = 0;
-        padding[1] = 0;
+        padding = 0;
 
         deviceApiVersion = 0;
         upadding = 0;
@@ -34,6 +34,10 @@ namespace VulkanSimplified
         nonLocalMemorySize = 0;
         localMemorySize = 0;
         sharedMemorySize = 0;
+    }
+
+    QueueFamilies::QueueFamilies()
+    {
     }
 
 }

@@ -13,14 +13,14 @@ namespace VulkanSimplified
 		_score = score;
 	}
 
-	DeviceScore::DeviceScore(DeviceScore&& other)
+	DeviceScore::DeviceScore(DeviceScore&& other) noexcept
 	{
 		_scoringFunction = other._scoringFunction;
 		_score = other._score;
 		_deviceID = other._deviceID;
 	}
 
-	DeviceScore& DeviceScore::operator=(DeviceScore&& other)
+	DeviceScore& DeviceScore::operator=(DeviceScore&& other) noexcept
 	{
 		_scoringFunction = other._scoringFunction;
 		_score = other._score;
@@ -60,10 +60,6 @@ namespace VulkanSimplified
 	{
 		QueueFamilies ret;
 
-		std::optional<uint64_t> graphicQueue;
-		std::optional<uint64_t> computeQueue;
-		std::optional<uint64_t> tranferQueue;
-
 		uint32_t queueFamilyCount;
 		vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
 
@@ -74,44 +70,28 @@ namespace VulkanSimplified
 		{
 			auto& queue = queueFamilies[i];
 
-			if ((queue.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT && !(graphicQueue.has_value()))
+			if ((queue.queueFlags & VK_QUEUE_GRAPHICS_BIT) == VK_QUEUE_GRAPHICS_BIT && !(ret.graphicsFamily.has_value()))
 			{
 				VkBool32 presentSupport;
 				vkGetPhysicalDeviceSurfaceSupportKHR(device, static_cast<uint32_t>(i), surface, &presentSupport);
 
 				if (presentSupport == VK_TRUE)
 				{
-					graphicQueue = i;
+					ret.graphicsFamily = static_cast<uint32_t>(i);
 				}
 			}
-			else if ((queue.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT && !(computeQueue.has_value()))
+			else if ((queue.queueFlags & VK_QUEUE_COMPUTE_BIT) == VK_QUEUE_COMPUTE_BIT && !(ret.computeFamily.has_value()))
 			{
-				computeQueue = i;
+				ret.computeFamily = static_cast<uint32_t>(i);
 			}
-			else if ((queue.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT && !(tranferQueue.has_value()))
+			else if ((queue.queueFlags & VK_QUEUE_TRANSFER_BIT) == VK_QUEUE_TRANSFER_BIT && !(ret.transferFamily.has_value()))
 			{
-				tranferQueue = i;
+				ret.transferFamily = static_cast<uint32_t>(i);
 			}
 
-			if (graphicQueue.has_value() && computeQueue.has_value() && tranferQueue.has_value())
+			if (ret.graphicsFamily.has_value() && ret.computeFamily.has_value() && ret.transferFamily.has_value())
 				break;
 		}
-
-		if (graphicQueue.has_value())
-		{
-			ret.graphicsFamily = graphicQueue.value();
-			ret.computeFamily = graphicQueue.value();
-			ret.transferFamily = graphicQueue.value();
-		}
-
-		if (computeQueue.has_value())
-		{
-			ret.transferFamily = computeQueue.value();
-			ret.computeFamily = computeQueue.value();
-		}
-
-		if (tranferQueue.has_value())
-			ret.transferFamily = tranferQueue.value();
 
 		return ret;
 	}
@@ -226,10 +206,19 @@ namespace VulkanSimplified
 		auto& extensions = deviceInfo.properties.availableExtensions;
 		for (size_t i = 0; i < extensions.size(); ++i)
 		{
-			if (strcmp(extensions[i].extensionName, VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME))
+			if (strcmp(extensions[i].extensionName, VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME) == 0)
 			{
 				ret.unrestrictedDepth = true;
-				break;
+
+				if (ret.fillRectangleNV)
+					break;
+			}
+			else if (strcmp(extensions[i].extensionName, VK_NV_FILL_RECTANGLE_EXTENSION_NAME) == 0)
+			{
+				ret.fillRectangleNV = true;
+
+				if (ret.unrestrictedDepth)
+					break;
 			}
 		}
 
@@ -275,6 +264,8 @@ namespace VulkanSimplified
 				}
 			}
 		}
+
+		ret.queueFamilies = deviceInfo.queueFamilies;
 
 		VkMemoryPropertyFlags deviceLocalMemoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 		VkMemoryPropertyFlags NOTdeviceLocalMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -365,13 +356,6 @@ namespace VulkanSimplified
 	DeviceListSimplifierInternal::~DeviceListSimplifierInternal()
 	{
 
-	}
-
-	QueueFamilies::QueueFamilies()
-	{
-		graphicsFamily = std::numeric_limits<uint64_t>::max();
-		computeFamily = std::numeric_limits<uint64_t>::max();
-		transferFamily = std::numeric_limits<uint64_t>::max();
 	}
 
 	SwapChainSupportDetails::SwapChainSupportDetails()

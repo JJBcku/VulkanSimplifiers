@@ -44,17 +44,26 @@ namespace VulkanSimplified
 		AvailableCompressedTexturesList();
 	};
 
+	struct QueueFamilies
+	{
+		std::optional<uint32_t> graphicsFamily, computeFamily, transferFamily, padding;
+
+		QueueFamilies();
+	};
+
 	struct SimplifiedDeviceInfo
 	{
 		AvailableColorsList renderingColorList;
 		//AvailableCompressedTexturesList compressedTexturesList;
 
-		bool unrestrictedDepth, discreteGPU;
+		bool unrestrictedDepth, fillRectangleNV, discreteGPU;
 
-		char padding[2];
+		char padding;
 
 		uint32_t deviceApiVersion;
 		uint32_t upadding;
+
+		QueueFamilies queueFamilies;
 
 		uint64_t nonLocalMemorySize, localMemorySize, sharedMemorySize;
 		
