@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Include/BasicsSimplifierSharedStructs.h"
+#include "Include/DeviceSimplifierSharedStructs.h"
+
 namespace VulkanSimplified
 {
 	struct SimplifiedDeviceInfo;

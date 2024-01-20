@@ -200,6 +200,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BasicsSimplifierInternal.h" />
+    <ClInclude Include="DeviceCoreSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceListSimplifier.h" />
     <ClInclude Include="DeviceListSimplifierInternal.h" />
     <ClInclude Include="Include\BasicsSimplifierSharedStructs.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="BasicsSimplifier.cpp" />
     <ClCompile Include="BasicsSimplifierInternal.cpp" />
     <ClCompile Include="BasicsSimplifierSharedStructs.cpp" />
+    <ClCompile Include="DeviceCoreSimplifierInternal.cpp" />
     <ClCompile Include="DeviceListSimplifier.cpp" />
     <ClCompile Include="DeviceListSimplifierInternal.cpp" />
     <ClCompile Include="DeviceSimplifierSharedStructs.cpp" />

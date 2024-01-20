@@ -179,13 +179,15 @@ namespace VulkanSimplified
 
 		vkEnumeratePhysicalDevices(instance, &deviceListSize, nullptr);
 		availableDevices.resize(deviceListSize);
-		_deviceList.resize(deviceListSize);
+		_deviceList.reserve(deviceListSize);
 		vkEnumeratePhysicalDevices(instance, &deviceListSize, availableDevices.data());
+
+		std::vector<DeviceInfo> deviceList(availableDevices.size());
 
 		for (size_t i = 0; i < availableDevices.size(); ++i)
 		{
 			auto& device = availableDevices[i];
-			auto& info = _deviceList[i];
+			auto& info = deviceList[i];
 
 			info.device = device;
 
@@ -193,6 +195,11 @@ namespace VulkanSimplified
 			info.queueFamilies = QueryFamiliesSupport(device, surface);
 			info.features = QueryDeviceFeatures(device);
 			info.properties = QueryDeviceProperties(device);
+		}
+
+		for (auto& device : deviceList)
+		{
+			_deviceList.emplace_back(device, SimplifyDeviceInfo(device));
 		}
 	}
 
@@ -327,7 +334,7 @@ namespace VulkanSimplified
 
 		for (size_t i = 0; i < _deviceList.size(); ++i)
 		{
-			auto score = function(SimplifyDeviceInfo(_deviceList[i]));
+			auto score = function(_deviceList[i].second);
 
 			if (score >= minScore)
 			{
@@ -383,9 +390,8 @@ namespace VulkanSimplified
 		features13 = {};
 	}
 
-	DeviceInfo::DeviceInfo() : swapChainSupport(), queueFamilies(), features(), properties()
+	DeviceInfo::DeviceInfo() : queueFamilies(), swapChainSupport(), features(), properties()
 	{
-		padding = 0;
 		device = VK_NULL_HANDLE;
 	}
 

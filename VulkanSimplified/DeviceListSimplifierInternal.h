@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Include/VulkanSimplifierListTemplate.h"
+#include "Include/BasicsSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
@@ -44,9 +45,8 @@ namespace VulkanSimplified
 	struct DeviceInfo
 	{
 		VkPhysicalDevice device;
-		size_t padding;
-		SwapChainSupportDetails swapChainSupport;
 		QueueFamilies queueFamilies;
+		SwapChainSupportDetails swapChainSupport;
 		DeviceFeatures features;
 		DeviceProperties properties;
 
@@ -68,7 +68,7 @@ namespace VulkanSimplified
 		DeviceScore(DeviceScore&& other) noexcept;
 
 		DeviceScore& operator=(const DeviceScore&) = default;
-		DeviceScore& operator=(DeviceScore&& other);
+		DeviceScore& operator=(DeviceScore&& other) noexcept;
 
 		std::strong_ordering operator<=>(const DeviceScore&) const = default;
 		bool operator==(const DeviceScore&) const = default;
@@ -79,7 +79,7 @@ namespace VulkanSimplified
 		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
 		std::vector<DeviceScore> _deviceScoresList;
 
-		std::vector<DeviceInfo> _deviceList;
+		std::vector<std::pair<DeviceInfo, SimplifiedDeviceInfo>> _deviceList;
 
 		uint32_t _apiVersion, padding;
 

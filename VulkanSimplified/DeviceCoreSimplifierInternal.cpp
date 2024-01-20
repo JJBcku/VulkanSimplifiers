@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "DeviceCoreSimplifierInternal.h"
 
-#include "Include/BasicsSimplifierSharedStructs.h"
-#include "Include/DeviceSimplifierSharedStructs.h"
-
 namespace VulkanSimplified
 {
     VkDeviceQueueCreateInfo DeviceCoreSimplifierInternal::CreateQueueInfo(uint32_t queueFamily, const float& priority) const
