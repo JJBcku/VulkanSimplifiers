@@ -22,15 +22,6 @@ namespace VulkanSimplified
 		char padding[4];
 	};
 
-	enum class WindowProperties : size_t
-	{
-		NONE = 0,
-		RESIZABLE = 1,
-		BORDERLESS = 2,
-		FULLSCREEN = 4,
-		FULSCREEN_BORDERLESS = 8
-	};
-
 	struct WindowCreationData
 	{
 		const char* windowTitle;

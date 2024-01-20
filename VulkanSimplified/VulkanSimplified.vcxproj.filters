@@ -63,6 +63,12 @@
     <ClInclude Include="Include\DeviceListSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DeviceSimplifierSharedEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceSimplifierSharedStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicsSimplifier.cpp">
@@ -94,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="DeviceListSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceSimplifierSharedStructs.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
