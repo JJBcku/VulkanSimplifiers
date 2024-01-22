@@ -26,6 +26,7 @@ namespace VulkanSimplified
 	struct WindowCreationData
 	{
 		const char* windowTitle;
+		size_t padding;
 		int32_t windowWidth, windowHeight;
 
 		WindowProperties properties;
@@ -57,9 +58,7 @@ namespace VulkanSimplified
 		AvailableColorsList renderingColorList;
 		//AvailableCompressedTexturesList compressedTexturesList;
 
-		bool unrestrictedDepth, fillRectangleNV, discreteGPU;
-
-		char padding;
+		bool unrestrictedDepth, fillRectangleNV, swapchainExtension, discreteGPU;
 
 		uint32_t deviceApiVersion;
 		uint32_t upadding;

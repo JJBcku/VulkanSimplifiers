@@ -47,6 +47,7 @@ namespace VulkanSimplified
 	struct DeviceInfo
 	{
 		VkPhysicalDevice device;
+		size_t padding;
 		QueueFamilies queueFamilies;
 		SwapChainSupportDetails swapChainSupport;
 		DeviceFeatures features;

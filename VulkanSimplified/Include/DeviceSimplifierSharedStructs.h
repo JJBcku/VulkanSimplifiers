@@ -8,7 +8,8 @@ namespace VulkanSimplified
 	{
 		bool depthUnrestricted;
 		bool fillRectangleNV;
-		char padding[6];
+		bool swapchainExtension;
+		char padding[5];
 
 		DeviceSettings();
 	};

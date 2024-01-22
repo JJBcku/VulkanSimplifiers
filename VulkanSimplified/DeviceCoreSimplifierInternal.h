@@ -11,6 +11,7 @@ namespace VulkanSimplified
 	class DeviceCoreSimplifierInternal
 	{
 		VkDevice _device = VK_NULL_HANDLE;
+		size_t _padding;
 		SimplifiedDeviceInfo _info;
 		DeviceSettings _settings;
 

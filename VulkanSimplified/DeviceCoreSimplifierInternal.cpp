@@ -30,6 +30,7 @@ namespace VulkanSimplified
     DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
     {
         _device = VK_NULL_HANDLE;
+        _padding = 0;
         _info = deviceInfo;
         _settings = deviceSettings;
 
@@ -85,6 +86,16 @@ namespace VulkanSimplified
         else
         {
             _settings.fillRectangleNV = false;
+        }
+
+        if (deviceInfo.swapchainExtension && deviceSettings.swapchainExtension)
+        {
+            _requestedExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+            _settings.swapchainExtension = true;
+        }
+        else
+        {
+            _settings.swapchainExtension = false;
         }
 
         VkDeviceCreateInfo createInfo{};

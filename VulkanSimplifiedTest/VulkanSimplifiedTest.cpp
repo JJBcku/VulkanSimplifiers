@@ -44,6 +44,7 @@ int main()
         DeviceSettings deviceSettings;
         deviceSettings.depthUnrestricted = true;
         deviceSettings.fillRectangleNV = true;
+        deviceSettings.swapchainExtension = true;
 
         auto device = deviceList.CreateDevice(scoringID, 0, deviceSettings);
 

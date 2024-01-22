@@ -233,14 +233,21 @@ namespace VulkanSimplified
 			{
 				ret.unrestrictedDepth = true;
 
-				if (ret.fillRectangleNV)
+				if (ret.fillRectangleNV && ret.swapchainExtension)
 					break;
 			}
 			else if (strcmp(extensions[i].extensionName, VK_NV_FILL_RECTANGLE_EXTENSION_NAME) == 0)
 			{
 				ret.fillRectangleNV = true;
 
-				if (ret.unrestrictedDepth)
+				if (ret.unrestrictedDepth && ret.swapchainExtension)
+					break;
+			}
+			else if (strcmp(extensions[i].extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
+			{
+				ret.swapchainExtension = true;
+
+				if (ret.unrestrictedDepth && ret.fillRectangleNV)
 					break;
 			}
 		}
@@ -444,6 +451,7 @@ namespace VulkanSimplified
 
 	DeviceInfo::DeviceInfo() : queueFamilies(), swapChainSupport(), features(), properties()
 	{
+		padding = 0;
 		device = VK_NULL_HANDLE;
 	}
 

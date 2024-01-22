@@ -24,9 +24,8 @@ namespace VulkanSimplified
     {
         unrestrictedDepth = false;
         fillRectangleNV = false;
+        swapchainExtension = false;
         discreteGPU = false;
-
-        padding = 0;
 
         deviceApiVersion = 0;
         upadding = 0;
