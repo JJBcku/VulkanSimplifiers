@@ -20,8 +20,9 @@ namespace VulkanSimplified
 		VkExtent2D _swapchainExtend;
 
 		std::vector<VkImage> _swapchainImages;
+		std::vector<VkImageView> _swapchainImageViews;
 
-		char _padding2[8 - (sizeof(_swapchainImages) % 8)];
+		//char _padding2[8 - (sizeof(_swapchainImages) % 8)];
 
 		VkFormat GetSwapchainFormat(SwapchainFormatType format, const DeviceInfo& info) const;
 		VkFormat GetSwapchainFormat8bit(const DeviceInfo& info) const;
@@ -36,6 +37,9 @@ namespace VulkanSimplified
 		VkSurfaceTransformFlagBitsKHR GetImageTransform(const DeviceInfo& info) const;
 
 		void DestroySwapchain();
+
+		void GetSwapchainImages();
+		void CreateSwapchainImageViews();
 
 		void CreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
 

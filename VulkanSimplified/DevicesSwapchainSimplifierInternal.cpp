@@ -187,8 +187,57 @@ namespace VulkanSimplified
 	{
 		if (_swapchain != VK_NULL_HANDLE)
 		{
+			for (size_t i = 0; i < _swapchainImageViews.size(); ++i)
+			{
+				vkDestroyImageView(_swapchainDevice, _swapchainImageViews[i], nullptr);
+			}
+			_swapchainImageViews.clear();
+			_swapchainImages.clear();
+
 			vkDestroySwapchainKHR(_swapchainDevice, _swapchain, nullptr);
 			_swapchain = VK_NULL_HANDLE;
+		}
+	}
+
+	void DevicesSwapchainSimplifier::GetSwapchainImages()
+	{
+		uint32_t imagesAmount = 0;
+
+		vkGetSwapchainImagesKHR(_swapchainDevice, _swapchain, &imagesAmount, nullptr);
+
+		_swapchainImages.resize(imagesAmount);
+
+		vkGetSwapchainImagesKHR(_swapchainDevice, _swapchain, &imagesAmount, _swapchainImages.data());
+
+		CreateSwapchainImageViews();
+	}
+
+	void DevicesSwapchainSimplifier::CreateSwapchainImageViews()
+	{
+		VkImageViewCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		createInfo.format = _swapchainFormat;
+
+		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+		createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		createInfo.subresourceRange.baseArrayLayer = 0;
+		createInfo.subresourceRange.baseMipLevel = 0;
+		createInfo.subresourceRange.layerCount = 1;
+		createInfo.subresourceRange.levelCount = 1;
+
+		_swapchainImageViews.resize(_swapchainImages.size());
+
+		for (size_t i = 0; i < _swapchainImages.size(); ++i)
+		{
+			createInfo.image = _swapchainImages[i];
+
+			if (vkCreateImageView(_swapchainDevice, &createInfo, nullptr, &_swapchainImageViews[i]) != VK_SUCCESS)
+				throw std::runtime_error("DevicesSwapchainSimplifier::CreateSwapchainImageViews Error: Program failed to create a view for a swapchain image!");
 		}
 	}
 
@@ -229,13 +278,7 @@ namespace VulkanSimplified
 			throw std::runtime_error("DevicesSwapchainSimplifier::CreateSwapchain Error: Program failed to create a swapchain!");
 		}
 
-		uint32_t imagesAmount = 0;
-
-		vkGetSwapchainImagesKHR(device, _swapchain, &imagesAmount, nullptr);
-
-		_swapchainImages.resize(imagesAmount);
-
-		vkGetSwapchainImagesKHR(device, _swapchain, &imagesAmount, _swapchainImages.data());
+		GetSwapchainImages();
 	}
 
 	DevicesSwapchainSimplifier::DevicesSwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
