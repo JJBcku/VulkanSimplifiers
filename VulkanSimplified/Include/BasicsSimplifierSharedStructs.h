@@ -60,8 +60,12 @@ namespace VulkanSimplified
 
 		bool unrestrictedDepth, fillRectangleNV, swapchainExtension, discreteGPU;
 
+		bool mailboxPresentMode, fifoPresentMode;
+
+		char padding[2];
+
 		uint32_t deviceApiVersion;
-		uint32_t upadding;
+		//uint32_t upadding;
 
 		QueueFamilies queueFamilies;
 

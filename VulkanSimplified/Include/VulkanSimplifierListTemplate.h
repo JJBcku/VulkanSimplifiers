@@ -87,9 +87,13 @@ namespace VulkanSimplified
 
 		const ListObjectID<T> GetObjectID() { return _objectID; }
 
-		std::optional<T>& GetObject() { return _object; }
-		const std::optional<T>& GetConstObject() { return _object; }
-		std::optional<T> GetObjectCopy() { return _object; }
+		std::optional<T>& GetObjectOptional() { return _object; }
+		const std::optional<T>& GetConstObjectOptional() { return _object; }
+		std::optional<T> GetObjectOptionalCopy() { return _object; }
+
+		T& GetObject() { assert(_object.has_value()); return _object.value(); }
+		const T& GetConstObject() { assert(_object.has_value()); return _object.value(); }
+		T GetObjectCopy() { assert(_object.has_value()); return _object.value(); }
 
 		bool HasValue() { return _object.has_value(); }
 
@@ -248,7 +252,37 @@ namespace VulkanSimplified
 			_deletedList.clear();
 		}
 
-		std::optional<T>& GetObject(ListObjectID<T> objectID)
+		std::optional<T>& GetObjectOptional(ListObjectID<T> objectID)
+		{
+			auto it = std::find(_list.begin(), _list.end(), objectID);
+
+			if (it == _list.end())
+				throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
+
+			return it->GetObjectOptional();
+		}
+
+		const std::optional<T>& GetConstObjectOptional(ListObjectID<T> objectID)
+		{
+			auto it = std::find(_list.begin(), _list.end(), objectID);
+
+			if (it == _list.end())
+				throw std::runtime_error("ListTemplate GetConstObject Error: Program tried to get non-existent object!");
+
+			return it->GetConstObjectOptional();
+		}
+
+		std::optional<T> GetObjectOptionalCopy(ListObjectID<T> objectID)
+		{
+			auto it = std::find(_list.begin(), _list.end(), objectID);
+
+			if (it == _list.end())
+				throw std::runtime_error("ListTemplate GetObjectCopy Error: Program tried to get non-existent object!");
+
+			return it->GetObjectOptionalCopy();
+		}
+
+		T& GetObject(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -258,22 +292,22 @@ namespace VulkanSimplified
 			return it->GetObject();
 		}
 
-		const std::optional<T>& GetConstObject(ListObjectID<T> objectID)
+		const T& GetConstObject(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
 			if (it == _list.end())
-				throw std::runtime_error("ListTemplate GetConstObject Error: Program tried to get non-existent object!");
+				throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
 
 			return it->GetConstObject();
 		}
 
-		std::optional<T> GetObjectCopy(ListObjectID<T> objectID)
+		T GetObjectCopy(ListObjectID<T> objectID)
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
 			if (it == _list.end())
-				throw std::runtime_error("ListTemplate GetObjectCopy Error: Program tried to get non-existent object!");
+				throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
 
 			return it->GetObjectCopy();
 		}

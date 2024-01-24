@@ -11,7 +11,7 @@ namespace VulkanSimplified
 	class DeviceCoreSimplifierInternal
 	{
 		VkDevice _device = VK_NULL_HANDLE;
-		size_t _padding;
+		VkPhysicalDevice _physicalDevice;
 		SimplifiedDeviceInfo _info;
 		DeviceSettings _settings;
 
@@ -29,6 +29,9 @@ namespace VulkanSimplified
 
 		DeviceCoreSimplifierInternal& operator=(const DeviceCoreSimplifierInternal&) noexcept = delete;
 		DeviceCoreSimplifierInternal& operator=(DeviceCoreSimplifierInternal&& other) noexcept;
+
+		VkDevice GetDevice() const;
+		VkPhysicalDevice GetPhysicalDevice() const;
 	};
 }
 

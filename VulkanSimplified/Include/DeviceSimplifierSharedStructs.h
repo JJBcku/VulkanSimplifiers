@@ -13,4 +13,11 @@ namespace VulkanSimplified
 
 		DeviceSettings();
 	};
+
+	struct SwapchainSettings
+	{
+		SwapchainFormatType format;
+		SwapchainPresentMode presentMode;
+		SwapchainImageAmount imageAmount;
+	};
 }

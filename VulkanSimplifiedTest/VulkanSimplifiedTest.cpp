@@ -2,6 +2,7 @@
 
 #include <BasicsSimplifierSharedStructs.h>
 #include <DeviceSimplifierSharedStructs.h>
+
 #include <BasicsSimplifier.h>
 #include <DeviceListSimplifier.h>
 #include <VulkanSimplifierListTemplate.h>
@@ -47,6 +48,14 @@ int main()
         deviceSettings.swapchainExtension = true;
 
         auto device = deviceList.CreateDevice(scoringID, 0, deviceSettings);
+
+        VulkanSimplified::SwapchainSettings swapchainSettings{};
+
+        swapchainSettings.format = VulkanSimplified::SwapchainFormatType::EIGHT_BIT;
+        swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
+        swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
+
+        main->CreateSwapchain(device, swapchainSettings, false);
 
         main.reset();
     }

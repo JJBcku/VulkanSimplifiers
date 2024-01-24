@@ -9,6 +9,7 @@ namespace VulkanSimplified
 
 	struct WindowCreationData;
 	struct AppData;
+	struct SwapchainSettings;
 
 	class BasicsSimplifier
 	{
@@ -22,6 +23,8 @@ namespace VulkanSimplified
 		BasicsSimplifier& operator= (const BasicsSimplifier&) = delete;
 
 		DeviceListSimplifier GetDeviceListSimplifier();
+
+		void CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate);
 	};
 }
 

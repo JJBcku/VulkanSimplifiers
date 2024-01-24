@@ -30,7 +30,7 @@ namespace VulkanSimplified
     DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
     {
         _device = VK_NULL_HANDLE;
-        _padding = 0;
+        _physicalDevice = device;
         _info = deviceInfo;
         _settings = deviceSettings;
 
@@ -163,6 +163,9 @@ namespace VulkanSimplified
         _device = other._device;
         other._device = VK_NULL_HANDLE;
 
+        _physicalDevice = other._physicalDevice;
+        other._physicalDevice = VK_NULL_HANDLE;
+
         _info = other._info;
         _settings = other._settings;
 
@@ -189,6 +192,9 @@ namespace VulkanSimplified
         _device = other._device;
         other._device = VK_NULL_HANDLE;
 
+        _physicalDevice = other._physicalDevice;
+        other._physicalDevice = VK_NULL_HANDLE;
+
         _info = other._info;
         _settings = other._settings;
 
@@ -203,4 +209,15 @@ namespace VulkanSimplified
 
         return *this;
     }
+
+    VkDevice DeviceCoreSimplifierInternal::GetDevice() const
+    {
+        return _device;
+    }
+
+    VkPhysicalDevice DeviceCoreSimplifierInternal::GetPhysicalDevice() const
+    {
+        return _physicalDevice;
+    }
+
 }

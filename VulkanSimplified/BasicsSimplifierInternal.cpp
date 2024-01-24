@@ -5,6 +5,9 @@
 #include "WindowSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"
 #include "DeviceListSimplifierInternal.h"
+#include "DeviceCoreSimplifierInternal.h"
+
+#include "DevicesSwapchainSimplifierInternal.h"
 
 #include "Include/DeviceListSimplifier.h"
 
@@ -25,6 +28,11 @@ namespace VulkanSimplified
 
 	BasicsSimplifierInternal::~BasicsSimplifierInternal()
 	{
+		if (_swapchain)
+		{
+			_swapchain.reset();
+		}
+
 		_deviceList.reset();
 		_surface->PreDestructionCall(_core->GetInstance());
 		_surface.reset();
@@ -36,6 +44,31 @@ namespace VulkanSimplified
 	DeviceListSimplifier BasicsSimplifierInternal::GetDeviceListSimplifier()
 	{
 		return DeviceListSimplifier(*_deviceList);
+	}
+
+	void BasicsSimplifierInternal::CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate)
+	{
+		if (!recreate && (_swapchain))
+			throw std::runtime_error("BasicsSimplifierInternal::CreateSwapchain Error : Program tried to create already created swapchain!");
+
+		auto& deviceCore = _deviceList->GetConstDeviceCore(deviceID);
+
+		auto device = deviceCore.GetDevice();
+		auto physicalDevice = deviceCore.GetPhysicalDevice();
+
+		auto surface = _surface->GetSurface();
+
+		_deviceList->UpdateSurfaceCapabilities(surface);
+		auto deviceInfo = _deviceList->GetDeviceInfo(physicalDevice);
+
+		if (_swapchain)
+		{
+			_swapchain->RecreateSwapchain(device, surface, deviceInfo, settings);
+		}
+		else
+		{
+			_swapchain = std::make_unique<DevicesSwapchainSimplifier>(device, surface, deviceInfo, settings);
+		}
 	}
 
 }

@@ -114,5 +114,10 @@ namespace VulkanSimplified
 
 		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore);
 		ListObjectID<DeviceCoreSimplifierInternal> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
+
+		std::pair<DeviceInfo, SimplifiedDeviceInfo> GetDeviceInfo(VkPhysicalDevice device);
+		const DeviceCoreSimplifierInternal& GetConstDeviceCore(ListObjectID<DeviceCoreSimplifierInternal> deviceID);
+
+		void UpdateSurfaceCapabilities(VkSurfaceKHR surface);
 	};
 }

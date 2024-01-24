@@ -27,8 +27,13 @@ namespace VulkanSimplified
         swapchainExtension = false;
         discreteGPU = false;
 
+        mailboxPresentMode = false;
+        fifoPresentMode = false;
+
+        memset(padding, 0, sizeof(padding));
+
         deviceApiVersion = 0;
-        upadding = 0;
+        //upadding = 0;
 
         nonLocalMemorySize = 0;
         localMemorySize = 0;

@@ -3,6 +3,8 @@
 
 #include "BasicsSimplifierInternal.h"
 
+#include "Include/DeviceSimplifierSharedStructs.h"
+
 namespace VulkanSimplified
 {
 	BasicsSimplifier::BasicsSimplifier(WindowCreationData windowSettings, AppData appSettings)
@@ -18,6 +20,11 @@ namespace VulkanSimplified
 	DeviceListSimplifier BasicsSimplifier::GetDeviceListSimplifier()
 	{
 		return _internal->GetDeviceListSimplifier();
+	}
+
+	void BasicsSimplifier::CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate)
+	{
+		_internal->CreateSwapchain(deviceID, settings, recreate);
 	}
 
 }

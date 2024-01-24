@@ -295,6 +295,20 @@ namespace VulkanSimplified
 			}
 		}
 
+		auto& presentModes = deviceInfo.swapChainSupport.presentModes;
+
+		for (size_t i = 0; i < presentModes.size(); ++i)
+		{
+			if (presentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
+			{
+				ret.mailboxPresentMode = true;
+			}
+			else if (presentModes[i] == VK_PRESENT_MODE_FIFO_KHR)
+			{
+				ret.fifoPresentMode = true;
+			}
+		}
+
 		ret.queueFamilies = deviceInfo.queueFamilies;
 
 		VkMemoryPropertyFlags deviceLocalMemoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
@@ -406,6 +420,35 @@ namespace VulkanSimplified
 		auto ret = _logicalDevices.AddObject(DeviceCoreSimplifierInternal(physicalDevice, createDeviceInfo, settings));
 
 		return ret;
+	}
+
+	std::pair<DeviceInfo, SimplifiedDeviceInfo> DeviceListSimplifierInternal::GetDeviceInfo(VkPhysicalDevice device)
+	{
+		std::pair<DeviceInfo, SimplifiedDeviceInfo> ret{};
+
+		for (auto& deviceInfo : _deviceList)
+		{
+			if (device == deviceInfo.first.device)
+			{
+				ret = deviceInfo;
+				break;
+			}
+		}
+
+		return ret;
+	}
+
+	const DeviceCoreSimplifierInternal& DeviceListSimplifierInternal::GetConstDeviceCore(ListObjectID<DeviceCoreSimplifierInternal> deviceID)
+	{
+		return _logicalDevices.GetConstObject(deviceID);
+	}
+
+	void DeviceListSimplifierInternal::UpdateSurfaceCapabilities(VkSurfaceKHR surface)
+	{
+		for (auto& device : _deviceList)
+		{
+			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.first.device, surface, &device.first.swapChainSupport.capabilities);
+		}
 	}
 
 	constexpr size_t scoringFunctionReserve = 0x10;
