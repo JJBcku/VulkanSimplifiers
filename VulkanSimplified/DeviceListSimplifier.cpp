@@ -2,6 +2,7 @@
 #include "Include/DeviceListSimplifier.h"
 
 #include "Include/BasicsSimplifierSharedStructs.h"
+#include "Include/DeviceCoreSimplifier.h"
 #include "DeviceListSimplifierInternal.h"
 
 namespace VulkanSimplified
@@ -22,6 +23,11 @@ namespace VulkanSimplified
 	ListObjectID<DeviceCoreSimplifierInternal> DeviceListSimplifier::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
 	{
 		return _internal.CreateDevice(scoringFunction, position, settings);
+	}
+
+	DeviceCoreSimplifier DeviceListSimplifier::GetDeviceCore(const ListObjectID<DeviceCoreSimplifierInternal>& deviceID)
+	{
+		return _internal.GetDeviceCore(deviceID);
 	}
 
 }

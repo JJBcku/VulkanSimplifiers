@@ -6,8 +6,12 @@
 #include <BasicsSimplifier.h>
 #include <DeviceListSimplifier.h>
 #include <VulkanSimplifierListTemplate.h>
+#include <DeviceCoreSimplifier.h>
+#include <ShaderModulesSimplifier.h>
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
+
+std::vector<unsigned char> ReadShaderCode(std::wstring name);
 
 int main()
 {
@@ -47,7 +51,10 @@ int main()
         deviceSettings.fillRectangleNV = true;
         deviceSettings.swapchainExtension = true;
 
-        auto device = deviceList.CreateDevice(scoringID, 0, deviceSettings);
+        auto deviceID = deviceList.CreateDevice(scoringID, 0, deviceSettings);
+        auto device = deviceList.GetDeviceCore(deviceID);
+
+        auto shaders = device.GetShaderModulesSimplifier();
 
         VulkanSimplified::SwapchainSettings swapchainSettings{};
 
@@ -55,7 +62,13 @@ int main()
         swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
         swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
 
-        main->CreateSwapchain(device, swapchainSettings, false);
+        main->CreateSwapchain(deviceID, swapchainSettings, false);
+
+        auto vertexCode = ReadShaderCode(L"TestVertexShader.spv");
+        auto fragmentCode = ReadShaderCode(L"TestFragmentShader.spv");
+
+        auto vertexShader = shaders.CreateShaderModule(vertexCode);
+        auto fragmentShader = shaders.CreateShaderModule(fragmentCode);
 
         main.reset();
     }
@@ -72,4 +85,30 @@ int main()
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo)
 {
     return deviceInfo.discreteGPU ? 0x10 : 0;
+}
+
+std::vector<unsigned char> ReadShaderCode(std::wstring name)
+{
+    std::vector<unsigned char> ret;
+
+    std::ifstream file;
+
+    file.open(name, std::ios_base::binary | std::ios_base::ate | std::ios_base::in);
+
+    if (!file.is_open())
+        throw std::runtime_error("Program failed to open a shader file!");
+
+    file.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
+
+    auto size = file.tellg();
+
+    ret.resize(static_cast<size_t>(size));
+
+    file.seekg(0);
+
+    file.read(reinterpret_cast<char*>(ret.data()), static_cast<std::streamsize>(size));
+
+    file.close();
+
+    return ret;
 }

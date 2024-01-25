@@ -7,9 +7,11 @@ namespace VulkanSimplified
 	class VulkanCoreSimplifierInternal;
 	class WindowSimplifierInternal;
 	class SurfaceSimplifierInternal;
+
 	class DeviceListSimplifier;
 	class DeviceListSimplifierInternal;
-	class DevicesSwapchainSimplifier;
+	class SwapchainSimplifier;
+
 	class DeviceCoreSimplifierInternal;
 
 	struct WindowCreationData;
@@ -24,7 +26,7 @@ namespace VulkanSimplified
 		std::unique_ptr<SurfaceSimplifierInternal> _surface;
 		std::unique_ptr<DeviceListSimplifierInternal> _deviceList;
 
-		std::unique_ptr<DevicesSwapchainSimplifier> _swapchain;
+		std::unique_ptr<SwapchainSimplifier> _swapchain;
 
 	public:
 		BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings);

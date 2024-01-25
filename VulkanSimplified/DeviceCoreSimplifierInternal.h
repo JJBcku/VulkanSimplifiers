@@ -8,6 +8,9 @@ namespace VulkanSimplified
 	struct SimplifiedDeviceInfo;
 	struct DeviceSettings;
 
+	class ShaderModulesSimplifierInternal;
+	class ShaderModulesSimplifier;
+
 	class DeviceCoreSimplifierInternal
 	{
 		VkDevice _device = VK_NULL_HANDLE;
@@ -17,9 +20,15 @@ namespace VulkanSimplified
 
 		VkQueue _graphicQueue, _computeQueue, _transferQueue, _paddingQueue;
 
+		std::unique_ptr<ShaderModulesSimplifierInternal> _shaderSimplifier;
+
 		VkDeviceQueueCreateInfo CreateQueueInfo(uint32_t queueFamily, const float& priority) const;
 
+		void CreateDevice(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings);
 		void DestroyDevice();
+
+		void CreatePointers();
+		void DestroyPointers();
 
 	public:
 		DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings);
@@ -32,6 +41,8 @@ namespace VulkanSimplified
 
 		VkDevice GetDevice() const;
 		VkPhysicalDevice GetPhysicalDevice() const;
+
+		ShaderModulesSimplifier GetShaderModulesSimplifier();
 	};
 }
 

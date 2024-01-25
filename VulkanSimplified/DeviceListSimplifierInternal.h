@@ -4,6 +4,7 @@
 #include "Include/BasicsSimplifierSharedStructs.h"
 
 #include "DeviceCoreSimplifierInternal.h"
+#include "Include/DeviceCoreSimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -119,5 +120,7 @@ namespace VulkanSimplified
 		const DeviceCoreSimplifierInternal& GetConstDeviceCore(ListObjectID<DeviceCoreSimplifierInternal> deviceID);
 
 		void UpdateSurfaceCapabilities(VkSurfaceKHR surface);
+
+		DeviceCoreSimplifier GetDeviceCore(const ListObjectID<DeviceCoreSimplifierInternal>& deviceID);
 	};
 }

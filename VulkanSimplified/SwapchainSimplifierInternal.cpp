@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DevicesSwapchainSimplifierInternal.h"
+#include "SwapchainSimplifierInternal.h"
 
 #include "DeviceListSimplifierInternal.h"
 
@@ -10,7 +10,7 @@ namespace VulkanSimplified
 {
 	constexpr VkColorSpaceKHR colorspace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 
-	VkFormat DevicesSwapchainSimplifier::GetSwapchainFormat(SwapchainFormatType format, const DeviceInfo& info) const
+	VkFormat SwapchainSimplifier::GetSwapchainFormat(SwapchainFormatType format, const DeviceInfo& info) const
 	{
 		VkFormat ret = VK_FORMAT_MAX_ENUM;
 
@@ -35,7 +35,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkFormat DevicesSwapchainSimplifier::GetSwapchainFormat8bit(const DeviceInfo& info) const
+	VkFormat SwapchainSimplifier::GetSwapchainFormat8bit(const DeviceInfo& info) const
 	{
 		VkFormat ret = VK_FORMAT_MAX_ENUM;
 		auto& formatList = info.swapChainSupport.formats;
@@ -59,7 +59,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkFormat DevicesSwapchainSimplifier::GetSwapchainFormat10bit(const DeviceInfo& info) const
+	VkFormat SwapchainSimplifier::GetSwapchainFormat10bit(const DeviceInfo& info) const
 	{
 		VkFormat ret = VK_FORMAT_MAX_ENUM;
 		auto& formatList = info.swapChainSupport.formats;
@@ -83,7 +83,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkFormat DevicesSwapchainSimplifier::GetSwapchainFormat12bit(const DeviceInfo& info) const
+	VkFormat SwapchainSimplifier::GetSwapchainFormat12bit(const DeviceInfo& info) const
 	{
 		VkFormat ret = VK_FORMAT_MAX_ENUM;
 		auto& formatList = info.swapChainSupport.formats;
@@ -103,7 +103,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkFormat DevicesSwapchainSimplifier::GetSwapchainFormat16bit(const DeviceInfo& info) const
+	VkFormat SwapchainSimplifier::GetSwapchainFormat16bit(const DeviceInfo& info) const
 	{
 		VkFormat ret = VK_FORMAT_MAX_ENUM;
 		auto& formatList = info.swapChainSupport.formats;
@@ -123,7 +123,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkPresentModeKHR DevicesSwapchainSimplifier::GetSwapchainPresentMode(SwapchainPresentMode presentMode, const SimplifiedDeviceInfo& info) const
+	VkPresentModeKHR SwapchainSimplifier::GetSwapchainPresentMode(SwapchainPresentMode presentMode, const SimplifiedDeviceInfo& info) const
 	{
 		VkPresentModeKHR ret = VK_PRESENT_MODE_MAX_ENUM_KHR;
 
@@ -149,7 +149,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	uint32_t DevicesSwapchainSimplifier::GetSwapchainImageAmount(SwapchainImageAmount imageAmount, uint32_t minAmount, uint32_t maxAmount) const
+	uint32_t SwapchainSimplifier::GetSwapchainImageAmount(SwapchainImageAmount imageAmount, uint32_t minAmount, uint32_t maxAmount) const
 	{
 		uint32_t ret = 0;
 
@@ -173,17 +173,17 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkExtent2D DevicesSwapchainSimplifier::GetImageExtend(const DeviceInfo& info) const
+	VkExtent2D SwapchainSimplifier::GetImageExtend(const DeviceInfo& info) const
 	{
 		return info.swapChainSupport.capabilities.currentExtent;
 	}
 
-	VkSurfaceTransformFlagBitsKHR DevicesSwapchainSimplifier::GetImageTransform(const DeviceInfo& info) const
+	VkSurfaceTransformFlagBitsKHR SwapchainSimplifier::GetImageTransform(const DeviceInfo& info) const
 	{
 		return info.swapChainSupport.capabilities.currentTransform;
 	}
 
-	void DevicesSwapchainSimplifier::DestroySwapchain()
+	void SwapchainSimplifier::DestroySwapchain()
 	{
 		if (_swapchain != VK_NULL_HANDLE)
 		{
@@ -199,7 +199,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	void DevicesSwapchainSimplifier::GetSwapchainImages()
+	void SwapchainSimplifier::GetSwapchainImages()
 	{
 		uint32_t imagesAmount = 0;
 
@@ -212,7 +212,7 @@ namespace VulkanSimplified
 		CreateSwapchainImageViews();
 	}
 
-	void DevicesSwapchainSimplifier::CreateSwapchainImageViews()
+	void SwapchainSimplifier::CreateSwapchainImageViews()
 	{
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -241,7 +241,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	void DevicesSwapchainSimplifier::CreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
+	void SwapchainSimplifier::CreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
 	{
 		if (_swapchain != VK_NULL_HANDLE)
 			throw std::runtime_error("DevicesSwapchainSimplifier::CreateSwapchain Error: Program tried to create already existing swapchain!");
@@ -281,7 +281,7 @@ namespace VulkanSimplified
 		GetSwapchainImages();
 	}
 
-	DevicesSwapchainSimplifier::DevicesSwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
+	SwapchainSimplifier::SwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
 	{
 		_swapchain = VK_NULL_HANDLE;
 		_swapchainDevice = VK_NULL_HANDLE;
@@ -291,12 +291,12 @@ namespace VulkanSimplified
 		CreateSwapchain(device, surface, info, settings);
 	}
 
-	DevicesSwapchainSimplifier::~DevicesSwapchainSimplifier()
+	SwapchainSimplifier::~SwapchainSimplifier()
 	{
 		DestroySwapchain();
 	}
 
-	void DevicesSwapchainSimplifier::RecreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
+	void SwapchainSimplifier::RecreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings)
 	{
 		DestroySwapchain();
 

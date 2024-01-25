@@ -84,7 +84,16 @@
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="DevicesSwapchainSimplifierInternal.h">
+    <ClInclude Include="SwapchainSimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderModulesSimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ShaderModulesSimplifier.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceCoreSimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
   </ItemGroup>
@@ -125,7 +134,16 @@
     <ClCompile Include="VulkanSimplifierListTemplate.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="DevicesSwapchainSimplifierInternal.cpp">
+    <ClCompile Include="SwapchainSimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderModulesSimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderModulesSimplifier.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceCoreSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>

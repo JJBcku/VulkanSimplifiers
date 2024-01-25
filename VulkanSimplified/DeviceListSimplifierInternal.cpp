@@ -451,6 +451,11 @@ namespace VulkanSimplified
 		}
 	}
 
+	DeviceCoreSimplifier DeviceListSimplifierInternal::GetDeviceCore(const ListObjectID<DeviceCoreSimplifierInternal>& deviceID)
+	{
+		return DeviceCoreSimplifier(_logicalDevices.GetObject(deviceID));
+	}
+
 	constexpr size_t scoringFunctionReserve = 0x10;
 
 	DeviceListSimplifierInternal::DeviceListSimplifierInternal(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface) : _scoringFunctions(scoringFunctionReserve)

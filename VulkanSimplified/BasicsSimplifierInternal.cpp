@@ -7,7 +7,7 @@
 #include "DeviceListSimplifierInternal.h"
 #include "DeviceCoreSimplifierInternal.h"
 
-#include "DevicesSwapchainSimplifierInternal.h"
+#include "SwapchainSimplifierInternal.h"
 
 #include "Include/DeviceListSimplifier.h"
 
@@ -67,7 +67,7 @@ namespace VulkanSimplified
 		}
 		else
 		{
-			_swapchain = std::make_unique<DevicesSwapchainSimplifier>(device, surface, deviceInfo, settings);
+			_swapchain = std::make_unique<SwapchainSimplifier>(device, surface, deviceInfo, settings);
 		}
 	}
 

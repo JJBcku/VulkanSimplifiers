@@ -3,6 +3,9 @@
 
 #include "DeviceListSimplifierInternal.h"
 
+#include "Include/ShaderModulesSimplifier.h"
+#include "ShaderModulesSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
     VkDeviceQueueCreateInfo DeviceCoreSimplifierInternal::CreateQueueInfo(uint32_t queueFamily, const float& priority) const
@@ -18,27 +21,8 @@ namespace VulkanSimplified
         return ret;
     }
 
-    void DeviceCoreSimplifierInternal::DestroyDevice()
+    void DeviceCoreSimplifierInternal::CreateDevice(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
     {
-        if (_device != VK_NULL_HANDLE)
-        {
-            vkDestroyDevice(_device, nullptr);
-            _device = VK_NULL_HANDLE;
-        }
-    }
-
-    DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
-    {
-        _device = VK_NULL_HANDLE;
-        _physicalDevice = device;
-        _info = deviceInfo;
-        _settings = deviceSettings;
-
-        _graphicQueue = VK_NULL_HANDLE;
-        _computeQueue = VK_NULL_HANDLE;
-        _transferQueue = VK_NULL_HANDLE;
-        _paddingQueue = VK_NULL_HANDLE;
-
         VkPhysicalDeviceFeatures enabledFeatures{};
         VkPhysicalDeviceFeatures2 enabledFeatures2{};
         VkPhysicalDeviceVulkan11Features features11{};
@@ -115,7 +99,7 @@ namespace VulkanSimplified
             enabledFeatures2.pNext = &features11;
             enabledFeatures2.features = enabledFeatures;
             features11.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
-            
+
             if (deviceInfo.deviceApiVersion >= VK_API_VERSION_1_2)
             {
                 features11.pNext = &features12;
@@ -127,7 +111,8 @@ namespace VulkanSimplified
                     features13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
                 }
             }
-        } else
+        }
+        else
         {
             createInfo.pEnabledFeatures = &enabledFeatures;
         }
@@ -156,6 +141,42 @@ namespace VulkanSimplified
         }
     }
 
+    void DeviceCoreSimplifierInternal::DestroyDevice()
+    {
+        if (_device != VK_NULL_HANDLE)
+        {
+            vkDestroyDevice(_device, nullptr);
+            _device = VK_NULL_HANDLE;
+        }
+    }
+
+    void DeviceCoreSimplifierInternal::CreatePointers()
+    {
+        _shaderSimplifier = std::make_unique<ShaderModulesSimplifierInternal>(_device);
+    }
+
+    void DeviceCoreSimplifierInternal::DestroyPointers()
+    {
+        if (_shaderSimplifier)
+            _shaderSimplifier.reset();
+    }
+
+    DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
+    {
+        _device = VK_NULL_HANDLE;
+        _physicalDevice = device;
+        _info = deviceInfo;
+        _settings = deviceSettings;
+
+        _graphicQueue = VK_NULL_HANDLE;
+        _computeQueue = VK_NULL_HANDLE;
+        _transferQueue = VK_NULL_HANDLE;
+        _paddingQueue = VK_NULL_HANDLE;
+
+        CreateDevice(device, deviceInfo, deviceSettings);
+        CreatePointers();
+    }
+
     DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(DeviceCoreSimplifierInternal&& other) noexcept
     {
         DestroyDevice();
@@ -178,10 +199,13 @@ namespace VulkanSimplified
         other._computeQueue = VK_NULL_HANDLE;
         other._transferQueue = VK_NULL_HANDLE;
         _paddingQueue = VK_NULL_HANDLE;
+
+        _shaderSimplifier = std::move(other._shaderSimplifier);
     }
 
     DeviceCoreSimplifierInternal::~DeviceCoreSimplifierInternal()
     {
+        DestroyPointers();
         DestroyDevice();
     }
 
@@ -207,6 +231,8 @@ namespace VulkanSimplified
         other._transferQueue = VK_NULL_HANDLE;
         _paddingQueue = VK_NULL_HANDLE;
 
+        _shaderSimplifier = std::move(other._shaderSimplifier);
+
         return *this;
     }
 
@@ -218,6 +244,11 @@ namespace VulkanSimplified
     VkPhysicalDevice DeviceCoreSimplifierInternal::GetPhysicalDevice() const
     {
         return _physicalDevice;
+    }
+
+    ShaderModulesSimplifier DeviceCoreSimplifierInternal::GetShaderModulesSimplifier()
+    {
+        return ShaderModulesSimplifier(*_shaderSimplifier);
     }
 
 }

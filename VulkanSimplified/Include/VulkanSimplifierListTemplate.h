@@ -103,6 +103,8 @@ namespace VulkanSimplified
 		bool operator==(const ListObjectID<T>& ID) const { return ID == _objectID; }
 	};
 
+	constexpr size_t listTemplateDefaultReserve = 0x10;
+
 	template <class T>
 	class ListTemplate
 	{
@@ -114,8 +116,16 @@ namespace VulkanSimplified
 
 		ListTemplate(size_t reserve = 0) : _nextID()
 		{
-			_list.reserve(reserve);
-			_deletedList.reserve(reserve);
+			if (reserve != 0)
+			{
+				_list.reserve(reserve);
+				_deletedList.reserve(reserve);
+			}
+			else
+			{
+				_list.reserve(listTemplateDefaultReserve);
+				_deletedList.reserve(listTemplateDefaultReserve);
+			}
 		}
 
 		~ListTemplate()
@@ -318,10 +328,21 @@ namespace VulkanSimplified
 		size_t GetUnusedCapacity() const { assert( _list.capacity() - _list.size() <= _list.capacity()); return _list.capacity() - _list.size(); }
 		size_t GetUnusedAndDeletedCapacity() const { assert( GetUnusedCapacity() + _deletedList.size() >= _deletedList.size()); return GetUnusedCapacity() + _deletedList.size(); }
 
-		void Reset()
+		void Reset(size_t reserve = 0)
 		{
 			_list.clear();
 			_deletedList.clear();
+
+			if (reserve != 0)
+			{
+				_list.reserve(reserve);
+				_deletedList.reserve(reserve);
+			}
+			else
+			{
+				_list.reserve(listTemplateDefaultReserve);
+				_deletedList.reserve(listTemplateDefaultReserve);
+			}
 		}
 	};
 }

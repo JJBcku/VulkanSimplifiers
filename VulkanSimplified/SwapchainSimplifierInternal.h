@@ -11,7 +11,7 @@ namespace VulkanSimplified
 	enum class SwapchainPresentMode : uint64_t;
 	enum class SwapchainFormatType : uint64_t;
 
-	class DevicesSwapchainSimplifier
+	class SwapchainSimplifier
 	{
 		VkSwapchainKHR _swapchain;
 		VkDevice _swapchainDevice;
@@ -44,8 +44,8 @@ namespace VulkanSimplified
 		void CreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
 
 	public:
-		DevicesSwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
-		~DevicesSwapchainSimplifier();
+		SwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
+		~SwapchainSimplifier();
 
 		void RecreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
 	};
