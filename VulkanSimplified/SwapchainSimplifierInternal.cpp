@@ -53,6 +53,10 @@ namespace VulkanSimplified
 				{
 					ret = format.format;
 				}
+				else if (format.format == VK_FORMAT_A8B8G8R8_UNORM_PACK32 && ret != VK_FORMAT_B8G8R8A8_UNORM)
+				{
+					ret = format.format;
+				}
 			}
 		}
 
@@ -92,7 +96,7 @@ namespace VulkanSimplified
 		{
 			if (format.colorSpace == colorspace)
 			{
-				if (format.format == VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16)
+				if (format.format == VK_FORMAT_B10G11R11_UFLOAT_PACK32)
 				{
 					ret = format.format;
 					break;
@@ -158,13 +162,22 @@ namespace VulkanSimplified
 		case SwapchainImageAmount::MIN:
 			ret = minAmount;
 			break;
-		case SwapchainImageAmount::HALF:
+		case SwapchainImageAmount::HALF_DIFFERENCE:
 			ret = maxAmount - minAmount;
 			ret = ret >> 1;
 			ret += minAmount;
 			break;
 		case SwapchainImageAmount::MAX:
 			ret = maxAmount;
+			break;
+		case SwapchainImageAmount::MIN_PLUS_ONE:
+			ret = std::min(minAmount + 1, maxAmount);
+			break;
+		case SwapchainImageAmount::MAX_MINUS_ONE:
+			ret = std::max(maxAmount - 1, minAmount);
+			break;
+		case SwapchainImageAmount::HALF_AMOUNT:
+			ret = std::max(maxAmount >> 1, minAmount);
 			break;
 		default:
 			break;

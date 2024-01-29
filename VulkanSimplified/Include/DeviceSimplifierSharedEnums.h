@@ -20,7 +20,10 @@ namespace VulkanSimplified
 	enum class SwapchainImageAmount : uint64_t
 	{
 		MIN = 1,
-		HALF = 2,
+		HALF_DIFFERENCE = 2,
 		MAX = 4,
+		MIN_PLUS_ONE = 8,
+		MAX_MINUS_ONE = 0X10,
+		HALF_AMOUNT = 0X20,
 	};
 }

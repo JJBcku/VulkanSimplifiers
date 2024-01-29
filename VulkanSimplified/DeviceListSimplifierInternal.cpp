@@ -276,6 +276,10 @@ namespace VulkanSimplified
 				{
 					ret.renderingColorList.NormalColor = true;
 				}
+				else if (formats[i].format == VK_FORMAT_A8B8G8R8_UNORM_PACK32)
+				{
+					ret.renderingColorList.NormalColor = true;
+				}
 				else if (formats[i].format == VK_FORMAT_A2B10G10R10_UNORM_PACK32)
 				{
 					ret.renderingColorList.HDRColor = true;
@@ -284,7 +288,7 @@ namespace VulkanSimplified
 				{
 					ret.renderingColorList.HDRColor = true;
 				}
-				else if (formats[i].format == VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16)
+				else if (formats[i].format == VK_FORMAT_B10G11R11_UFLOAT_PACK32)
 				{
 					ret.renderingColorList.OneAndHalfColor = true;
 				}

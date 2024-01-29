@@ -33,7 +33,7 @@ int main()
 
         AppData appSettings{};
         appSettings.appTitle = "Simplified Vulkan Test App";
-        appSettings.appVersion = { 0, 1, 0, 0 };
+        appSettings.appVersion = { 0, 2, 0, 0 };
         appSettings.minVulkanVersion = { 1, 3, 0, 0 };
         appSettings.maxVulkanVersion = { 1, 3, 260, 0 };
 
@@ -58,7 +58,7 @@ int main()
 
         VulkanSimplified::SwapchainSettings swapchainSettings{};
 
-        swapchainSettings.format = VulkanSimplified::SwapchainFormatType::EIGHT_BIT;
+        swapchainSettings.format = VulkanSimplified::SwapchainFormatType::TEN_BIT;
         swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
         swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
 
