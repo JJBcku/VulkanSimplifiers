@@ -9,6 +9,8 @@
 #include <DeviceCoreSimplifier.h>
 #include <ShaderModulesSimplifier.h>
 
+#include <SharedDataSimplifierCore.h>
+
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name);
@@ -19,6 +21,7 @@ int main()
     using VulkanSimplified::AppData;
     using VulkanSimplified::BasicsSimplifier;
     using VulkanSimplified::DeviceSettings;
+    using VulkanSimplified::SharedDataSimplifierCore;
 
     std::cout << "Vulkan Simplified testing started!\n";
 
@@ -69,6 +72,10 @@ int main()
 
         auto vertexShader = shaders.CreateShaderModule(vertexCode);
         auto fragmentShader = shaders.CreateShaderModule(fragmentCode);
+
+        SharedDataSimplifierCore sharedData(0x100);
+
+        auto testBinding = sharedData.AddBindingDescription(0, 0, false);
 
         main.reset();
     }

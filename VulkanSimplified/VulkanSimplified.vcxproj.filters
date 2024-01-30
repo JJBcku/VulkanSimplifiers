@@ -31,11 +31,11 @@
     <Filter Include="Source Files\Other">
       <UniqueIdentifier>{1c9602eb-bcc4-44e5-ad8c-70580e2b35dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\SharedDeviceData">
-      <UniqueIdentifier>{7c0f4139-b0f1-4381-81d4-da5f4630bb55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\SharedDeviceData">
+    <Filter Include="Source Files\SharedData">
       <UniqueIdentifier>{a39d5c2f-91f5-4831-9970-1f5368fc973f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SharedData">
+      <UniqueIdentifier>{7c0f4139-b0f1-4381-81d4-da5f4630bb55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,15 @@
     <ClInclude Include="Include\DeviceCoreSimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="SharedDataPipelineElementsInternal.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedDataSimplifierCoreInternal.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SharedDataSimplifierCore.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicsSimplifier.cpp">
@@ -145,6 +154,15 @@
     </ClCompile>
     <ClCompile Include="DeviceCoreSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataPipelineElementsInternal.cpp">
+      <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataSimplifierCoreInternal.cpp">
+      <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataSimplifierCore.cpp">
+      <Filter>Source Files\SharedData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
