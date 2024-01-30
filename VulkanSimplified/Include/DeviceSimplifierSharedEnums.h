@@ -23,7 +23,7 @@ namespace VulkanSimplified
 		HALF_DIFFERENCE = 2,
 		MAX = 4,
 		MIN_PLUS_ONE = 8,
-		MAX_MINUS_ONE = 0X10,
-		HALF_AMOUNT = 0X20,
+		MAX_MINUS_ONE = 0x10,
+		HALF_AMOUNT = 0x20,
 	};
 }
