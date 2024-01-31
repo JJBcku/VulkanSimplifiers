@@ -35,6 +35,9 @@ namespace VulkanSimplified
         deviceApiVersion = 0;
         //upadding = 0;
 
+        minSwapchainImages = 0;
+        maxSwapchainImages = 0;
+
         nonLocalMemorySize = 0;
         localMemorySize = 0;
         sharedMemorySize = 0;

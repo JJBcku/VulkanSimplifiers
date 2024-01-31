@@ -2,26 +2,22 @@
 
 namespace VulkanSimplified
 {
+	using IDType = uint64_t;
+
 	template<class T>
 	class ListObjectID
 	{
-		uint64_t id;
+		IDType _id;
 
 	public:
-		ListObjectID() { id = std::numeric_limits<decltype(id)>::lowest(); }
+		ListObjectID(IDType id) { _id = id; }
 		ListObjectID(const ListObjectID& other) = default;
-		ListObjectID(ListObjectID&& other) noexcept(false)
-		{
-			id = other.id++;
-
-			if (id == std::numeric_limits<decltype(id)>::max() && other.id == std::numeric_limits<decltype(id)>::lowest())
-				throw std::runtime_error("ListTemplate ID overflow error");
-		}
+		ListObjectID(ListObjectID&& other) noexcept = default;
 
 		ListObjectID<T>& operator=(const ListObjectID<T>& other) = default;
-		ListObjectID<T>& operator=(ListObjectID<T>&&) = delete;
+		ListObjectID<T>& operator=(ListObjectID<T>&&) = default;
 
-		bool operator==(const ListObjectID<T>& other) const { return id == other.id; }
+		bool operator==(const ListObjectID<T>& other) const { return _id == other._id; }
 		std::strong_ordering operator<=>(const ListObjectID<T>&) const = default;
 	};
 
@@ -39,24 +35,20 @@ namespace VulkanSimplified
 
 	public:
 
-		ListObjectTemplate(ListObjectID<T>&& objectID, const T& object) : _objectID(std::move(objectID)), _object(object)
+		ListObjectTemplate(const ListObjectID<T>& objectID, const T& object) noexcept : _objectID(objectID), _object(object)
 		{
 		}
 
-		ListObjectTemplate(ListObjectID<T>&& objectID, T&& object) : _objectID(std::move(objectID)), _object(std::move(object))
+		ListObjectTemplate(const ListObjectID<T>& objectID, T&& object) noexcept : _objectID(objectID), _object(std::move(object))
 		{
 		}
 
-		ListObjectTemplate(const ListObjectTemplate<T>& other)
+		ListObjectTemplate(const ListObjectTemplate<T>& other) noexcept : _objectID(other._objectID), _object(other._object)
 		{
-			_objectID = other._objectID;
-			_object = other._object;
 		}
 
-		ListObjectTemplate(ListObjectTemplate<T>&& other) noexcept
+		ListObjectTemplate(ListObjectTemplate<T>&& other) noexcept : _objectID(std::move(other._objectID)), _object(std::move(other._object))
 		{
-			_objectID = other._objectID;
-			_object = std::move(other._object);
 		}
 
 		ListObjectTemplate<T>& operator=(const ListObjectTemplate<T>& other)
@@ -67,32 +59,34 @@ namespace VulkanSimplified
 
 		ListObjectTemplate<T>& operator=(ListObjectTemplate<T>&& other)
 		{
-			_objectID = other._objectID;
+			_objectID = std::move(other._objectID);
 			_object = std::move(other._object);
 		}
 
-		void ReplaceValue(const T& object)
+		void ReplaceValue(const ListObjectID<T>& objectID, const T& object)
 		{
 			ThrowOnHasValue();
 
 			_object = object;
+			_objectID = objectID;
 		}
 
-		void ReplaceValue(T&& object)
+		void ReplaceValue(const ListObjectID<T>& objectID, T&& object)
 		{
 			ThrowOnHasValue();
 
 			_object = std::move(object);
+			_objectID = objectID;
 		}
 
 		const ListObjectID<T> GetObjectID() { return _objectID; }
 
 		std::optional<T>& GetObjectOptional() { return _object; }
-		const std::optional<T>& GetConstObjectOptional() { return _object; }
+		const std::optional<T>& GetConstObjectOptional() const { return _object; }
 		std::optional<T> GetObjectOptionalCopy() { return _object; }
 
 		T& GetObject() { assert(_object.has_value()); return _object.value(); }
-		const T& GetConstObject() { assert(_object.has_value()); return _object.value(); }
+		const T& GetConstObject() const { assert(_object.has_value()); return _object.value(); }
 		T GetObjectCopy() { assert(_object.has_value()); return _object.value(); }
 
 		bool HasValue() { return _object.has_value(); }
@@ -108,14 +102,27 @@ namespace VulkanSimplified
 	template <class T>
 	class ListTemplate
 	{
-		ListObjectID<T> _nextID;
+		IDType _nextID, _lastID;
 		std::vector<ListObjectTemplate<T>> _list;
 		std::vector<size_t> _deletedList;
 
+		IDType GetNextId()
+		{
+			if (_nextID == std::numeric_limits<IDType>::lowest() && _lastID != _nextID)
+				throw std::runtime_error("ListTemplate Error: Id system overflowed!");
+
+			_lastID = _nextID;
+			_nextID++;
+			return _lastID;
+		}
+
 	public:
 
-		ListTemplate(size_t reserve = 0) : _nextID()
+		ListTemplate(size_t reserve = 0)
 		{
+			_nextID = std::numeric_limits<IDType>::lowest();
+			_lastID = _nextID;
+
 			if (reserve != 0)
 			{
 				_list.reserve(reserve);
@@ -134,10 +141,10 @@ namespace VulkanSimplified
 		}
 
 		ListTemplate(const ListTemplate<T>&) = delete;
-		ListTemplate(ListTemplate<T>&&) = delete;
+		ListTemplate(ListTemplate<T>&&) = default;
 
 		ListTemplate<T>& operator=(const ListTemplate<T>&) = delete;
-		ListTemplate<T>& operator=(ListTemplate<T>&&) = delete;
+		ListTemplate<T>& operator=(ListTemplate<T>&&) = default;
 
 		void ReserveAdditional(size_t add)
 		{
@@ -165,7 +172,7 @@ namespace VulkanSimplified
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(value);
+				_list[pos].ReplaceValue(GetNextId(), value);
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -173,7 +180,7 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(std::move(_nextID), value);
+				_list.emplace_back(GetNextId(), value);
 				return _list.back().GetObjectID();
 			}
 		}
@@ -183,7 +190,7 @@ namespace VulkanSimplified
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(std::move(value));
+				_list[pos].ReplaceValue(GetNextId(), std::move(value));
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -191,7 +198,7 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(std::move(_nextID), std::move(value));
+				_list.emplace_back(GetNextId(), std::move(value));
 				return _list.back().GetObjectID();
 			}
 		}
@@ -302,11 +309,11 @@ namespace VulkanSimplified
 			return it->GetObject();
 		}
 
-		const T& GetConstObject(ListObjectID<T> objectID)
+		const T& GetConstObject(ListObjectID<T> objectID) const
 		{
-			auto it = std::find(_list.begin(), _list.end(), objectID);
+			auto it = std::find(_list.cbegin(), _list.cend(), objectID);
 
-			if (it == _list.end())
+			if (it == _list.cend())
 				throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
 
 			return it->GetConstObject();

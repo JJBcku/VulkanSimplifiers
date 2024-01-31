@@ -7,6 +7,11 @@ namespace VulkanSimplified
 {
 	WindowSimplifierInternal::WindowSimplifierInternal(WindowCreationData data)
 	{
+		SDL_Init(SDL_INIT_VIDEO);
+
+		_width = static_cast<uint32_t>(data.windowWidth);
+		_height = static_cast<uint32_t>(data.windowHeight);
+
 		_window = CreateWindow(data);
 		padding = 0;
 	}
@@ -14,11 +19,22 @@ namespace VulkanSimplified
 	WindowSimplifierInternal::~WindowSimplifierInternal()
 	{
 		DestroyWindow();
+		SDL_Quit();
 	}
 
 	SDL_Window* WindowSimplifierInternal::GetWindow() const
 	{
 		return _window;
+	}
+
+	uint32_t WindowSimplifierInternal::GetWindowWidth() const
+	{
+		return _width;
+	}
+
+	uint32_t WindowSimplifierInternal::GetWindowHeight() const
+	{
+		return _height;
 	}
 
 	SDL_Window* WindowSimplifierInternal::CreateWindow(WindowCreationData data) const

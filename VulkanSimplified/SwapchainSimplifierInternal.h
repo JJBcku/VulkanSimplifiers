@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Include/VulkanSimplifierListTemplate.h"
+
 namespace VulkanSimplified
 {
 	struct SimplifiedDeviceInfo;
@@ -11,42 +13,55 @@ namespace VulkanSimplified
 	enum class SwapchainPresentMode : uint64_t;
 	enum class SwapchainFormatType : uint64_t;
 
-	class SwapchainSimplifier
+	class DeviceCoreSimplifierInternal;
+	class SurfaceSimplifierInternal;
+	class WindowSimplifierInternal;
+	class DeviceListSimplifierInternal;
+	class DeviceDataListSimplifierInternal;
+
+	class SwapchainSimplifierInternal
 	{
+		const WindowSimplifierInternal& _window;
+		const SurfaceSimplifierInternal& _surface;
+		const DeviceListSimplifierInternal& _deviceList;
+		void* _ppadding;
+
 		VkSwapchainKHR _swapchain;
-		VkDevice _swapchainDevice;
-		VkFormat _swapchainFormat;
-		char _padding[16 - (sizeof(_swapchainFormat) + sizeof(_swapchainDevice))];
+		VkDevice _device;
+		VkPhysicalDevice _physicalDevice;
+		VkFormat _format;
+		char _padding[8 - sizeof(_format)];
 		VkExtent2D _swapchainExtend;
 
 		std::vector<VkImage> _swapchainImages;
 		std::vector<VkImageView> _swapchainImageViews;
 
-		//char _padding2[8 - (sizeof(_swapchainImages) % 8)];
+		char _padding2[16 - ((sizeof(_swapchainImageViews) + sizeof(_swapchainImages)) % 8)];
 
-		VkFormat GetSwapchainFormat(SwapchainFormatType format, const DeviceInfo& info) const;
-		VkFormat GetSwapchainFormat8bit(const DeviceInfo& info) const;
-		VkFormat GetSwapchainFormat10bit(const DeviceInfo& info) const;
-		VkFormat GetSwapchainFormat12bit(const DeviceInfo& info) const;
-		VkFormat GetSwapchainFormat16bit(const DeviceInfo& info) const;
+		VkFormat GetSwapchainFormat(SwapchainFormatType format) const;
+		VkFormat GetSwapchainFormat8bit(const std::vector<VkSurfaceFormatKHR>& formats) const;
+		VkFormat GetSwapchainFormat10bit(const std::vector<VkSurfaceFormatKHR>& formats) const;
+		VkFormat GetSwapchainFormat12bit(const std::vector<VkSurfaceFormatKHR>& formats) const;
+		VkFormat GetSwapchainFormat16bit(const std::vector<VkSurfaceFormatKHR>& formats) const;
 
 		VkPresentModeKHR GetSwapchainPresentMode(SwapchainPresentMode presentMode, const SimplifiedDeviceInfo& info) const;
 		uint32_t GetSwapchainImageAmount(SwapchainImageAmount imageAmount, uint32_t minAmount, uint32_t maxAmount) const;
 
 		VkExtent2D GetImageExtend(const DeviceInfo& info) const;
-		VkSurfaceTransformFlagBitsKHR GetImageTransform(const DeviceInfo& info) const;
-
-		void DestroySwapchain();
 
 		void GetSwapchainImages();
 		void CreateSwapchainImageViews();
 
-		void CreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
+		void DestroySwapchain();
 
 	public:
-		SwapchainSimplifier(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
-		~SwapchainSimplifier();
+		SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface, const DeviceListSimplifierInternal& deviceList);
+		~SwapchainSimplifierInternal();
 
-		void RecreateSwapchain(VkDevice device, VkSurfaceKHR surface, const std::pair<DeviceInfo, SimplifiedDeviceInfo>& info, SwapchainSettings settings);
+		SwapchainSimplifierInternal& operator=(const SwapchainSimplifierInternal&) noexcept = delete;
+
+		void CreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate);
+
+		bool DoSwapchainExist() const;
 	};
 }

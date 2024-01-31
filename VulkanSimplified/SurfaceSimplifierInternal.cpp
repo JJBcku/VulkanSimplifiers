@@ -1,22 +1,28 @@
 #include "pch.h"
 #include "SurfaceSimplifierInternal.h"
 
+#include "WindowSimplifierInternal.h"
+#include "VulkanCoreSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 
-    SurfaceSimplifierInternal::SurfaceSimplifierInternal(SDL_Window* window, const VkInstance instance)
+    SurfaceSimplifierInternal::SurfaceSimplifierInternal(const WindowSimplifierInternal& windowSimplifier, const VulkanCoreSimplifierInternal& coreSimplifier) : _windowSimplifier(windowSimplifier), _coreSimplifier(coreSimplifier)
     {
-        if (window == nullptr)
-            throw std::runtime_error("Error: Program tried to create a surface for non-existent window!");
+        auto window = windowSimplifier.GetWindow();
+        assert(window != nullptr);
 
         _surface = VK_NULL_HANDLE;
+        
+        assert(coreSimplifier.GetInstance() != VK_NULL_HANDLE);
 
-        if (SDL_Vulkan_CreateSurface(window, instance, &_surface) != SDL_TRUE)
+        if (SDL_Vulkan_CreateSurface(window, coreSimplifier.GetInstance(), &_surface) != SDL_TRUE)
             throw std::runtime_error("Error: Program failed to create a window's surface!");
     }
 
-    SurfaceSimplifierInternal::~SurfaceSimplifierInternal()
+    SurfaceSimplifierInternal::~SurfaceSimplifierInternal() noexcept
     {
+        DestroySurface();
     }
 
     VkSurfaceKHR SurfaceSimplifierInternal::GetSurface() const
@@ -24,12 +30,16 @@ namespace VulkanSimplified
         return _surface;
     }
 
-    void SurfaceSimplifierInternal::PreDestructionCall(const VkInstance instance)
+    void SurfaceSimplifierInternal::DestroySurface()
     {
         if (_surface != VK_NULL_HANDLE)
-            vkDestroySurfaceKHR(instance, _surface, nullptr);
+        {
+            auto instance = _coreSimplifier.GetInstance();
+            assert(instance != VK_NULL_HANDLE);
 
-        _surface = VK_NULL_HANDLE;
+            vkDestroySurfaceKHR(instance, _surface, nullptr);
+            _surface = VK_NULL_HANDLE;
+        }
     }
 
 }

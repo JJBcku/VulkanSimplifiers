@@ -17,9 +17,4 @@ namespace VulkanSimplified
 	{
 	}
 
-	ShaderModulesSimplifier DeviceCoreSimplifier::GetShaderModulesSimplifier()
-	{
-		return _internal.GetShaderModulesSimplifier();
-	}
-
 }

@@ -5,6 +5,8 @@
 
 #include <BasicsSimplifier.h>
 #include <DeviceListSimplifier.h>
+#include <SwapchainSimplifier.h>
+
 #include <VulkanSimplifierListTemplate.h>
 #include <DeviceCoreSimplifier.h>
 #include <ShaderModulesSimplifier.h>
@@ -55,9 +57,10 @@ int main()
         deviceSettings.swapchainExtension = true;
 
         auto deviceID = deviceList.CreateDevice(scoringID, 0, deviceSettings);
-        auto device = deviceList.GetDeviceCore(deviceID);
+        auto deviceDataList = deviceList.GetDeviceDataListSimplifier(deviceID);
+        auto device = deviceDataList.GetDeviceCoreSimplifier();
 
-        auto shaders = device.GetShaderModulesSimplifier();
+        auto shaders = deviceDataList.GetShaderModulesSimplifier();
 
         VulkanSimplified::SwapchainSettings swapchainSettings{};
 
@@ -65,7 +68,9 @@ int main()
         swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
         swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
 
-        main->CreateSwapchain(deviceID, swapchainSettings, false);
+        auto swapchain = main->GetSwapchainSimplifier();
+
+        swapchain.CreateSwapchain(deviceID, swapchainSettings);
 
         auto vertexCode = ReadShaderCode(L"TestVertexShader.spv");
         auto fragmentCode = ReadShaderCode(L"TestFragmentShader.spv");

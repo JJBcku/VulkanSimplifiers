@@ -84,9 +84,6 @@
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="SwapchainSimplifierInternal.h">
-      <Filter>Header Files\Devices</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderModulesSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
@@ -104,6 +101,18 @@
     </ClInclude>
     <ClInclude Include="Include\SharedDataSimplifierCore.h">
       <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapchainSimplifierInternal.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceDataListSimplifierInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SwapchainSimplifier.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceDataListSimplifier.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +152,6 @@
     <ClCompile Include="VulkanSimplifierListTemplate.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="SwapchainSimplifierInternal.cpp">
-      <Filter>Source Files\Devices</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderModulesSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
@@ -155,14 +161,26 @@
     <ClCompile Include="DeviceCoreSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
+    <ClCompile Include="SwapchainSimplifierInternal.cpp">
+      <Filter>Source Files\Basics</Filter>
+    </ClCompile>
     <ClCompile Include="SharedDataPipelineElementsInternal.cpp">
+      <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataSimplifierCore.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
     <ClCompile Include="SharedDataSimplifierCoreInternal.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataSimplifierCore.cpp">
-      <Filter>Source Files\SharedData</Filter>
+    <ClCompile Include="DeviceDataListSimplifierInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapchainSimplifier.cpp">
+      <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceDataListSimplifier.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

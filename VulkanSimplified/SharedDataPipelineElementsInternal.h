@@ -8,6 +8,7 @@ namespace VulkanSimplified
 	class SharedDataPipelineElementsInternal
 	{
 		ListTemplate<VkVertexInputBindingDescription> _vertexInputBindingDescriptions;
+		ListTemplate<VkVertexInputAttributeDescription> _vertexInputAttributeDescriptions;
 
 	public:
 		SharedDataPipelineElementsInternal(size_t reserve);

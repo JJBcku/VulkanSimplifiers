@@ -67,6 +67,9 @@ namespace VulkanSimplified
 		uint32_t deviceApiVersion;
 		//uint32_t upadding;
 
+		uint32_t minSwapchainImages;
+		uint32_t maxSwapchainImages;
+
 		QueueFamilies queueFamilies;
 
 		uint64_t nonLocalMemorySize, localMemorySize, sharedMemorySize;

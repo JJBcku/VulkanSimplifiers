@@ -150,17 +150,6 @@ namespace VulkanSimplified
         }
     }
 
-    void DeviceCoreSimplifierInternal::CreatePointers()
-    {
-        _shaderSimplifier = std::make_unique<ShaderModulesSimplifierInternal>(_device);
-    }
-
-    void DeviceCoreSimplifierInternal::DestroyPointers()
-    {
-        if (_shaderSimplifier)
-            _shaderSimplifier.reset();
-    }
-
     DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings)
     {
         _device = VK_NULL_HANDLE;
@@ -174,7 +163,6 @@ namespace VulkanSimplified
         _paddingQueue = VK_NULL_HANDLE;
 
         CreateDevice(device, deviceInfo, deviceSettings);
-        CreatePointers();
     }
 
     DeviceCoreSimplifierInternal::DeviceCoreSimplifierInternal(DeviceCoreSimplifierInternal&& other) noexcept
@@ -199,13 +187,10 @@ namespace VulkanSimplified
         other._computeQueue = VK_NULL_HANDLE;
         other._transferQueue = VK_NULL_HANDLE;
         _paddingQueue = VK_NULL_HANDLE;
-
-        _shaderSimplifier = std::move(other._shaderSimplifier);
     }
 
     DeviceCoreSimplifierInternal::~DeviceCoreSimplifierInternal()
     {
-        DestroyPointers();
         DestroyDevice();
     }
 
@@ -231,8 +216,6 @@ namespace VulkanSimplified
         other._transferQueue = VK_NULL_HANDLE;
         _paddingQueue = VK_NULL_HANDLE;
 
-        _shaderSimplifier = std::move(other._shaderSimplifier);
-
         return *this;
     }
 
@@ -246,9 +229,9 @@ namespace VulkanSimplified
         return _physicalDevice;
     }
 
-    ShaderModulesSimplifier DeviceCoreSimplifierInternal::GetShaderModulesSimplifier()
+    SimplifiedDeviceInfo DeviceCoreSimplifierInternal::GetDeviceInfo() const
     {
-        return ShaderModulesSimplifier(*_shaderSimplifier);
+        return _info;
     }
 
 }

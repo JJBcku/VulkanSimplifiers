@@ -8,6 +8,7 @@ namespace VulkanSimplified
 	{
 		VkShaderModule _module;
 		VkDevice _device;
+		void* _ppadding;
 		uint64_t _codeSize;
 
 		ShaderContainer();
@@ -22,7 +23,8 @@ namespace VulkanSimplified
 
 	class ShaderModulesSimplifierInternal
 	{
-		const VkDevice _device;
+		VkDevice _device;
+		void* _ppadding;
 
 		ListTemplate<ShaderContainer> _shaderModules;
 
@@ -31,10 +33,10 @@ namespace VulkanSimplified
 		~ShaderModulesSimplifierInternal();
 
 		ShaderModulesSimplifierInternal(const ShaderModulesSimplifierInternal&) noexcept = delete;
-		ShaderModulesSimplifierInternal(ShaderModulesSimplifierInternal&&) noexcept = delete;
+		ShaderModulesSimplifierInternal(ShaderModulesSimplifierInternal&&) noexcept = default;
 
 		ShaderModulesSimplifierInternal& operator=(const ShaderModulesSimplifierInternal&) noexcept = delete;
-		ShaderModulesSimplifierInternal& operator=(ShaderModulesSimplifierInternal&&) noexcept = delete;
+		ShaderModulesSimplifierInternal& operator=(ShaderModulesSimplifierInternal&&) noexcept = default;
 
 		ListObjectID<ShaderContainer> CreateShaderModule(const std::vector<unsigned char>& shaderCode);
 	};

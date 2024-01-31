@@ -2,15 +2,16 @@
 
 #include "Include/VulkanSimplifierListTemplate.h"
 
+#include "WindowSimplifierInternal.h"
+#include "VulkanCoreSimplifierInternal.h"
+#include "SurfaceSimplifierInternal.h"
+#include "DeviceListSimplifierInternal.h"
+
+#include "SwapchainSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
-	class VulkanCoreSimplifierInternal;
-	class WindowSimplifierInternal;
-	class SurfaceSimplifierInternal;
-
 	class DeviceListSimplifier;
-	class DeviceListSimplifierInternal;
-	class SwapchainSimplifier;
 
 	class DeviceCoreSimplifierInternal;
 
@@ -21,12 +22,12 @@ namespace VulkanSimplified
 
 	class BasicsSimplifierInternal
 	{
-		std::unique_ptr<VulkanCoreSimplifierInternal> _core;
-		std::unique_ptr<WindowSimplifierInternal> _windows;
-		std::unique_ptr<SurfaceSimplifierInternal> _surface;
-		std::unique_ptr<DeviceListSimplifierInternal> _deviceList;
+		WindowSimplifierInternal _windows;
+		VulkanCoreSimplifierInternal _core;
+		SurfaceSimplifierInternal _surface;
+		DeviceListSimplifierInternal _deviceList;
 
-		std::unique_ptr<SwapchainSimplifier> _swapchain;
+		SwapchainSimplifierInternal _swapchain;
 
 	public:
 		BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings);
@@ -35,9 +36,9 @@ namespace VulkanSimplified
 		BasicsSimplifierInternal(const BasicsSimplifierInternal&) = delete;
 		BasicsSimplifierInternal& operator= (const BasicsSimplifierInternal&) = delete;
 
-		DeviceListSimplifier GetDeviceListSimplifier();
+		DeviceListSimplifierInternal& GetDeviceListSimplifier();
 
-		void CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate);
+		SwapchainSimplifierInternal& GetSwapchainSimplifier();
 	};
 }
 

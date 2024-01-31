@@ -6,6 +6,7 @@ namespace VulkanSimplified
 
 	ShaderModulesSimplifierInternal::ShaderModulesSimplifierInternal(VkDevice device, size_t reserve) : _device(device), _shaderModules(reserve)
 	{
+		_ppadding = nullptr;
 	}
 
 	ShaderModulesSimplifierInternal::~ShaderModulesSimplifierInternal()
@@ -42,6 +43,7 @@ namespace VulkanSimplified
 		_module = VK_NULL_HANDLE;
 		_device = VK_NULL_HANDLE;
 		_codeSize = 0;
+		_ppadding = nullptr;
 	}
 
 	ShaderContainer::~ShaderContainer()

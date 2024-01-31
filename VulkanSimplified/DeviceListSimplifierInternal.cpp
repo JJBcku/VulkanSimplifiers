@@ -3,6 +3,9 @@
 
 #include "Include/BasicsSimplifierSharedStructs.h"
 
+#include "VulkanCoreSimplifierInternal.h"
+#include "SurfaceSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 
@@ -13,10 +16,9 @@ namespace VulkanSimplified
 		_score = score;
 	}
 
-	DeviceScore::DeviceScore(DeviceScore&& other) noexcept
+	DeviceScore::DeviceScore(DeviceScore&& other) noexcept : _scoringFunction(other._scoringFunction)
 	{
 		_padding = 0;
-		_scoringFunction = other._scoringFunction;
 		_score = other._score;
 		_deviceID = other._deviceID;
 	}
@@ -188,8 +190,11 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	void DeviceListSimplifierInternal::EnumeratePhysicalDevices(VkInstance instance, VkSurfaceKHR surface)
+	void DeviceListSimplifierInternal::EnumeratePhysicalDevices()
 	{
+		auto instance = _coreSimplifier.GetInstance();
+		auto surface = _surfaceSimplifier.GetSurface();
+
 		uint32_t deviceListSize = 0;
 		std::vector<VkPhysicalDevice> availableDevices;
 
@@ -215,7 +220,7 @@ namespace VulkanSimplified
 
 		for (auto& device : deviceList)
 		{
-			_deviceList.emplace_back(device, SimplifyDeviceInfo(device));
+			_deviceList.emplace_back(SimplifyDeviceInfo(device), device.device);
 		}
 	}
 
@@ -224,6 +229,10 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo ret;
 
 		ret.deviceApiVersion = deviceInfo.properties.properties.apiVersion;
+
+		ret.minSwapchainImages = deviceInfo.swapChainSupport.capabilities.minImageCount;
+		ret.maxSwapchainImages = deviceInfo.swapChainSupport.capabilities.maxImageCount;
+
 		ret.discreteGPU = deviceInfo.properties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 
 		auto& extensions = deviceInfo.properties.availableExtensions;
@@ -375,7 +384,7 @@ namespace VulkanSimplified
 
 		for (size_t i = 0; i < _deviceList.size(); ++i)
 		{
-			auto score = function(_deviceList[i].second);
+			auto score = function(_deviceList[i].first);
 
 			if (score >= minScore)
 			{
@@ -390,7 +399,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	ListObjectID<DeviceCoreSimplifierInternal> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
+	ListObjectID<DeviceDataListSimplifierInternal> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
 	{
 		if (position >= _deviceList.size())
 			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than device list size!");
@@ -407,8 +416,8 @@ namespace VulkanSimplified
 			if (position == currentPos)
 			{
 				auto& device = _deviceList[it->GetDeviceID()];
-				createDeviceInfo = device.second;
-				physicalDevice = device.first.device;
+				createDeviceInfo = device.first;
+				physicalDevice = device.second;
 				break;
 			}
 			else
@@ -421,52 +430,38 @@ namespace VulkanSimplified
 		if (currentPos < position)
 			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than eligible scored devices list size!");
 
-		auto ret = _logicalDevices.AddObject(DeviceCoreSimplifierInternal(physicalDevice, createDeviceInfo, settings));
+		auto ret = _logicalDevices.AddObject(std::move(DeviceDataListSimplifierInternal(physicalDevice, createDeviceInfo, settings)));
 
 		return ret;
 	}
 
-	std::pair<DeviceInfo, SimplifiedDeviceInfo> DeviceListSimplifierInternal::GetDeviceInfo(VkPhysicalDevice device)
-	{
-		std::pair<DeviceInfo, SimplifiedDeviceInfo> ret{};
-
-		for (auto& deviceInfo : _deviceList)
-		{
-			if (device == deviceInfo.first.device)
-			{
-				ret = deviceInfo;
-				break;
-			}
-		}
-
-		return ret;
-	}
-
-	const DeviceCoreSimplifierInternal& DeviceListSimplifierInternal::GetConstDeviceCore(ListObjectID<DeviceCoreSimplifierInternal> deviceID)
+	const DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetConstDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID) const
 	{
 		return _logicalDevices.GetConstObject(deviceID);
 	}
 
-	void DeviceListSimplifierInternal::UpdateSurfaceCapabilities(VkSurfaceKHR surface)
+	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID)
 	{
-		for (auto& device : _deviceList)
-		{
-			vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device.first.device, surface, &device.first.swapChainSupport.capabilities);
-		}
+		return _logicalDevices.GetObject(deviceID);
 	}
 
-	DeviceCoreSimplifier DeviceListSimplifierInternal::GetDeviceCore(const ListObjectID<DeviceCoreSimplifierInternal>& deviceID)
+	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataList(const ListObjectID<DeviceDataListSimplifierInternal>& deviceID)
 	{
-		return DeviceCoreSimplifier(_logicalDevices.GetObject(deviceID));
+		return _logicalDevices.GetObject(deviceID);
 	}
 
 	constexpr size_t scoringFunctionReserve = 0x10;
 
-	DeviceListSimplifierInternal::DeviceListSimplifierInternal(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface) : _scoringFunctions(scoringFunctionReserve)
+	DeviceListSimplifierInternal::DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier) : _coreSimplifier(coreSimplifier), _surfaceSimplifier(surfaceSimplifier), _scoringFunctions(scoringFunctionReserve)
 	{
-		_apiVersion = apiVersion;
+		_apiVersion = coreSimplifier.GetUsedApiVersion();
+		assert(_apiVersion >= VK_MAKE_API_VERSION(0, 1, 0, 0));
 		padding = 0;
-		EnumeratePhysicalDevices(instance, surface);
+
+		assert(coreSimplifier.GetInstance() != VK_NULL_HANDLE);
+		assert(surfaceSimplifier.GetSurface() != VK_NULL_HANDLE);
+
+		EnumeratePhysicalDevices();
 
 		_deviceScoresList.reserve(_deviceList.size() * scoringFunctionReserve);
 	}

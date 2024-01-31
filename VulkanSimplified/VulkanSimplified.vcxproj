@@ -200,6 +200,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BasicsSimplifierInternal.h" />
+    <ClInclude Include="Include\DeviceDataListSimplifier.h" />
+    <ClInclude Include="DeviceDataListSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceCoreSimplifier.h" />
     <ClInclude Include="DeviceCoreSimplifierInternal.h" />
     <ClInclude Include="Include\ShaderModulesSimplifier.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
     <ClInclude Include="SharedDataSimplifierCoreInternal.h" />
+    <ClInclude Include="Include\SwapchainSimplifier.h" />
     <ClInclude Include="SwapchainSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceListSimplifier.h" />
     <ClInclude Include="DeviceListSimplifierInternal.h" />
@@ -228,6 +231,8 @@
     <ClCompile Include="BasicsSimplifierSharedStructs.cpp" />
     <ClCompile Include="DeviceCoreSimplifier.cpp" />
     <ClCompile Include="DeviceCoreSimplifierInternal.cpp" />
+    <ClCompile Include="DeviceDataListSimplifier.cpp" />
+    <ClCompile Include="DeviceDataListSimplifierInternal.cpp" />
     <ClCompile Include="DeviceListSimplifier.cpp" />
     <ClCompile Include="DeviceListSimplifierInternal.cpp" />
     <ClCompile Include="ShaderModulesSimplifier.cpp" />
@@ -236,6 +241,7 @@
     <ClCompile Include="SharedDataPipelineElementsInternal.cpp" />
     <ClCompile Include="SharedDataSimplifierCore.cpp" />
     <ClCompile Include="SharedDataSimplifierCoreInternal.cpp" />
+    <ClCompile Include="SwapchainSimplifier.cpp" />
     <ClCompile Include="SwapchainSimplifierInternal.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

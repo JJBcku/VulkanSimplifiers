@@ -2,6 +2,8 @@
 #include "Include/BasicsSimplifier.h"
 
 #include "BasicsSimplifierInternal.h"
+#include "DeviceListSimplifierInternal.h"
+#include "Include/SwapchainSimplifier.h"
 
 #include "Include/DeviceSimplifierSharedStructs.h"
 
@@ -19,12 +21,12 @@ namespace VulkanSimplified
 
 	DeviceListSimplifier BasicsSimplifier::GetDeviceListSimplifier()
 	{
-		return _internal->GetDeviceListSimplifier();
+		return DeviceListSimplifier(_internal->GetDeviceListSimplifier());
 	}
 
-	void BasicsSimplifier::CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate)
+	SwapchainSimplifier BasicsSimplifier::GetSwapchainSimplifier()
 	{
-		_internal->CreateSwapchain(deviceID, settings, recreate);
+		return SwapchainSimplifier(_internal->GetSwapchainSimplifier());
 	}
 
 }

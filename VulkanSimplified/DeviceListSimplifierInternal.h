@@ -3,11 +3,14 @@
 #include "Include/VulkanSimplifierListTemplate.h"
 #include "Include/BasicsSimplifierSharedStructs.h"
 
-#include "DeviceCoreSimplifierInternal.h"
+#include "DeviceDataListSimplifierInternal.h"
 #include "Include/DeviceCoreSimplifier.h"
 
 namespace VulkanSimplified
 {
+	class SurfaceSimplifierInternal;
+	class VulkanCoreSimplifierInternal;
+
 	struct QueueFamilies;
 
 	struct SwapChainSupportDetails
@@ -85,26 +88,30 @@ namespace VulkanSimplified
 
 	class DeviceListSimplifierInternal
 	{
+		const VulkanCoreSimplifierInternal& _coreSimplifier;
+		const SurfaceSimplifierInternal& _surfaceSimplifier;
+
 		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
 		std::vector<DeviceScore> _deviceScoresList;
 
-		std::vector<std::pair<DeviceInfo, SimplifiedDeviceInfo>> _deviceList;
+		std::vector<std::pair<SimplifiedDeviceInfo, VkPhysicalDevice>> _deviceList;
 
-		ListTemplate<DeviceCoreSimplifierInternal> _logicalDevices;
+		ListTemplate<DeviceDataListSimplifierInternal> _logicalDevices;
 
 		uint32_t _apiVersion, padding;
 
+	private:
 		DeviceFeatures QueryDeviceFeatures(VkPhysicalDevice device) const;
 		DeviceProperties QueryDeviceProperties(VkPhysicalDevice device) const;
 		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) const;
 		QueueFamilies QueryFamiliesSupport(VkPhysicalDevice device, VkSurfaceKHR surface) const;
 
-		void EnumeratePhysicalDevices(VkInstance instance, VkSurfaceKHR surface);
+		void EnumeratePhysicalDevices();
 
 		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
 
 	public:
-		DeviceListSimplifierInternal(uint32_t apiVersion, VkInstance instance, VkSurfaceKHR surface);
+		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier);
 		~DeviceListSimplifierInternal();
 
 		DeviceListSimplifierInternal(const DeviceListSimplifierInternal&) = delete;
@@ -114,13 +121,14 @@ namespace VulkanSimplified
 		DeviceListSimplifierInternal& operator=(DeviceListSimplifierInternal&&) = delete;
 
 		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore);
-		ListObjectID<DeviceCoreSimplifierInternal> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
+		ListObjectID<DeviceDataListSimplifierInternal> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
 
-		std::pair<DeviceInfo, SimplifiedDeviceInfo> GetDeviceInfo(VkPhysicalDevice device);
-		const DeviceCoreSimplifierInternal& GetConstDeviceCore(ListObjectID<DeviceCoreSimplifierInternal> deviceID);
+		//std::pair<DeviceInfo, SimplifiedDeviceInfo> GetDeviceInfo(VkPhysicalDevice device);
+		const DeviceDataListSimplifierInternal& GetConstDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID) const;
+		DeviceDataListSimplifierInternal& GetDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID);
 
-		void UpdateSurfaceCapabilities(VkSurfaceKHR surface);
+		//void UpdateSurfaceCapabilities(VkSurfaceKHR surface);
 
-		DeviceCoreSimplifier GetDeviceCore(const ListObjectID<DeviceCoreSimplifierInternal>& deviceID);
+		DeviceDataListSimplifierInternal& GetDeviceDataList(const ListObjectID<DeviceDataListSimplifierInternal>& deviceID);
 	};
 }

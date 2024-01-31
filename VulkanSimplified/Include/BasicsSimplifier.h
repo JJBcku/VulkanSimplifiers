@@ -6,6 +6,7 @@
 namespace VulkanSimplified
 {
 	class BasicsSimplifierInternal;
+	class SwapchainSimplifier;
 
 	struct WindowCreationData;
 	struct AppData;
@@ -24,7 +25,7 @@ namespace VulkanSimplified
 
 		DeviceListSimplifier GetDeviceListSimplifier();
 
-		void CreateSwapchain(ListObjectID<DeviceCoreSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate);
+		SwapchainSimplifier GetSwapchainSimplifier();
 	};
 }
 
