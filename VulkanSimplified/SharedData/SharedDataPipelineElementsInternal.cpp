@@ -51,4 +51,14 @@ namespace VulkanSimplified
 		return _vertexInputAttributeDescriptions.AddObject(add);
 	}
 
+	ListObjectID<VertexInputList> SharedDataPipelineElementsInternal::AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes)
+	{
+		VertexInputList add;
+
+		add._attributes = attributes;
+		add._bindings = bindings;
+
+		return _vertexInputListDescriptions.AddObject(std::move(add));
+	}
+
 }
