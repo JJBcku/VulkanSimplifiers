@@ -19,7 +19,7 @@ namespace VulkanSimplified
 		add.stride = stride;
 		add.inputRate = useInstanceIndex ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX;
 
-		return _vertexInputBindingDescriptions.AddObject(add);
+		return _vertexInputBindingDescriptions.AddUniqueObject(add);
 	}
 
 	ListObjectID<VkVertexInputAttributeDescription> SharedDataPipelineElementsInternal::AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset)
@@ -48,7 +48,7 @@ namespace VulkanSimplified
 			throw std::runtime_error("AddAttributeDescription Error: Program used erroneous vertex attribute format!");
 		}
 
-		return _vertexInputAttributeDescriptions.AddObject(add);
+		return _vertexInputAttributeDescriptions.AddUniqueObject(add);
 	}
 
 	ListObjectID<VertexInputList> SharedDataPipelineElementsInternal::AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes)
@@ -58,7 +58,41 @@ namespace VulkanSimplified
 		add._attributes = attributes;
 		add._bindings = bindings;
 
-		return _vertexInputListDescriptions.AddObject(std::move(add));
+		return _vertexInputListDescriptions.AddUniqueObject(std::move(add));
 	}
 
+	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
+	{
+		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
+		{
+			return false;
+		}
+		else
+		{
+			for (size_t i = 0; i < _bindings.size(); ++i)
+			{
+				if (_bindings[i] != other._bindings[i])
+					return false;
+			}
+
+			for (size_t i = 0; i < _attributes.size(); ++i)
+			{
+				if (_attributes[i] != other._attributes[i])
+					return false;
+			}
+
+			return true;
+		}
+	}
+
+}
+
+bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second)
+{
+	return memcmp(&first, &second, sizeof(VkVertexInputBindingDescription)) == 0;
+}
+
+bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second)
+{
+	return memcmp(&first, &second, sizeof(VkVertexInputAttributeDescription)) == 0;
 }

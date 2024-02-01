@@ -10,6 +10,8 @@ namespace VulkanSimplified
 {
 	class SharedDataPipelineElementsInternal;
 
+	struct VertexInputList;
+
 	class SharedDataPipelineElements
 	{
 		SharedDataPipelineElementsInternal& _internal;
@@ -22,6 +24,8 @@ namespace VulkanSimplified
 
 		ListObjectID<VkVertexInputBindingDescription> AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex);
 		ListObjectID<VkVertexInputAttributeDescription> AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset);
+
+		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
 	};
 }
 

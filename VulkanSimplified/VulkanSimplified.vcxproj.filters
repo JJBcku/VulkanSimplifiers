@@ -155,7 +155,7 @@
     <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="Basics\VulkanSimplifierListTemplate.cpp">
+    <ClCompile Include="Other\VulkanSimplifierListTemplate.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
     <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp">
@@ -192,7 +192,7 @@
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
     <ClCompile Include="SharedData\SharedDataSimplifierEnums.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\SharedData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

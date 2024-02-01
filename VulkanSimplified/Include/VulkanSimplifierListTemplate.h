@@ -17,7 +17,7 @@ namespace VulkanSimplified
 		ListObjectID<T>& operator=(const ListObjectID<T>& other) = default;
 		ListObjectID<T>& operator=(ListObjectID<T>&&) = default;
 
-		bool operator==(const ListObjectID<T>& other) const { return _id == other._id; }
+		bool operator==(const ListObjectID<T>& other) const = default;
 		std::strong_ordering operator<=>(const ListObjectID<T>&) const = default;
 	};
 
@@ -84,7 +84,7 @@ namespace VulkanSimplified
 			_objectID = objectID;
 		}
 
-		const ListObjectID<T> GetObjectID() { return _objectID; }
+		ListObjectID<T> GetObjectID() const { return _objectID; }
 
 		std::optional<T>& GetObjectOptional() { return _object; }
 		const std::optional<T>& GetConstObjectOptional() const { return _object; }
@@ -100,6 +100,26 @@ namespace VulkanSimplified
 
 		bool operator==(bool has_value) const { return _object.has_value() == has_value; }
 		bool operator==(const ListObjectID<T>& ID) const { return ID == _objectID; }
+
+		std::strong_ordering operator<=>(const ListObjectTemplate<T>&) const noexcept = default;
+		bool operator==(const ListObjectTemplate<T>&) const noexcept = default;
+
+		bool operator==(const T& other) const noexcept
+		{
+			if (!_object.has_value())
+			{
+				return false;
+			}
+			else
+			{
+				return _object.value() == other;
+			}
+		}
+
+		bool operator==(const std::optional<T>& other) const noexcept
+		{
+			return _object == other;
+		}
 	};
 
 	constexpr size_t listTemplateDefaultReserve = 0x10;
@@ -168,6 +188,60 @@ namespace VulkanSimplified
 				else
 				{
 					ReserveAdditional(add);
+				}
+			}
+		}
+
+		const ListObjectID<T> AddUniqueObject(const T& value, size_t add = 0)
+		{
+			auto found = std::find(_list.cbegin(), _list.cend(), value);
+
+			if (found != _list.cend())
+			{
+				return found->GetObjectID();
+			}
+			else
+			{
+				if (!_deletedList.empty())
+				{
+					size_t pos = _deletedList.back();
+					_list[pos].ReplaceValue(GetNextId(), value);
+					_deletedList.pop_back();
+					return _list[pos].GetObjectID();
+				}
+				else
+				{
+					CheckCapacity(add);
+
+					_list.emplace_back(GetNextId(), value);
+					return _list.back().GetObjectID();
+				}
+			}
+		}
+
+		const ListObjectID<T> AddUniqueObject(T&& value, size_t add = 0)
+		{
+			auto found = std::find(_list.cbegin(), _list.cend(), value);
+
+			if (found != _list.cend())
+			{
+				return found->GetObjectID();
+			}
+			else
+			{
+				if (!_deletedList.empty())
+				{
+					size_t pos = _deletedList.back();
+					_list[pos].ReplaceValue(GetNextId(), std::move(value));
+					_deletedList.pop_back();
+					return _list[pos].GetObjectID();
+				}
+				else
+				{
+					CheckCapacity(add);
+
+					_list.emplace_back(GetNextId(), std::move(value));
+					return _list.back().GetObjectID();
 				}
 			}
 		}

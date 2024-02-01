@@ -3,12 +3,17 @@
 #include "../Include/VulkanSimplifierListTemplate.h"
 #include "../Include/SharedDataSimplifierEnums.h"
 
+bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second);
+bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second);
+
 namespace VulkanSimplified
 {
 	struct VertexInputList
 	{
 		std::vector<ListObjectID<VkVertexInputBindingDescription>> _bindings;
 		std::vector<ListObjectID<VkVertexInputAttributeDescription>> _attributes;
+
+		bool operator==(const VertexInputList& other) const noexcept;
 	};
 
 	class SharedDataPipelineElementsInternal

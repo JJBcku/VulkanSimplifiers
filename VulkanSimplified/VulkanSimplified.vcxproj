@@ -255,7 +255,7 @@
     </ClCompile>
     <ClCompile Include="Basics\SurfaceSimplifierInternal.cpp" />
     <ClCompile Include="Basics\VulkanCoreSimplifierInternal.cpp" />
-    <ClCompile Include="Basics\VulkanSimplifierListTemplate.cpp" />
+    <ClCompile Include="Other\VulkanSimplifierListTemplate.cpp" />
     <ClCompile Include="Basics\WindowSimplifierInternal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -85,6 +85,8 @@ int main()
         auto testBinding = pipelineData.AddBindingDescription(0, 0, false);
         auto testAttribute = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, 0);
 
+        auto testVertexInput = pipelineData.AddVertexInputList({}, {});
+
         main.reset();
     }
     catch (std::exception ex)
