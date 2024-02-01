@@ -16,8 +16,25 @@ namespace VulkanSimplified
 		bool operator==(const VertexInputList& other) const noexcept;
 	};
 
+	struct ShaderContainer;
+
+	struct ShaderStageCreationData
+	{
+		ShaderStageType _stage;
+		ListObjectID<ShaderContainer> _mod;
+		const char* _name;
+
+	public:
+		ShaderStageCreationData(ShaderStageType stage, ListObjectID<ShaderContainer> mod, const char* name);
+		~ShaderStageCreationData();
+
+		bool operator==(const ShaderStageCreationData&) const noexcept = default;
+	};
+
 	class SharedDataPipelineElementsInternal
 	{
+		ListTemplate<ShaderStageCreationData> _shaderPipelineData;
+
 		ListTemplate<VkVertexInputBindingDescription> _vertexInputBindingDescriptions;
 		ListTemplate<VkVertexInputAttributeDescription> _vertexInputAttributeDescriptions;
 
@@ -30,6 +47,8 @@ namespace VulkanSimplified
 		SharedDataPipelineElementsInternal(const SharedDataPipelineElementsInternal&) noexcept = delete;
 
 		SharedDataPipelineElementsInternal& operator=(const SharedDataPipelineElementsInternal&) noexcept = delete;
+
+		ListObjectID<ShaderStageCreationData> AddShaderPipelineData(ShaderStageType stage, ListObjectID<ShaderContainer> shader, const char* mainFunctionName);
 
 		ListObjectID<VkVertexInputBindingDescription> AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex);
 		ListObjectID<VkVertexInputAttributeDescription> AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset);

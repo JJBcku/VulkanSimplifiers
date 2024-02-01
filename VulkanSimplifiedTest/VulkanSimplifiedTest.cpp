@@ -82,6 +82,9 @@ int main()
 
         auto pipelineData = sharedData.GetSharedDataPipelineElements();
 
+        auto vertexPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::VERTEX, vertexShader, "main");
+        auto fragmentPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::FRAGMENT, fragmentShader, "main");
+
         auto testBinding = pipelineData.AddBindingDescription(0, 0, false);
         auto testAttribute = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, 0);
 

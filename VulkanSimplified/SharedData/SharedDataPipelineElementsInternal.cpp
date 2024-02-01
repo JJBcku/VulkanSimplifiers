@@ -1,15 +1,22 @@
 #include "../pch.h"
 #include "SharedDataPipelineElementsInternal.h"
 
+//#include "../Device/ShaderModulesSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 
-	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _vertexInputBindingDescriptions(reserve)
+	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve), _vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve)
 	{
 	}
 
 	SharedDataPipelineElementsInternal::~SharedDataPipelineElementsInternal()
 	{
+	}
+
+	ListObjectID<ShaderStageCreationData> SharedDataPipelineElementsInternal::AddShaderPipelineData(ShaderStageType stage, ListObjectID<ShaderContainer> shader, const char* mainFunctionName)
+	{
+		return _shaderPipelineData.AddUniqueObject(ShaderStageCreationData(stage, shader, mainFunctionName));
 	}
 
 	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)
@@ -83,6 +90,16 @@ namespace VulkanSimplified
 
 			return true;
 		}
+	}
+
+	ShaderStageCreationData::ShaderStageCreationData(ShaderStageType stage, ListObjectID<ShaderContainer> mod, const char* name) : _mod(mod)
+	{
+		_stage = stage;
+		_name = name;
+	}
+
+	ShaderStageCreationData::~ShaderStageCreationData()
+	{
 	}
 
 }

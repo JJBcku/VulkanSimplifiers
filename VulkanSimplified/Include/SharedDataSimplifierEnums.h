@@ -9,4 +9,10 @@ namespace VulkanSimplified
 		VEC4_FLOAT = 4,
 		VEC4_DOUBLE = 8,
 	};
+
+	enum class ShaderStageType : uint64_t
+	{
+		VERTEX = 1,
+		FRAGMENT = 2,
+	};
 }
