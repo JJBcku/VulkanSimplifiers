@@ -45,7 +45,7 @@
     <ClInclude Include="Include\BasicsSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="WindowSimplifierInternal.h">
+    <ClInclude Include="Basics\WindowSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
@@ -54,19 +54,19 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanCoreSimplifierInternal.h">
+    <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\BasicsSimplifierSharedEnums.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="SurfaceSimplifierInternal.h">
+    <ClInclude Include="Basics\SurfaceSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="BasicsSimplifierInternal.h">
+    <ClInclude Include="Basics\BasicsSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceListSimplifierInternal.h">
+    <ClInclude Include="Basics\DeviceListSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\DeviceListSimplifier.h">
@@ -75,7 +75,7 @@
     <ClInclude Include="Include\DeviceSimplifierSharedStructs.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceCoreSimplifierInternal.h">
+    <ClInclude Include="Device\DeviceCoreSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\DeviceSimplifierSharedEnums.h">
@@ -84,7 +84,7 @@
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderModulesSimplifierInternal.h">
+    <ClInclude Include="Device\ShaderModulesSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\ShaderModulesSimplifier.h">
@@ -93,16 +93,16 @@
     <ClInclude Include="Include\DeviceCoreSimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
-    <ClInclude Include="SharedDataPipelineElementsInternal.h">
+    <ClInclude Include="SharedData\SharedDataPipelineElementsInternal.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
-    <ClInclude Include="SharedDataSimplifierCoreInternal.h">
+    <ClInclude Include="SharedData\SharedDataSimplifierCoreInternal.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
     <ClInclude Include="Include\SharedDataSimplifierCore.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
-    <ClInclude Include="SwapchainSimplifierInternal.h">
+    <ClInclude Include="Basics\SwapchainSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Include\SwapchainSimplifier.h">
@@ -111,7 +111,7 @@
     <ClInclude Include="Include\DeviceDataListSimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceDataListSimplifierInternal.h">
+    <ClInclude Include="Device\DeviceDataListSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\SharedDataPipelineElements.h">
@@ -122,76 +122,76 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BasicsSimplifier.cpp">
+    <ClCompile Include="Basics\BasicsSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="WindowSimplifierInternal.cpp">
+    <ClCompile Include="Basics\WindowSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Basics\pch.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanCoreSimplifierInternal.cpp">
+    <ClCompile Include="Basics\VulkanCoreSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="BasicsSimplifierSharedStructs.cpp">
+    <ClCompile Include="Basics\BasicsSimplifierSharedStructs.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="SurfaceSimplifierInternal.cpp">
+    <ClCompile Include="Basics\SurfaceSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="BasicsSimplifierInternal.cpp">
+    <ClCompile Include="Basics\BasicsSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceListSimplifierInternal.cpp">
+    <ClCompile Include="Basics\DeviceListSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceListSimplifier.cpp">
+    <ClCompile Include="Basics\DeviceListSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceCoreSimplifierInternal.cpp">
+    <ClCompile Include="Device\DeviceCoreSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceSimplifierSharedStructs.cpp">
+    <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSimplifierListTemplate.cpp">
+    <ClCompile Include="Basics\VulkanSimplifierListTemplate.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderModulesSimplifierInternal.cpp">
+    <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderModulesSimplifier.cpp">
+    <ClCompile Include="Device\ShaderModulesSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceCoreSimplifier.cpp">
+    <ClCompile Include="Device\DeviceCoreSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="SwapchainSimplifierInternal.cpp">
+    <ClCompile Include="Basics\SwapchainSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataPipelineElementsInternal.cpp">
+    <ClCompile Include="SharedData\SharedDataPipelineElementsInternal.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataSimplifierCore.cpp">
+    <ClCompile Include="SharedData\SharedDataSimplifierCore.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataSimplifierCoreInternal.cpp">
+    <ClCompile Include="SharedData\SharedDataSimplifierCoreInternal.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
-    <ClCompile Include="SwapchainSimplifier.cpp">
+    <ClCompile Include="Basics\SwapchainSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceDataListSimplifier.cpp">
+    <ClCompile Include="Device\DeviceDataListSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="DeviceDataListSimplifierInternal.cpp">
+    <ClCompile Include="Device\DeviceDataListSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataPipelineElements.cpp">
+    <ClCompile Include="SharedData\SharedDataPipelineElements.cpp">
       <Filter>Source Files\SharedData</Filter>
     </ClCompile>
-    <ClCompile Include="SharedDataSimplifierEnums.cpp">
+    <ClCompile Include="SharedData\SharedDataSimplifierEnums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

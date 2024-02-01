@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -97,7 +97,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -126,7 +126,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -147,7 +147,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -155,7 +155,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -176,7 +176,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -184,7 +184,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -199,22 +199,22 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BasicsSimplifierInternal.h" />
+    <ClInclude Include="Basics\BasicsSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceDataListSimplifier.h" />
-    <ClInclude Include="DeviceDataListSimplifierInternal.h" />
+    <ClInclude Include="Device\DeviceDataListSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceCoreSimplifier.h" />
-    <ClInclude Include="DeviceCoreSimplifierInternal.h" />
+    <ClInclude Include="Device\DeviceCoreSimplifierInternal.h" />
     <ClInclude Include="Include\ShaderModulesSimplifier.h" />
-    <ClInclude Include="ShaderModulesSimplifierInternal.h" />
+    <ClInclude Include="Device\ShaderModulesSimplifierInternal.h" />
     <ClInclude Include="Include\SharedDataPipelineElements.h" />
-    <ClInclude Include="SharedDataPipelineElementsInternal.h" />
+    <ClInclude Include="SharedData\SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
-    <ClInclude Include="SharedDataSimplifierCoreInternal.h" />
+    <ClInclude Include="SharedData\SharedDataSimplifierCoreInternal.h" />
     <ClInclude Include="Include\SwapchainSimplifier.h" />
     <ClInclude Include="Include\SharedDataSimplifierEnums.h" />
-    <ClInclude Include="SwapchainSimplifierInternal.h" />
+    <ClInclude Include="Basics\SwapchainSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceListSimplifier.h" />
-    <ClInclude Include="DeviceListSimplifierInternal.h" />
+    <ClInclude Include="Basics\DeviceListSimplifierInternal.h" />
     <ClInclude Include="Include\BasicsSimplifierSharedStructs.h" />
     <ClInclude Include="Include\BasicsSimplifier.h" />
     <ClInclude Include="framework.h" />
@@ -222,41 +222,41 @@
     <ClInclude Include="Include\DeviceSimplifierSharedEnums.h" />
     <ClInclude Include="Include\DeviceSimplifierSharedStructs.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="SurfaceSimplifierInternal.h" />
-    <ClInclude Include="VulkanCoreSimplifierInternal.h" />
+    <ClInclude Include="Basics\SurfaceSimplifierInternal.h" />
+    <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h" />
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h" />
-    <ClInclude Include="WindowSimplifierInternal.h" />
+    <ClInclude Include="Basics\WindowSimplifierInternal.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BasicsSimplifier.cpp" />
-    <ClCompile Include="BasicsSimplifierInternal.cpp" />
-    <ClCompile Include="BasicsSimplifierSharedStructs.cpp" />
-    <ClCompile Include="DeviceCoreSimplifier.cpp" />
-    <ClCompile Include="DeviceCoreSimplifierInternal.cpp" />
-    <ClCompile Include="DeviceDataListSimplifier.cpp" />
-    <ClCompile Include="DeviceDataListSimplifierInternal.cpp" />
-    <ClCompile Include="DeviceListSimplifier.cpp" />
-    <ClCompile Include="DeviceListSimplifierInternal.cpp" />
-    <ClCompile Include="ShaderModulesSimplifier.cpp" />
-    <ClCompile Include="ShaderModulesSimplifierInternal.cpp" />
-    <ClCompile Include="DeviceSimplifierSharedStructs.cpp" />
-    <ClCompile Include="SharedDataPipelineElements.cpp" />
-    <ClCompile Include="SharedDataPipelineElementsInternal.cpp" />
-    <ClCompile Include="SharedDataSimplifierCore.cpp" />
-    <ClCompile Include="SharedDataSimplifierCoreInternal.cpp" />
-    <ClCompile Include="SharedDataSimplifierEnums.cpp" />
-    <ClCompile Include="SwapchainSimplifier.cpp" />
-    <ClCompile Include="SwapchainSimplifierInternal.cpp" />
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Basics\BasicsSimplifier.cpp" />
+    <ClCompile Include="Basics\BasicsSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\BasicsSimplifierSharedStructs.cpp" />
+    <ClCompile Include="Device\DeviceCoreSimplifier.cpp" />
+    <ClCompile Include="Device\DeviceCoreSimplifierInternal.cpp" />
+    <ClCompile Include="Device\DeviceDataListSimplifier.cpp" />
+    <ClCompile Include="Device\DeviceDataListSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\DeviceListSimplifier.cpp" />
+    <ClCompile Include="Basics\DeviceListSimplifierInternal.cpp" />
+    <ClCompile Include="Device\ShaderModulesSimplifier.cpp" />
+    <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp" />
+    <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp" />
+    <ClCompile Include="SharedData\SharedDataPipelineElements.cpp" />
+    <ClCompile Include="SharedData\SharedDataPipelineElementsInternal.cpp" />
+    <ClCompile Include="SharedData\SharedDataSimplifierCore.cpp" />
+    <ClCompile Include="SharedData\SharedDataSimplifierCoreInternal.cpp" />
+    <ClCompile Include="SharedData\SharedDataSimplifierEnums.cpp" />
+    <ClCompile Include="Basics\SwapchainSimplifier.cpp" />
+    <ClCompile Include="Basics\SwapchainSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SurfaceSimplifierInternal.cpp" />
-    <ClCompile Include="VulkanCoreSimplifierInternal.cpp" />
-    <ClCompile Include="VulkanSimplifierListTemplate.cpp" />
-    <ClCompile Include="WindowSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\SurfaceSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\VulkanCoreSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\VulkanSimplifierListTemplate.cpp" />
+    <ClCompile Include="Basics\WindowSimplifierInternal.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
