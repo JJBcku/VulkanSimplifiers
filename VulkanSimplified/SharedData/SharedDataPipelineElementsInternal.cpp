@@ -68,6 +68,51 @@ namespace VulkanSimplified
 		return _vertexInputListDescriptions.AddUniqueObject(std::move(add));
 	}
 
+	ListObjectID<VkPipelineInputAssemblyStateCreateInfo> SharedDataPipelineElementsInternal::AddPipelineInputAssembly(TopologySetting topology)
+	{
+		VkPipelineInputAssemblyStateCreateInfo add{};
+		add.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+		add.primitiveRestartEnable = VK_FALSE;
+		
+		switch (topology)
+		{
+		case VulkanSimplified::TopologySetting::POINT:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
+			break;
+		case VulkanSimplified::TopologySetting::LINE:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+			break;
+		case VulkanSimplified::TopologySetting::LINE_STRIP:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			break;
+		case VulkanSimplified::TopologySetting::LINE_STRIP_RESTARTABLE:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
+			add.primitiveRestartEnable = VK_TRUE;
+			break;
+		case VulkanSimplified::TopologySetting::TRIANGLE:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+			break;
+		case VulkanSimplified::TopologySetting::TRIANGLE_STRIP:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			break;
+		case VulkanSimplified::TopologySetting::TRIANGLE_STRIP_RESTARTABLE:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
+			add.primitiveRestartEnable = VK_TRUE;
+			break;
+		case VulkanSimplified::TopologySetting::TRIANGLE_FAN:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+			break;
+		case VulkanSimplified::TopologySetting::TRIANGLE_FAN_RESTARTABLE:
+			add.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN;
+			add.primitiveRestartEnable = VK_TRUE;
+			break;
+		default:
+			throw std::runtime_error("SharedDataPipelineElementsInternal::AddPipelineInputAssembly Error: Program was given an erroneous topology setting value!");
+		}
+
+		return _pipelineInputAssembly.AddUniqueObject(add);
+	}
+
 	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
 	{
 		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
@@ -96,6 +141,7 @@ namespace VulkanSimplified
 	{
 		_stage = stage;
 		_name = name;
+		_ppadding = nullptr;
 	}
 
 	ShaderStageCreationData::~ShaderStageCreationData()
@@ -106,10 +152,15 @@ namespace VulkanSimplified
 
 bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second)
 {
-	return memcmp(&first, &second, sizeof(VkVertexInputBindingDescription)) == 0;
+	return memcmp(&first, &second, sizeof(first)) == 0;
 }
 
 bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second)
 {
-	return memcmp(&first, &second, sizeof(VkVertexInputAttributeDescription)) == 0;
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
 }

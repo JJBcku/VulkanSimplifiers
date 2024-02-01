@@ -5,6 +5,7 @@
 
 bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second);
 bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second);
+bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second);
 
 namespace VulkanSimplified
 {
@@ -23,6 +24,7 @@ namespace VulkanSimplified
 		ShaderStageType _stage;
 		ListObjectID<ShaderContainer> _mod;
 		const char* _name;
+		void* _ppadding;
 
 	public:
 		ShaderStageCreationData(ShaderStageType stage, ListObjectID<ShaderContainer> mod, const char* name);
@@ -40,6 +42,8 @@ namespace VulkanSimplified
 
 		ListTemplate<VertexInputList> _vertexInputListDescriptions;
 
+		ListTemplate<VkPipelineInputAssemblyStateCreateInfo> _pipelineInputAssembly;
+
 	public:
 		SharedDataPipelineElementsInternal(size_t reserve);
 		~SharedDataPipelineElementsInternal();
@@ -54,5 +58,7 @@ namespace VulkanSimplified
 		ListObjectID<VkVertexInputAttributeDescription> AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset);
 
 		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
+
+		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
 	};
 }

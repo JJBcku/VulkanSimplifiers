@@ -34,4 +34,9 @@ namespace VulkanSimplified
 		return _internal.AddVertexInputList(bindings, attributes);
 	}
 
+	ListObjectID<VkPipelineInputAssemblyStateCreateInfo> SharedDataPipelineElements::AddPipelineInputAssembly(TopologySetting topology)
+	{
+		return _internal.AddPipelineInputAssembly(topology);
+	}
+
 }

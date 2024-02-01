@@ -90,6 +90,8 @@ int main()
 
         auto testVertexInput = pipelineData.AddVertexInputList({}, {});
 
+        auto pipelineAssembly = pipelineData.AddPipelineInputAssembly(VulkanSimplified::TopologySetting::TRIANGLE);
+
         main.reset();
     }
     catch (std::exception ex)
