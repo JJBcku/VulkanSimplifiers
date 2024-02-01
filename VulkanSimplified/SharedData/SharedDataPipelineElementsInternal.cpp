@@ -113,6 +113,13 @@ namespace VulkanSimplified
 		return _pipelineInputAssembly.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
+	{
+		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
+
+		return _pipelineViewports.AddUniqueObject(add);
+	}
+
 	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
 	{
 		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
@@ -163,4 +170,24 @@ bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexIn
 bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkViewport& first, const VkViewport& second)
+{
+	if (first.x != second.x)
+		return false;
+
+	if (first.y != second.y)
+		return false;
+
+	if (first.width != second.width)
+		return false;
+
+	if (first.height != second.height)
+		return false;
+
+	if (first.minDepth != second.minDepth)
+		return false;
+
+	return first.maxDepth == second.maxDepth;
 }

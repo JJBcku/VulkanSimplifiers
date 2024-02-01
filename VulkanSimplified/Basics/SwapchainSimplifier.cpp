@@ -29,4 +29,14 @@ namespace VulkanSimplified
 		CreateSwapchainMain(deviceID, settings, true);
 	}
 
+	uint32_t SwapchainSimplifier::GetSwapchainWidth() const
+	{
+		return _internal.GetSwapchainWidth();
+	}
+
+	uint32_t SwapchainSimplifier::GetSwapchainHeight() const
+	{
+		return _internal.GetSwapchainHeight();
+	}
+
 }

@@ -5,7 +5,10 @@
 
 struct VkVertexInputBindingDescription;
 struct VkVertexInputAttributeDescription;
+
 struct VkPipelineInputAssemblyStateCreateInfo;
+
+struct VkViewport;
 
 namespace VulkanSimplified
 {
@@ -33,6 +36,8 @@ namespace VulkanSimplified
 		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
 
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
+
+		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 	};
 }
 

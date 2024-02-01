@@ -23,6 +23,9 @@ namespace VulkanSimplified
 
 		void CreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings);
 		void ReCreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings);
+
+		uint32_t GetSwapchainWidth() const;
+		uint32_t GetSwapchainHeight() const;
 	};
 }
 

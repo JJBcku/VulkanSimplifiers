@@ -92,6 +92,8 @@ int main()
 
         auto pipelineAssembly = pipelineData.AddPipelineInputAssembly(VulkanSimplified::TopologySetting::TRIANGLE);
 
+        auto pipelineViewport = pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchain.GetSwapchainWidth(), swapchain.GetSwapchainHeight(), 0.0f, 1.0f);
+
         main.reset();
     }
     catch (std::exception ex)

@@ -223,6 +223,16 @@ namespace VulkanSimplified
 		return _swapchain != VK_NULL_HANDLE;
 	}
 
+	uint32_t SwapchainSimplifierInternal::GetSwapchainWidth() const
+	{
+		return _swapchainExtend.width;
+	}
+
+	uint32_t SwapchainSimplifierInternal::GetSwapchainHeight() const
+	{
+		return _swapchainExtend.height;
+	}
+
 	void SwapchainSimplifierInternal::GetSwapchainImages()
 	{
 		uint32_t imagesAmount = 0;
