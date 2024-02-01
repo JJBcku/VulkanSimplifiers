@@ -15,9 +15,9 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<VkVertexInputBindingDescription> SharedDataSimplifierCore::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)
+	SharedDataPipelineElements SharedDataSimplifierCore::GetSharedDataPipelineElements()
 	{
-		return _internal->AddBindingDescription(binding, stride, useInstanceIndex);
+		return _internal->GetSharedDataPipelineElements();
 	}
 
 }

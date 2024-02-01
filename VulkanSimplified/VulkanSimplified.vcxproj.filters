@@ -114,6 +114,12 @@
     <ClInclude Include="DeviceDataListSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="Include\SharedDataPipelineElements.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SharedDataSimplifierEnums.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicsSimplifier.cpp">
@@ -181,6 +187,12 @@
     </ClCompile>
     <ClCompile Include="DeviceDataListSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataPipelineElements.cpp">
+      <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedDataSimplifierEnums.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

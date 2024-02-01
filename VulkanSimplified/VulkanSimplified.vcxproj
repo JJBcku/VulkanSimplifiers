@@ -206,10 +206,12 @@
     <ClInclude Include="DeviceCoreSimplifierInternal.h" />
     <ClInclude Include="Include\ShaderModulesSimplifier.h" />
     <ClInclude Include="ShaderModulesSimplifierInternal.h" />
+    <ClInclude Include="Include\SharedDataPipelineElements.h" />
     <ClInclude Include="SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
     <ClInclude Include="SharedDataSimplifierCoreInternal.h" />
     <ClInclude Include="Include\SwapchainSimplifier.h" />
+    <ClInclude Include="Include\SharedDataSimplifierEnums.h" />
     <ClInclude Include="SwapchainSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceListSimplifier.h" />
     <ClInclude Include="DeviceListSimplifierInternal.h" />
@@ -238,9 +240,11 @@
     <ClCompile Include="ShaderModulesSimplifier.cpp" />
     <ClCompile Include="ShaderModulesSimplifierInternal.cpp" />
     <ClCompile Include="DeviceSimplifierSharedStructs.cpp" />
+    <ClCompile Include="SharedDataPipelineElements.cpp" />
     <ClCompile Include="SharedDataPipelineElementsInternal.cpp" />
     <ClCompile Include="SharedDataSimplifierCore.cpp" />
     <ClCompile Include="SharedDataSimplifierCoreInternal.cpp" />
+    <ClCompile Include="SharedDataSimplifierEnums.cpp" />
     <ClCompile Include="SwapchainSimplifier.cpp" />
     <ClCompile Include="SwapchainSimplifierInternal.cpp" />
     <ClCompile Include="pch.cpp">

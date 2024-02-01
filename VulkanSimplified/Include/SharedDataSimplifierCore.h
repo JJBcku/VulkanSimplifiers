@@ -3,6 +3,7 @@
 struct VkVertexInputBindingDescription;
 
 #include "VulkanSimplifierListTemplate.h"
+#include "SharedDataPipelineElements.h"
 
 namespace VulkanSimplified
 {
@@ -20,7 +21,7 @@ namespace VulkanSimplified
 		
 		SharedDataSimplifierCore& operator=(const SharedDataSimplifierCore&) noexcept = delete;
 
-		ListObjectID<VkVertexInputBindingDescription> AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex);
+		SharedDataPipelineElements GetSharedDataPipelineElements();
 	};
 }
 

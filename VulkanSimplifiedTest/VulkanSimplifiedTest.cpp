@@ -80,7 +80,10 @@ int main()
 
         SharedDataSimplifierCore sharedData(0x100);
 
-        auto testBinding = sharedData.AddBindingDescription(0, 0, false);
+        auto pipelineData = sharedData.GetSharedDataPipelineElements();
+
+        auto testBinding = pipelineData.AddBindingDescription(0, 0, false);
+        auto testAttribute = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, 0);
 
         main.reset();
     }

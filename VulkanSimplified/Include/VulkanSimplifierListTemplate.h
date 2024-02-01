@@ -26,6 +26,7 @@ namespace VulkanSimplified
 	{
 		ListObjectID<T> _objectID;
 		std::optional<T> _object;
+		char _padding[16 - (sizeof(_object) % 8)];
 
 		void ThrowOnHasValue()
 		{
@@ -37,18 +38,22 @@ namespace VulkanSimplified
 
 		ListObjectTemplate(const ListObjectID<T>& objectID, const T& object) noexcept : _objectID(objectID), _object(object)
 		{
+			memset(_padding, 0, sizeof(_padding));
 		}
 
 		ListObjectTemplate(const ListObjectID<T>& objectID, T&& object) noexcept : _objectID(objectID), _object(std::move(object))
 		{
+			memset(_padding, 0, sizeof(_padding));
 		}
 
 		ListObjectTemplate(const ListObjectTemplate<T>& other) noexcept : _objectID(other._objectID), _object(other._object)
 		{
+			memset(_padding, 0, sizeof(_padding));
 		}
 
 		ListObjectTemplate(ListObjectTemplate<T>&& other) noexcept : _objectID(std::move(other._objectID)), _object(std::move(other._object))
 		{
+			memset(_padding, 0, sizeof(_padding));
 		}
 
 		ListObjectTemplate<T>& operator=(const ListObjectTemplate<T>& other)

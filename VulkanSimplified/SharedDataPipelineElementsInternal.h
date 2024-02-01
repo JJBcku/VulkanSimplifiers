@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Include/VulkanSimplifierListTemplate.h"
-
+#include "Include/SharedDataSimplifierEnums.h"
 
 namespace VulkanSimplified
 {
@@ -19,5 +19,6 @@ namespace VulkanSimplified
 		SharedDataPipelineElementsInternal& operator=(const SharedDataPipelineElementsInternal&) noexcept = delete;
 
 		ListObjectID<VkVertexInputBindingDescription> AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex);
+		ListObjectID<VkVertexInputAttributeDescription> AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset);
 	};
 }
