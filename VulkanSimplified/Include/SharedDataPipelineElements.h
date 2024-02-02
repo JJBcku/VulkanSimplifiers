@@ -18,6 +18,7 @@ namespace VulkanSimplified
 	struct VertexInputList;
 	struct ShaderContainer;
 	struct ShaderStageCreationData;
+	struct PipelineViewportsStateList;
 
 	class SharedDataPipelineElements
 	{
@@ -40,6 +41,7 @@ namespace VulkanSimplified
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);
+		ListObjectID<PipelineViewportsStateList> AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs);
 	};
 }
 

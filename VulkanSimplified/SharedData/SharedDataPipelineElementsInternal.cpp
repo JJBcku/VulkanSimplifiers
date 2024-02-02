@@ -127,6 +127,12 @@ namespace VulkanSimplified
 		return _pipelineScissors.AddUniqueObject(add);
 	}
 
+	ListObjectID<PipelineViewportsStateList> SharedDataPipelineElementsInternal::AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs)
+	{
+
+		return _pipelineViewportStates.AddUniqueObject({ viewportScissorPairs });
+	}
+
 	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
 	{
 		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
@@ -160,6 +166,20 @@ namespace VulkanSimplified
 
 	ShaderStageCreationData::~ShaderStageCreationData()
 	{
+	}
+
+	bool PipelineViewportsStateList::operator==(const PipelineViewportsStateList& other) const noexcept
+	{
+		if (_viewportScissorPairs.size() != other._viewportScissorPairs.size())
+			return false;
+
+		for (size_t i = 0; i < _viewportScissorPairs.size(); ++i)
+		{
+			if (_viewportScissorPairs[i] != other._viewportScissorPairs[i])
+				return false;
+		}
+
+		return true;
 	}
 
 }

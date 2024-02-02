@@ -98,6 +98,8 @@ int main()
         auto pipelineViewport = pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchainWidth, swapchainHeight, 0.0f, 1.0f);
         auto pipelineScissor = pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight);
 
+        auto pipelineViewportState = pipelineData.AddPipelineViewportState({ {pipelineViewport, pipelineScissor} });
+
         main.reset();
     }
     catch (std::exception ex)

@@ -49,4 +49,9 @@ namespace VulkanSimplified
 		return _internal.AddPipelineScissor(offsetX, offsetY, width, height);
 	}
 
+	ListObjectID<PipelineViewportsStateList> SharedDataPipelineElements::AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs)
+	{
+		return _internal.AddPipelineViewportState(viewportScissorPairs);
+	}
+
 }

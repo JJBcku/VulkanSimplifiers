@@ -38,6 +38,13 @@ namespace VulkanSimplified
 		bool operator==(const ShaderStageCreationData&) const noexcept = default;
 	};
 
+	struct PipelineViewportsStateList
+	{
+		std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>> _viewportScissorPairs;
+
+		bool operator==(const PipelineViewportsStateList& other) const noexcept;
+	};
+
 	class SharedDataPipelineElementsInternal
 	{
 		ListTemplate<ShaderStageCreationData> _shaderPipelineData;
@@ -51,6 +58,7 @@ namespace VulkanSimplified
 
 		ListTemplate<VkViewport> _pipelineViewports;
 		ListTemplate<VkRect2D> _pipelineScissors;
+		ListTemplate<PipelineViewportsStateList> _pipelineViewportStates;
 
 	public:
 		SharedDataPipelineElementsInternal(size_t reserve);
@@ -68,8 +76,9 @@ namespace VulkanSimplified
 		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
 
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
+
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);
-
+		ListObjectID<PipelineViewportsStateList> AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs);
 	};
 }
