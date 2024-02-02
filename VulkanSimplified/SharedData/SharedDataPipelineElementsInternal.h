@@ -8,6 +8,7 @@ bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexIn
 
 bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second);
 bool operator==(const VkPipelineRasterizationStateCreateInfo& first, const VkPipelineRasterizationStateCreateInfo& second);
+bool operator==(const VkPipelineMultisampleStateCreateInfo& first, const VkPipelineMultisampleStateCreateInfo& second);
 
 bool operator==(const VkViewport& first, const VkViewport& second);
 bool operator==(const VkOffset2D& first, const VkOffset2D& second);
@@ -58,6 +59,7 @@ namespace VulkanSimplified
 
 		ListTemplate<VkPipelineInputAssemblyStateCreateInfo> _pipelineInputAssembly;
 		ListTemplate<VkPipelineRasterizationStateCreateInfo> _pipelineRasterizationStates;
+		ListTemplate<VkPipelineMultisampleStateCreateInfo> _pipelineMultiSampleStates;
 
 		ListTemplate<VkViewport> _pipelineViewports;
 		ListTemplate<VkRect2D> _pipelineScissors;
@@ -80,6 +82,7 @@ namespace VulkanSimplified
 
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
 		ListObjectID<VkPipelineRasterizationStateCreateInfo> AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront);
+		ListObjectID<VkPipelineMultisampleStateCreateInfo> AddPipelineMultisampleState(PipelineMultisampleCount multisampling, bool sampleShading, float minSampleShading);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);

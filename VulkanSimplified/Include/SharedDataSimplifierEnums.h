@@ -43,4 +43,15 @@ namespace VulkanSimplified
 		FRONT = 2,
 		BACK = 4,
 	};
+
+	enum class PipelineMultisampleCount : uint64_t
+	{
+		SAMPLE_1 = 1,
+		SAMPLE_2 = 2,
+		SAMPLE_4 = 4,
+		SAMPLE_8 = 8,
+		SAMPLE_16 = 16,
+		SAMPLE_32 = 32,
+		SAMPLE_64 = 64,
+	};
 }

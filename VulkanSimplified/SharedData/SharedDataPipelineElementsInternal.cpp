@@ -8,7 +8,7 @@ namespace VulkanSimplified
 
 	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve),
 		_vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve), _pipelineInputAssembly(reserve), _pipelineRasterizationStates(reserve),
-		_pipelineViewports(reserve), _pipelineScissors(reserve), _pipelineViewportStates(reserve)
+		_pipelineMultiSampleStates(reserve), _pipelineViewports(reserve), _pipelineScissors(reserve), _pipelineViewportStates(reserve)
 	{
 	}
 
@@ -159,6 +159,44 @@ namespace VulkanSimplified
 		return _pipelineRasterizationStates.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkPipelineMultisampleStateCreateInfo> SharedDataPipelineElementsInternal::AddPipelineMultisampleState(PipelineMultisampleCount multisampling, bool sampleShading, float minSampleShading)
+	{
+		VkPipelineMultisampleStateCreateInfo add{};
+		add.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+		
+		switch (multisampling)
+		{
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_1:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_2:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_2_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_4:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_4_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_8:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_8_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_16:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_16_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_32:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_32_BIT;
+			break;
+		case VulkanSimplified::PipelineMultisampleCount::SAMPLE_64:
+			add.rasterizationSamples = VK_SAMPLE_COUNT_64_BIT;
+			break;
+		default:
+			throw std::runtime_error("SharedDataPipelineElementsInternal::AddPipelineMultisampleState Error: Program was given an erroneous multisample count!");
+		}
+
+		add.sampleShadingEnable = sampleShading ? VK_TRUE : VK_FALSE;
+		add.minSampleShading = minSampleShading;
+
+		return _pipelineMultiSampleStates.AddUniqueObject(add);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
@@ -246,6 +284,11 @@ bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPip
 }
 
 bool operator==(const VkPipelineRasterizationStateCreateInfo& first, const VkPipelineRasterizationStateCreateInfo& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkPipelineMultisampleStateCreateInfo& first, const VkPipelineMultisampleStateCreateInfo& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }

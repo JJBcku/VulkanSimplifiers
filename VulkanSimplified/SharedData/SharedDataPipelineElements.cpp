@@ -44,6 +44,11 @@ namespace VulkanSimplified
 		return _internal.AddPipelineRasterizationState(polygonMode, cullMode, clockwiseFront);
 	}
 
+	ListObjectID<VkPipelineMultisampleStateCreateInfo> SharedDataPipelineElements::AddPipelineMultisampleState(PipelineMultisampleCount multisampling, bool sampleShading, float minSampleShading)
+	{
+		return _internal.AddPipelineMultisampleState(multisampling, sampleShading, minSampleShading);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElements::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		return _internal.AddPipelineViewport(x, y, width, height, minDepth, maxDepth);

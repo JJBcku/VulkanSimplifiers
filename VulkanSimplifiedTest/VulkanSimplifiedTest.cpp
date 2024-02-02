@@ -101,6 +101,8 @@ int main()
         auto pipelineViewportState = pipelineData.AddPipelineViewportState({ {pipelineViewport, pipelineScissor} });
         auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, true);
 
+        auto pipelineMultisampling = pipelineData.AddPipelineMultisampleState(VulkanSimplified::PipelineMultisampleCount::SAMPLE_1, false, 0.0f);
+
         main.reset();
     }
     catch (std::exception ex)
