@@ -120,6 +120,13 @@ namespace VulkanSimplified
 		return _pipelineViewports.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkRect2D> SharedDataPipelineElementsInternal::AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height)
+	{
+		VkRect2D add{ {static_cast<int32_t>(offsetX), static_cast<int32_t>(offsetY)}, { width, height} };
+
+		return _pipelineScissors.AddUniqueObject(add);
+	}
+
 	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
 	{
 		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
@@ -190,4 +197,28 @@ bool operator==(const VkViewport& first, const VkViewport& second)
 		return false;
 
 	return first.maxDepth == second.maxDepth;
+}
+
+bool operator==(const VkOffset2D& first, const VkOffset2D& second)
+{
+	if (first.x != second.x)
+		return false;
+
+	return first.y == second.y;
+}
+
+bool operator==(const VkExtent2D& first, const VkExtent2D& second)
+{
+	if (first.width != second.width)
+		return false;
+
+	return first.height == second.height;
+}
+
+bool operator==(const VkRect2D& first, const VkRect2D& second)
+{
+	if (first.offset != second.offset)
+		return false;
+
+	return first.extent == second.extent;
 }

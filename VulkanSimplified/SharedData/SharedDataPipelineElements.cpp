@@ -44,4 +44,9 @@ namespace VulkanSimplified
 		return _internal.AddPipelineViewport(x, y, width, height, minDepth, maxDepth);
 	}
 
+	ListObjectID<VkRect2D> SharedDataPipelineElements::AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height)
+	{
+		return _internal.AddPipelineScissor(offsetX, offsetY, width, height);
+	}
+
 }

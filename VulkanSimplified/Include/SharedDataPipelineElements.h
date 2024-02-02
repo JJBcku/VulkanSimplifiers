@@ -9,6 +9,7 @@ struct VkVertexInputAttributeDescription;
 struct VkPipelineInputAssemblyStateCreateInfo;
 
 struct VkViewport;
+struct VkRect2D;
 
 namespace VulkanSimplified
 {
@@ -38,6 +39,7 @@ namespace VulkanSimplified
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
+		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);
 	};
 }
 

@@ -90,9 +90,13 @@ int main()
 
         auto testVertexInput = pipelineData.AddVertexInputList({}, {});
 
-        auto pipelineAssembly = pipelineData.AddPipelineInputAssembly(VulkanSimplified::TopologySetting::TRIANGLE);
+        auto pipelineInputAssembly = pipelineData.AddPipelineInputAssembly(VulkanSimplified::TopologySetting::TRIANGLE);
 
-        auto pipelineViewport = pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchain.GetSwapchainWidth(), swapchain.GetSwapchainHeight(), 0.0f, 1.0f);
+        auto swapchainWidth = swapchain.GetSwapchainWidth();
+        auto swapchainHeight = swapchain.GetSwapchainHeight();
+
+        auto pipelineViewport = pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchainWidth, swapchainHeight, 0.0f, 1.0f);
+        auto pipelineScissor = pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight);
 
         main.reset();
     }
