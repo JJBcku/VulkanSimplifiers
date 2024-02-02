@@ -197,6 +197,37 @@ namespace VulkanSimplified
 		return _pipelineMultiSampleStates.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkPipelineDepthStencilStateCreateInfo> SharedDataPipelineElementsInternal::AddPipelineDepthState(bool depthTest, bool depthWrite, PipelineDepthCompare compare)
+	{
+		VkPipelineDepthStencilStateCreateInfo add{};
+		add.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		add.depthTestEnable = depthTest ? VK_TRUE : VK_FALSE;
+		add.depthWriteEnable = depthWrite ? VK_TRUE : VK_FALSE;
+
+		switch (compare)
+		{
+		case VulkanSimplified::PipelineDepthCompare::LESS:
+			add.depthCompareOp = VK_COMPARE_OP_LESS;
+			break;
+		case VulkanSimplified::PipelineDepthCompare::EQUAL:
+			add.depthCompareOp = VK_COMPARE_OP_EQUAL;
+			break;
+		case VulkanSimplified::PipelineDepthCompare::LESS_OR_EQUAL:
+			add.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
+			break;
+		case VulkanSimplified::PipelineDepthCompare::GREATER:
+			add.depthCompareOp = VK_COMPARE_OP_GREATER;
+			break;
+		case VulkanSimplified::PipelineDepthCompare::GREATER_OR_EQUAL:
+			add.depthCompareOp = VK_COMPARE_OP_GREATER_OR_EQUAL;
+			break;
+		default:
+			throw std::runtime_error("SharedDataPipelineElementsInternal::AddPipelineDepthState Error: Program was given an erroneous depth comparision setting!");
+		}
+
+		return _pipelineDepthStencilStates.AddUniqueObject(add);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
@@ -289,6 +320,11 @@ bool operator==(const VkPipelineRasterizationStateCreateInfo& first, const VkPip
 }
 
 bool operator==(const VkPipelineMultisampleStateCreateInfo& first, const VkPipelineMultisampleStateCreateInfo& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkPipelineDepthStencilStateCreateInfo& first, const VkPipelineDepthStencilStateCreateInfo& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }

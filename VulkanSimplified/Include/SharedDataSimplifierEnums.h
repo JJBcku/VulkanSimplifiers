@@ -54,4 +54,13 @@ namespace VulkanSimplified
 		SAMPLE_32 = 32,
 		SAMPLE_64 = 64,
 	};
+
+	enum class PipelineDepthCompare : uint64_t
+	{
+		LESS = 1,
+		EQUAL = 2,
+		LESS_OR_EQUAL = 4,
+		GREATER = 8,
+		GREATER_OR_EQUAL = 0x10,
+	};
 }
