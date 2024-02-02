@@ -39,6 +39,11 @@ namespace VulkanSimplified
 		return _internal.AddPipelineInputAssembly(topology);
 	}
 
+	ListObjectID<VkPipelineRasterizationStateCreateInfo> SharedDataPipelineElements::AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront)
+	{
+		return _internal.AddPipelineRasterizationState(polygonMode, cullMode, clockwiseFront);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElements::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		return _internal.AddPipelineViewport(x, y, width, height, minDepth, maxDepth);

@@ -6,7 +6,9 @@
 namespace VulkanSimplified
 {
 
-	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve), _vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve)
+	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve),
+		_vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve), _pipelineInputAssembly(reserve), _pipelineRasterizationStates(reserve),
+		_pipelineViewports(reserve), _pipelineScissors(reserve), _pipelineViewportStates(reserve)
 	{
 	}
 
@@ -113,6 +115,50 @@ namespace VulkanSimplified
 		return _pipelineInputAssembly.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkPipelineRasterizationStateCreateInfo> SharedDataPipelineElementsInternal::AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront)
+	{
+		VkPipelineRasterizationStateCreateInfo add{};
+		add.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+		add.lineWidth = 1.0f;
+
+		switch (polygonMode)
+		{
+		case VulkanSimplified::PipelinePolygonMode::FILL:
+			add.polygonMode = VK_POLYGON_MODE_FILL;
+			break;
+		case VulkanSimplified::PipelinePolygonMode::LINE:
+			add.polygonMode = VK_POLYGON_MODE_LINE;
+			break;
+		case VulkanSimplified::PipelinePolygonMode::POINT:
+			add.polygonMode = VK_POLYGON_MODE_POINT;
+			break;
+		case VulkanSimplified::PipelinePolygonMode::RECTANGLE_NV:
+			add.polygonMode = VK_POLYGON_MODE_FILL_RECTANGLE_NV;
+			break;
+		default:
+			throw std::runtime_error("SharedDataPipelineElementsInternal::AddPipelineRasterizationState Error: Program was given an erroneous polygon mode!");
+		}
+
+		switch (cullMode)
+		{
+		case VulkanSimplified::PipelineCullMode::OFF:
+			add.cullMode = VK_CULL_MODE_NONE;
+			break;
+		case VulkanSimplified::PipelineCullMode::FRONT:
+			add.cullMode = VK_CULL_MODE_FRONT_BIT;
+			break;
+		case VulkanSimplified::PipelineCullMode::BACK:
+			add.cullMode = VK_CULL_MODE_BACK_BIT;
+			break;
+		default:
+			throw std::runtime_error("SharedDataPipelineElementsInternal::AddPipelineRasterizationState Error: Program was given an erroneous cull mode!");
+		}
+
+		add.frontFace = clockwiseFront ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;
+
+		return _pipelineRasterizationStates.AddUniqueObject(add);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
@@ -195,6 +241,11 @@ bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexIn
 }
 
 bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkPipelineRasterizationStateCreateInfo& first, const VkPipelineRasterizationStateCreateInfo& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }

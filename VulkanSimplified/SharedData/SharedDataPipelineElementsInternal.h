@@ -5,7 +5,9 @@
 
 bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second);
 bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second);
+
 bool operator==(const VkPipelineInputAssemblyStateCreateInfo& first, const VkPipelineInputAssemblyStateCreateInfo& second);
+bool operator==(const VkPipelineRasterizationStateCreateInfo& first, const VkPipelineRasterizationStateCreateInfo& second);
 
 bool operator==(const VkViewport& first, const VkViewport& second);
 bool operator==(const VkOffset2D& first, const VkOffset2D& second);
@@ -55,6 +57,7 @@ namespace VulkanSimplified
 		ListTemplate<VertexInputList> _vertexInputListDescriptions;
 
 		ListTemplate<VkPipelineInputAssemblyStateCreateInfo> _pipelineInputAssembly;
+		ListTemplate<VkPipelineRasterizationStateCreateInfo> _pipelineRasterizationStates;
 
 		ListTemplate<VkViewport> _pipelineViewports;
 		ListTemplate<VkRect2D> _pipelineScissors;
@@ -76,6 +79,7 @@ namespace VulkanSimplified
 		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
 
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
+		ListObjectID<VkPipelineRasterizationStateCreateInfo> AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);

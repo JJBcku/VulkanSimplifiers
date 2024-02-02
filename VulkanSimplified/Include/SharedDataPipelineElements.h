@@ -7,6 +7,7 @@ struct VkVertexInputBindingDescription;
 struct VkVertexInputAttributeDescription;
 
 struct VkPipelineInputAssemblyStateCreateInfo;
+struct VkPipelineRasterizationStateCreateInfo;
 
 struct VkViewport;
 struct VkRect2D;
@@ -38,6 +39,7 @@ namespace VulkanSimplified
 		ListObjectID<VertexInputList> AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes);
 
 		ListObjectID<VkPipelineInputAssemblyStateCreateInfo> AddPipelineInputAssembly(TopologySetting topology);
+		ListObjectID<VkPipelineRasterizationStateCreateInfo> AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);

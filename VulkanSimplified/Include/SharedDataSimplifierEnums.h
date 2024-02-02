@@ -28,4 +28,19 @@ namespace VulkanSimplified
 		TRIANGLE_FAN = 0X80,
 		TRIANGLE_FAN_RESTARTABLE = 0X100,
 	};
+
+	enum class PipelinePolygonMode : uint64_t
+	{
+		FILL = 1,
+		LINE = 2,
+		POINT = 4,
+		RECTANGLE_NV = 8,
+	};
+
+	enum class PipelineCullMode : uint64_t
+	{
+		OFF = 1,
+		FRONT = 2,
+		BACK = 4,
+	};
 }

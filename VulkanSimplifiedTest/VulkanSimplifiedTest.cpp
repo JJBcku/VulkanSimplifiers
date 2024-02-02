@@ -99,6 +99,7 @@ int main()
         auto pipelineScissor = pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight);
 
         auto pipelineViewportState = pipelineData.AddPipelineViewportState({ {pipelineViewport, pipelineScissor} });
+        auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, true);
 
         main.reset();
     }
