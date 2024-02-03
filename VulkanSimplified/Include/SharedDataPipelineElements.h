@@ -10,6 +10,7 @@ struct VkPipelineInputAssemblyStateCreateInfo;
 struct VkPipelineRasterizationStateCreateInfo;
 struct VkPipelineMultisampleStateCreateInfo;
 struct VkPipelineDepthStencilStateCreateInfo;
+struct VkPipelineColorBlendAttachmentState;
 
 struct VkViewport;
 struct VkRect2D;
@@ -44,6 +45,7 @@ namespace VulkanSimplified
 		ListObjectID<VkPipelineRasterizationStateCreateInfo> AddPipelineRasterizationState(PipelinePolygonMode polygonMode, PipelineCullMode cullMode, bool clockwiseFront);
 		ListObjectID<VkPipelineMultisampleStateCreateInfo> AddPipelineMultisampleState(PipelineMultisampleCount multisampling, bool sampleShading, float minSampleShading);
 		ListObjectID<VkPipelineDepthStencilStateCreateInfo> AddPipelineDepthState(bool depthTest, bool depthWrite, PipelineDepthCompare compare);
+		ListObjectID<VkPipelineColorBlendAttachmentState> AddPipelineColorBlendAttachment(PipelineBlendSettings settings);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);

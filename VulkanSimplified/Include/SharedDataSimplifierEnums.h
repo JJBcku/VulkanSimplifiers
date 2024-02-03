@@ -63,4 +63,11 @@ namespace VulkanSimplified
 		GREATER = 8,
 		GREATER_OR_EQUAL = 0x10,
 	};
+
+	enum class PipelineBlendSettings : uint64_t
+	{
+		OFF = 1,
+		STANDARD_NO_ALPHA = 2,
+		STANDARD_ALPHA_ONE = 4,
+	};
 }

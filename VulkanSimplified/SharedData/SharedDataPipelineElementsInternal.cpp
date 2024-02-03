@@ -228,6 +228,39 @@ namespace VulkanSimplified
 		return _pipelineDepthStencilStates.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkPipelineColorBlendAttachmentState> SharedDataPipelineElementsInternal::AddPipelineColorBlendAttachment(PipelineBlendSettings settings)
+	{
+		VkPipelineColorBlendAttachmentState add{};
+		
+		switch (settings)
+		{
+		case VulkanSimplified::PipelineBlendSettings::OFF:
+			break;
+		case VulkanSimplified::PipelineBlendSettings::STANDARD_NO_ALPHA:
+			add.blendEnable = VK_TRUE;
+			add.colorBlendOp = VK_BLEND_OP_ADD;
+			add.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_G_BIT;
+			add.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+			add.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			break;
+		case VulkanSimplified::PipelineBlendSettings::STANDARD_ALPHA_ONE:
+			add.blendEnable = VK_TRUE;
+			add.colorBlendOp = VK_BLEND_OP_ADD;
+			add.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_A_BIT;
+			add.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+			add.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			
+			add.alphaBlendOp = VK_BLEND_OP_ADD;
+			add.srcAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+			add.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+			break;
+		default:
+			break;
+		}
+
+		return _pipelineBlendAttachmentStates.AddUniqueObject(add);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
@@ -325,6 +358,11 @@ bool operator==(const VkPipelineMultisampleStateCreateInfo& first, const VkPipel
 }
 
 bool operator==(const VkPipelineDepthStencilStateCreateInfo& first, const VkPipelineDepthStencilStateCreateInfo& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkPipelineColorBlendAttachmentState& first, const VkPipelineColorBlendAttachmentState& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }
