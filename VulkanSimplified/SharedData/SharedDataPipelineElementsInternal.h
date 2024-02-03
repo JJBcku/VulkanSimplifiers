@@ -50,6 +50,17 @@ namespace VulkanSimplified
 		bool operator==(const PipelineViewportsStateList& other) const noexcept;
 	};
 
+	struct ColorBlendSettings
+	{
+		std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>> _attachments;
+		float _blendConstantR;
+		float _blendConstantG;
+		float _blendConstantB;
+		float _blendConstantA;
+
+		bool operator==(const ColorBlendSettings&) const noexcept;
+	};
+
 	class SharedDataPipelineElementsInternal
 	{
 		ListTemplate<ShaderStageCreationData> _shaderPipelineData;
@@ -64,6 +75,7 @@ namespace VulkanSimplified
 		ListTemplate<VkPipelineMultisampleStateCreateInfo> _pipelineMultiSampleStates;
 		ListTemplate<VkPipelineDepthStencilStateCreateInfo> _pipelineDepthStencilStates;
 		ListTemplate<VkPipelineColorBlendAttachmentState> _pipelineBlendAttachmentStates;
+		ListTemplate<ColorBlendSettings> _pipelineColorBlendStates;
 
 		ListTemplate<VkViewport> _pipelineViewports;
 		ListTemplate<VkRect2D> _pipelineScissors;
@@ -89,6 +101,7 @@ namespace VulkanSimplified
 		ListObjectID<VkPipelineMultisampleStateCreateInfo> AddPipelineMultisampleState(PipelineMultisampleCount multisampling, bool sampleShading, float minSampleShading);
 		ListObjectID<VkPipelineDepthStencilStateCreateInfo> AddPipelineDepthState(bool depthTest, bool depthWrite, PipelineDepthCompare compare);
 		ListObjectID<VkPipelineColorBlendAttachmentState> AddPipelineColorBlendAttachment(PipelineBlendSettings settings);
+		ListObjectID<ColorBlendSettings> AddPipelineColorBlendState(const std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>>& attachments, float blendConstantR, float blendConstantG, float blendConstantB, float blendConstantA);
 
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);

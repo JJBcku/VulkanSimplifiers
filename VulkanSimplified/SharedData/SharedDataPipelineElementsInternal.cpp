@@ -8,7 +8,8 @@ namespace VulkanSimplified
 
 	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve),
 		_vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve), _pipelineInputAssembly(reserve), _pipelineRasterizationStates(reserve),
-		_pipelineMultiSampleStates(reserve), _pipelineViewports(reserve), _pipelineScissors(reserve), _pipelineViewportStates(reserve)
+		_pipelineMultiSampleStates(reserve), _pipelineDepthStencilStates(reserve), _pipelineBlendAttachmentStates(reserve), _pipelineColorBlendStates(reserve),
+		_pipelineViewports(reserve), _pipelineScissors(reserve), _pipelineViewportStates(reserve)
 	{
 	}
 
@@ -261,6 +262,18 @@ namespace VulkanSimplified
 		return _pipelineBlendAttachmentStates.AddUniqueObject(add);
 	}
 
+	ListObjectID<ColorBlendSettings> SharedDataPipelineElementsInternal::AddPipelineColorBlendState(const std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>>& attachments, float blendConstantR, float blendConstantG, float blendConstantB, float blendConstantA)
+	{
+		ColorBlendSettings add{};
+		add._attachments = attachments;
+		add._blendConstantR = blendConstantR;
+		add._blendConstantG = blendConstantG;
+		add._blendConstantB = blendConstantB;
+		add._blendConstantA = blendConstantA;
+
+		return _pipelineColorBlendStates.AddUniqueObject(std::move(add));
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElementsInternal::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		VkViewport add{ x, y, static_cast<float>(width), static_cast<float>(height), minDepth, maxDepth};
@@ -328,6 +341,29 @@ namespace VulkanSimplified
 		}
 
 		return true;
+	}
+
+	bool ColorBlendSettings::operator==(const ColorBlendSettings& other) const noexcept
+	{
+		if (_attachments.size() != other._attachments.size())
+			return false;
+
+		for (size_t i = 0; i < _attachments.size(); ++i)
+		{
+			if (_attachments[i] != other._attachments[i])
+				return false;
+		}
+
+		if (_blendConstantR != other._blendConstantR)
+			return false;
+
+		if (_blendConstantG != other._blendConstantG)
+			return false;
+
+		if (_blendConstantB != other._blendConstantB)
+			return false;
+
+		return _blendConstantA == other._blendConstantA;
 	}
 
 }

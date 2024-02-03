@@ -103,7 +103,8 @@ int main()
 
         auto pipelineMultisampling = pipelineData.AddPipelineMultisampleState(VulkanSimplified::PipelineMultisampleCount::SAMPLE_1, false, 0.0f);
         auto pipelineDepthSettings = pipelineData.AddPipelineDepthState(true, true, VulkanSimplified::PipelineDepthCompare::LESS);
-        auto pipelineColorAttachment = pipelineData.AddPipelineColorBlendAttachment(VulkanSimplified::PipelineBlendSettings::OFF);
+        auto pipelineColorBlendAttachment = pipelineData.AddPipelineColorBlendAttachment(VulkanSimplified::PipelineBlendSettings::OFF);
+        auto pipelineColorBlendState = pipelineData.AddPipelineColorBlendState({ pipelineColorBlendAttachment });
 
         main.reset();
     }

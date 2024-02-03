@@ -59,6 +59,11 @@ namespace VulkanSimplified
 		return _internal.AddPipelineColorBlendAttachment(settings);
 	}
 
+	ListObjectID<ColorBlendSettings> SharedDataPipelineElements::AddPipelineColorBlendState(const std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>>& attachments, float blendConstantR, float blendConstantG, float blendConstantB, float blendConstantA)
+	{
+		return _internal.AddPipelineColorBlendState(attachments, blendConstantR, blendConstantG, blendConstantB, blendConstantA);
+	}
+
 	ListObjectID<VkViewport> SharedDataPipelineElements::AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth)
 	{
 		return _internal.AddPipelineViewport(x, y, width, height, minDepth, maxDepth);
