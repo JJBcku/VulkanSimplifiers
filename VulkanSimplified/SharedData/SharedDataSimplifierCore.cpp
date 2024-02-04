@@ -6,9 +6,8 @@
 namespace VulkanSimplified
 {
 
-	SharedDataSimplifierCore::SharedDataSimplifierCore(size_t reserveListElements)
+	SharedDataSimplifierCore::SharedDataSimplifierCore(SharedDataSimplifierCoreInternal& ref) : _internal(ref)
 	{
-		_internal = std::make_unique<SharedDataSimplifierCoreInternal>(reserveListElements);
 	}
 
 	SharedDataSimplifierCore::~SharedDataSimplifierCore()
@@ -17,7 +16,7 @@ namespace VulkanSimplified
 
 	SharedDataPipelineElements SharedDataSimplifierCore::GetSharedDataPipelineElements()
 	{
-		return _internal->GetSharedDataPipelineElements();
+		return _internal.GetSharedDataPipelineElements();
 	}
 
 }

@@ -25,17 +25,17 @@
     <Filter Include="Source Files\Devices">
       <UniqueIdentifier>{ce95a1b1-42b1-489c-9454-75f6b043af64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Other">
-      <UniqueIdentifier>{fc7c96f8-6da9-4cad-9ea2-376ea9339bc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Other">
-      <UniqueIdentifier>{1c9602eb-bcc4-44e5-ad8c-70580e2b35dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\SharedData">
       <UniqueIdentifier>{a39d5c2f-91f5-4831-9970-1f5368fc973f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\SharedData">
       <UniqueIdentifier>{7c0f4139-b0f1-4381-81d4-da5f4630bb55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Common">
+      <UniqueIdentifier>{fc7c96f8-6da9-4cad-9ea2-376ea9339bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Common">
+      <UniqueIdentifier>{1c9602eb-bcc4-44e5-ad8c-70580e2b35dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -49,10 +49,10 @@
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>Header Files\Other</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>Header Files\Other</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
@@ -82,7 +82,7 @@
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h">
-      <Filter>Header Files\Other</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Device\ShaderModulesSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
@@ -120,6 +120,12 @@
     <ClInclude Include="Include\SharedDataSimplifierEnums.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
+    <ClInclude Include="Include\MainSimplifier.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\MainSimplifierInternal.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -129,7 +135,7 @@
       <Filter>Source Files\Basics</Filter>
     </ClCompile>
     <ClCompile Include="Basics\pch.cpp">
-      <Filter>Source Files\Other</Filter>
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Basics\VulkanCoreSimplifierInternal.cpp">
       <Filter>Source Files\Basics</Filter>
@@ -156,7 +162,7 @@
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Other\VulkanSimplifierListTemplate.cpp">
-      <Filter>Source Files\Other</Filter>
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
@@ -193,6 +199,12 @@
     </ClCompile>
     <ClCompile Include="SharedData\SharedDataSimplifierEnums.cpp">
       <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\MainSimplifier.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\MainSimplifierInternal.cpp">
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

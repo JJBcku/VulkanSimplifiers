@@ -3,25 +3,15 @@
 
 namespace VulkanSimplified
 {
-
-	DeviceDataListSimplifierInternal::DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings) : _deviceCore(device, deviceInfo, deviceSettings), _shaderModules(_deviceCore.GetDevice())
+	DeviceDataListSimplifierInternal::DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo,
+		const DeviceSettings& deviceSettings, const SharedDataSimplifierCoreInternal& sharedDataList) : _sharedDataList(sharedDataList), _deviceCore(device, deviceInfo, deviceSettings),
+		_shaderModules(_deviceCore.GetDevice())
 	{
+		_ppadding = nullptr;
 	}
 
 	DeviceDataListSimplifierInternal::~DeviceDataListSimplifierInternal()
 	{
-	}
-
-	DeviceDataListSimplifierInternal::DeviceDataListSimplifierInternal(DeviceDataListSimplifierInternal&& other) noexcept : _deviceCore(std::move(other._deviceCore)), _shaderModules(std::move(other._shaderModules))
-	{
-	}
-
-	DeviceDataListSimplifierInternal& DeviceDataListSimplifierInternal::operator=(DeviceDataListSimplifierInternal&& other) noexcept
-	{
-		this->_deviceCore = std::move(other._deviceCore);
-		this->_shaderModules = std::move(other._shaderModules);
-
-		return *this;
 	}
 
 	DeviceCoreSimplifierInternal& DeviceDataListSimplifierInternal::GetDeviceCoreSimplifier()

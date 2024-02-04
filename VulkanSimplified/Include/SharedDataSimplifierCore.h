@@ -11,10 +11,10 @@ namespace VulkanSimplified
 
 	class SharedDataSimplifierCore
 	{
-		std::unique_ptr<SharedDataSimplifierCoreInternal> _internal;
+		SharedDataSimplifierCoreInternal& _internal;
 
 	public:
-		SharedDataSimplifierCore(size_t reserveListElements);
+		SharedDataSimplifierCore(SharedDataSimplifierCoreInternal& ref);
 		~SharedDataSimplifierCore();
 
 		SharedDataSimplifierCore(const SharedDataSimplifierCore&) noexcept = delete;

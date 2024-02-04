@@ -6,7 +6,7 @@
 namespace VulkanSimplified
 {
 
-	void SwapchainSimplifier::CreateSwapchainMain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings, bool redo)
+	void SwapchainSimplifier::CreateSwapchainMain(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID, SwapchainSettings settings, bool redo)
 	{
 		_internal.CreateSwapchain(deviceID, settings, redo);
 	}
@@ -19,12 +19,12 @@ namespace VulkanSimplified
 	{
 	}
 
-	void SwapchainSimplifier::CreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings)
+	void SwapchainSimplifier::CreateSwapchain(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID, SwapchainSettings settings)
 	{
 		CreateSwapchainMain(deviceID, settings, false);
 	}
 
-	void SwapchainSimplifier::ReCreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings)
+	void SwapchainSimplifier::ReCreateSwapchain(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID, SwapchainSettings settings)
 	{
 		CreateSwapchainMain(deviceID, settings, true);
 	}

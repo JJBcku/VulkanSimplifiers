@@ -20,12 +20,12 @@ namespace VulkanSimplified
 		return _internal.AddScoringFunction(function, minScore);
 	}
 
-	ListObjectID<DeviceDataListSimplifierInternal> DeviceListSimplifier::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
+	ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> DeviceListSimplifier::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
 	{
 		return _internal.CreateDevice(scoringFunction, position, settings);
 	}
 
-	DeviceDataListSimplifier DeviceListSimplifier::GetDeviceDataListSimplifier(const ListObjectID<DeviceDataListSimplifierInternal>& deviceID)
+	DeviceDataListSimplifier DeviceListSimplifier::GetDeviceDataListSimplifier(const ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>>& deviceID)
 	{
 		return DeviceDataListSimplifier(_internal.GetDeviceDataList(deviceID));
 	}

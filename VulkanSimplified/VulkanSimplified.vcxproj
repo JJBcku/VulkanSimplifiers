@@ -207,6 +207,8 @@
     <ClInclude Include="Include\ShaderModulesSimplifier.h" />
     <ClInclude Include="Device\ShaderModulesSimplifierInternal.h" />
     <ClInclude Include="Include\SharedDataPipelineElements.h" />
+    <ClInclude Include="Include\MainSimplifier.h" />
+    <ClInclude Include="Other\MainSimplifierInternal.h" />
     <ClInclude Include="SharedData\SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
     <ClInclude Include="SharedData\SharedDataSimplifierCoreInternal.h" />
@@ -240,6 +242,8 @@
     <ClCompile Include="Device\ShaderModulesSimplifier.cpp" />
     <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp" />
     <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp" />
+    <ClCompile Include="Other\MainSimplifier.cpp" />
+    <ClCompile Include="Other\MainSimplifierInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineElements.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineElementsInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataSimplifierCore.cpp" />

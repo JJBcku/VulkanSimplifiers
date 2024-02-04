@@ -3,6 +3,8 @@
 #include <BasicsSimplifierSharedStructs.h>
 #include <DeviceSimplifierSharedStructs.h>
 
+#include <MainSimplifier.h>
+
 #include <BasicsSimplifier.h>
 #include <DeviceListSimplifier.h>
 #include <SwapchainSimplifier.h>
@@ -24,6 +26,7 @@ int main()
     using VulkanSimplified::BasicsSimplifier;
     using VulkanSimplified::DeviceSettings;
     using VulkanSimplified::SharedDataSimplifierCore;
+    using VulkanSimplified::MainSimplifier;
 
     std::cout << "Vulkan Simplified testing started!\n";
 
@@ -45,9 +48,12 @@ int main()
         appSettings.engineTitle = "No engine";
         appSettings.engineVersion = { 1, 0, 0, 0 };
 
-        std::unique_ptr<BasicsSimplifier> main = std::make_unique<BasicsSimplifier>(windowSettings, appSettings);
+        std::unique_ptr<MainSimplifier> main = std::make_unique<MainSimplifier>(0x100);
 
-        auto deviceList = main->GetDeviceListSimplifier();
+        auto instanceID = main->AddInstance(windowSettings, appSettings);
+        auto instance = main->GetInstanceSimplifier(instanceID);
+
+        auto deviceList = instance.GetDeviceListSimplifier();
 
         auto scoringID = deviceList.AddScoringFunction(GPURatingFunction, 0);
 
@@ -68,7 +74,7 @@ int main()
         swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
         swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
 
-        auto swapchain = main->GetSwapchainSimplifier();
+        auto swapchain = instance.GetSwapchainSimplifier();
 
         swapchain.CreateSwapchain(deviceID, swapchainSettings);
 
@@ -78,7 +84,7 @@ int main()
         auto vertexShader = shaders.CreateShaderModule(vertexCode);
         auto fragmentShader = shaders.CreateShaderModule(fragmentCode);
 
-        SharedDataSimplifierCore sharedData(0x100);
+        auto sharedData = main->GetSharedDataCoreSimplifier();
 
         auto pipelineData = sharedData.GetSharedDataPipelineElements();
 

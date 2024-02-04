@@ -22,6 +22,9 @@ namespace VulkanSimplified
 
 	class BasicsSimplifierInternal
 	{
+		const SharedDataSimplifierCoreInternal& _sharedDataList;
+		void* _ppadding;
+
 		WindowSimplifierInternal _windows;
 		VulkanCoreSimplifierInternal _core;
 		SurfaceSimplifierInternal _surface;
@@ -30,7 +33,7 @@ namespace VulkanSimplified
 		SwapchainSimplifierInternal _swapchain;
 
 	public:
-		BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings);
+		BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings, const SharedDataSimplifierCoreInternal& sharedDataList);
 		~BasicsSimplifierInternal();
 
 		BasicsSimplifierInternal(const BasicsSimplifierInternal&) = delete;

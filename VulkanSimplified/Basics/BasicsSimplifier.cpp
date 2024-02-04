@@ -9,24 +9,22 @@
 
 namespace VulkanSimplified
 {
-	BasicsSimplifier::BasicsSimplifier(WindowCreationData windowSettings, AppData appSettings)
+	BasicsSimplifier::BasicsSimplifier(BasicsSimplifierInternal& ref) : _internal(ref)
 	{
-		_internal = std::make_unique<BasicsSimplifierInternal>(windowSettings, appSettings);
 	}
 
 	BasicsSimplifier::~BasicsSimplifier()
 	{
-		_internal.reset();
 	}
 
 	DeviceListSimplifier BasicsSimplifier::GetDeviceListSimplifier()
 	{
-		return DeviceListSimplifier(_internal->GetDeviceListSimplifier());
+		return DeviceListSimplifier(_internal.GetDeviceListSimplifier());
 	}
 
 	SwapchainSimplifier BasicsSimplifier::GetSwapchainSimplifier()
 	{
-		return SwapchainSimplifier(_internal->GetSwapchainSimplifier());
+		return SwapchainSimplifier(_internal.GetSwapchainSimplifier());
 	}
 
 }

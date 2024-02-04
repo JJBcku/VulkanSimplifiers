@@ -399,7 +399,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	ListObjectID<DeviceDataListSimplifierInternal> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
+	ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
 	{
 		if (position >= _deviceList.size())
 			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than device list size!");
@@ -430,30 +430,34 @@ namespace VulkanSimplified
 		if (currentPos < position)
 			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than eligible scored devices list size!");
 
-		auto ret = _logicalDevices.AddObject(std::move(DeviceDataListSimplifierInternal(physicalDevice, createDeviceInfo, settings)));
+		auto ret = _logicalDevices.AddObject(std::make_unique<DeviceDataListSimplifierInternal>(physicalDevice, createDeviceInfo, settings, _sharedDataList));
 
 		return ret;
 	}
 
-	const DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetConstDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID) const
+	const DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetConstDeviceDataListSimplifier(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID) const
 	{
-		return _logicalDevices.GetConstObject(deviceID);
+		return *_logicalDevices.GetConstObject(deviceID);
 	}
 
-	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID)
+	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataListSimplifier(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID)
 	{
-		return _logicalDevices.GetObject(deviceID);
+		return *_logicalDevices.GetObject(deviceID);
 	}
 
-	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataList(const ListObjectID<DeviceDataListSimplifierInternal>& deviceID)
+	DeviceDataListSimplifierInternal& DeviceListSimplifierInternal::GetDeviceDataList(const ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>>& deviceID)
 	{
-		return _logicalDevices.GetObject(deviceID);
+		return *_logicalDevices.GetObject(deviceID);
 	}
 
 	constexpr size_t scoringFunctionReserve = 0x10;
 
-	DeviceListSimplifierInternal::DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier) : _coreSimplifier(coreSimplifier), _surfaceSimplifier(surfaceSimplifier), _scoringFunctions(scoringFunctionReserve)
+	DeviceListSimplifierInternal::DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier,
+		const SharedDataSimplifierCoreInternal& sharedDataList) : _coreSimplifier(coreSimplifier), _surfaceSimplifier(surfaceSimplifier), _sharedDataList(sharedDataList),
+		_scoringFunctions(scoringFunctionReserve)
 	{
+		_ppadding = nullptr;
+
 		_apiVersion = coreSimplifier.GetUsedApiVersion();
 		assert(_apiVersion >= VK_MAKE_API_VERSION(0, 1, 0, 0));
 		padding = 0;

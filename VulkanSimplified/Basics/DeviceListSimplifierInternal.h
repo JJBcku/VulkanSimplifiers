@@ -90,13 +90,16 @@ namespace VulkanSimplified
 	{
 		const VulkanCoreSimplifierInternal& _coreSimplifier;
 		const SurfaceSimplifierInternal& _surfaceSimplifier;
+		const SharedDataSimplifierCoreInternal& _sharedDataList;
+
+		void* _ppadding;
 
 		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
 		std::vector<DeviceScore> _deviceScoresList;
 
 		std::vector<std::pair<SimplifiedDeviceInfo, VkPhysicalDevice>> _deviceList;
 
-		ListTemplate<DeviceDataListSimplifierInternal> _logicalDevices;
+		ListTemplate<std::unique_ptr<DeviceDataListSimplifierInternal>> _logicalDevices;
 
 		uint32_t _apiVersion, padding;
 
@@ -111,7 +114,7 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
 
 	public:
-		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier);
+		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier, const SharedDataSimplifierCoreInternal& sharedDataList);
 		~DeviceListSimplifierInternal();
 
 		DeviceListSimplifierInternal(const DeviceListSimplifierInternal&) = delete;
@@ -121,14 +124,14 @@ namespace VulkanSimplified
 		DeviceListSimplifierInternal& operator=(DeviceListSimplifierInternal&&) = delete;
 
 		ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore);
-		ListObjectID<DeviceDataListSimplifierInternal> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
+		ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings);
 
 		//std::pair<DeviceInfo, SimplifiedDeviceInfo> GetDeviceInfo(VkPhysicalDevice device);
-		const DeviceDataListSimplifierInternal& GetConstDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID) const;
-		DeviceDataListSimplifierInternal& GetDeviceDataListSimplifier(ListObjectID<DeviceDataListSimplifierInternal> deviceID);
+		const DeviceDataListSimplifierInternal& GetConstDeviceDataListSimplifier(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID) const;
+		DeviceDataListSimplifierInternal& GetDeviceDataListSimplifier(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID);
 
 		//void UpdateSurfaceCapabilities(VkSurfaceKHR surface);
 
-		DeviceDataListSimplifierInternal& GetDeviceDataList(const ListObjectID<DeviceDataListSimplifierInternal>& deviceID);
+		DeviceDataListSimplifierInternal& GetDeviceDataList(const ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>>& deviceID);
 	};
 }

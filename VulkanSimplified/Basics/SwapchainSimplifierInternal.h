@@ -60,7 +60,7 @@ namespace VulkanSimplified
 
 		SwapchainSimplifierInternal& operator=(const SwapchainSimplifierInternal&) noexcept = delete;
 
-		void CreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate);
+		void CreateSwapchain(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID, SwapchainSettings settings, bool recreate);
 
 		bool DoSwapchainExist() const;
 

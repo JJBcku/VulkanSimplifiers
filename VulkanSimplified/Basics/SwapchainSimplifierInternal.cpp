@@ -275,7 +275,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	void SwapchainSimplifierInternal::CreateSwapchain(ListObjectID<DeviceDataListSimplifierInternal> deviceID, SwapchainSettings settings, bool recreate)
+	void SwapchainSimplifierInternal::CreateSwapchain(ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> deviceID, SwapchainSettings settings, bool recreate)
 	{
 		if (_swapchain != VK_NULL_HANDLE)
 		{

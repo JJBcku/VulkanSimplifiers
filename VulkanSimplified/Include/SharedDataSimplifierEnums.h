@@ -16,6 +16,12 @@ namespace VulkanSimplified
 		FRAGMENT = 2,
 	};
 
+	enum ShaderStageFlags : uint64_t
+	{
+		VERTEX = 1,
+		FRAGMENT = 2,
+	};
+
 	enum class TopologySetting : uint64_t
 	{
 		POINT = 1,

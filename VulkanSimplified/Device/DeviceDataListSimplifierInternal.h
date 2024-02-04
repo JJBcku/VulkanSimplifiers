@@ -5,20 +5,25 @@
 
 namespace VulkanSimplified
 {
+	class SharedDataSimplifierCoreInternal;
+
 	class DeviceDataListSimplifierInternal
 	{
+		const SharedDataSimplifierCoreInternal& _sharedDataList;
+		void* _ppadding;
+
 		DeviceCoreSimplifierInternal _deviceCore;
 		ShaderModulesSimplifierInternal _shaderModules;
 
 	public:
-		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings);
+		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings, const SharedDataSimplifierCoreInternal& sharedDataList);
 		~DeviceDataListSimplifierInternal();
 
 		DeviceDataListSimplifierInternal(const DeviceDataListSimplifierInternal&) noexcept = delete;
-		DeviceDataListSimplifierInternal(DeviceDataListSimplifierInternal&&) noexcept;
+		DeviceDataListSimplifierInternal(DeviceDataListSimplifierInternal&&) noexcept = delete;
 
 		DeviceDataListSimplifierInternal& operator=(const DeviceDataListSimplifierInternal&) noexcept = delete;
-		DeviceDataListSimplifierInternal& operator=(DeviceDataListSimplifierInternal&& other) noexcept;
+		DeviceDataListSimplifierInternal& operator=(DeviceDataListSimplifierInternal&& other) noexcept = delete;
 
 		DeviceCoreSimplifierInternal& GetDeviceCoreSimplifier();
 		ShaderModulesSimplifierInternal& GetShaderModulesSimplifier();

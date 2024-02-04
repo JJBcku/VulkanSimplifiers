@@ -14,10 +14,10 @@ namespace VulkanSimplified
 
 	class BasicsSimplifier
 	{
-		std::unique_ptr<BasicsSimplifierInternal> _internal;
+		BasicsSimplifierInternal& _internal;
 
 	public:
-		BasicsSimplifier(WindowCreationData windowSettings, AppData appSettings);
+		BasicsSimplifier(BasicsSimplifierInternal& ref);
 		~BasicsSimplifier();
 
 		BasicsSimplifier(const BasicsSimplifier&) = delete;
