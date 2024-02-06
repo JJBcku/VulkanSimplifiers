@@ -48,10 +48,10 @@
     <ClInclude Include="Basics\WindowSimplifierInternal.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="Other\framework.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="Other\pch.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h">
@@ -125,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="Other\MainSimplifierInternal.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedData\SharedDataPipelineLayoutElementsInternal.h">
+      <Filter>Header Files\SharedData</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SharedDataPipelineLayoutElements.h">
+      <Filter>Header Files\SharedData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="Other\MainSimplifierInternal.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedData\SharedDataPipelineLayoutElementsInternal.cpp">
+      <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedData\SharedDataPipelineLayoutElements.cpp">
+      <Filter>Source Files\SharedData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

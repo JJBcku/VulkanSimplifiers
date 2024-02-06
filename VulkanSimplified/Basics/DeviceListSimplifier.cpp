@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../Other/pch.h"
 #include "../Include/DeviceListSimplifier.h"
 
 #include "../Include/BasicsSimplifierSharedStructs.h"

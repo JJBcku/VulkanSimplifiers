@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../Other/pch.h"
 #include "SurfaceSimplifierInternal.h"
 
 #include "WindowSimplifierInternal.h"

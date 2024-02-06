@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../Other/pch.h"
 #include "../Include/SharedDataSimplifierCore.h"
 
 #include "SharedDataSimplifierCoreInternal.h"
@@ -16,7 +16,12 @@ namespace VulkanSimplified
 
 	SharedDataPipelineElements SharedDataSimplifierCore::GetSharedDataPipelineElements()
 	{
-		return _internal.GetSharedDataPipelineElements();
+		return SharedDataPipelineElements(_internal.GetSharedDataPipelineElements());
+	}
+
+	SharedDataPipelineLayoutElements SharedDataSimplifierCore::GetSharedDataPipelineLayoutElements()
+	{
+		return SharedDataPipelineLayoutElements(_internal.GetSharedDataPipelineLayoutElements());
 	}
 
 }

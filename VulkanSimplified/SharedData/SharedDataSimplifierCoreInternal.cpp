@@ -1,9 +1,10 @@
-#include "../pch.h"
+#include "../Other/pch.h"
 #include "SharedDataSimplifierCoreInternal.h"
 
 namespace VulkanSimplified
 {
-	SharedDataSimplifierCoreInternal::SharedDataSimplifierCoreInternal(size_t reserve) : _pipelineData(reserve)
+
+	SharedDataSimplifierCoreInternal::SharedDataSimplifierCoreInternal(size_t reserve) : _pipelineData(reserve), _pipelineLayoutData(reserve)
 	{
 	}
 
@@ -15,4 +16,10 @@ namespace VulkanSimplified
 	{
 		return _pipelineData;
 	}
+
+	SharedDataPipelineLayoutElementsInternal& SharedDataSimplifierCoreInternal::GetSharedDataPipelineLayoutElements()
+	{
+		return _pipelineLayoutData;
+	}
+
 }

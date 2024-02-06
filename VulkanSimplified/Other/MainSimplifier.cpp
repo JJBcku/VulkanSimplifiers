@@ -1,4 +1,4 @@
-#include "../pch.h"
+#include "../Other/pch.h"
 #include "../Include/MainSimplifier.h"
 
 #include "MainSimplifierInternal.h"

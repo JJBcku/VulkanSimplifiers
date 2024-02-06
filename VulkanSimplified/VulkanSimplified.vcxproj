@@ -89,7 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../Other/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../Other/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -147,7 +147,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../Other/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -176,7 +176,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>../Other/pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
@@ -209,6 +209,8 @@
     <ClInclude Include="Include\SharedDataPipelineElements.h" />
     <ClInclude Include="Include\MainSimplifier.h" />
     <ClInclude Include="Other\MainSimplifierInternal.h" />
+    <ClInclude Include="Include\SharedDataPipelineLayoutElements.h" />
+    <ClInclude Include="SharedData\SharedDataPipelineLayoutElementsInternal.h" />
     <ClInclude Include="SharedData\SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
     <ClInclude Include="SharedData\SharedDataSimplifierCoreInternal.h" />
@@ -219,11 +221,11 @@
     <ClInclude Include="Basics\DeviceListSimplifierInternal.h" />
     <ClInclude Include="Include\BasicsSimplifierSharedStructs.h" />
     <ClInclude Include="Include\BasicsSimplifier.h" />
-    <ClInclude Include="framework.h" />
+    <ClInclude Include="Other\framework.h" />
     <ClInclude Include="Include\BasicsSimplifierSharedEnums.h" />
     <ClInclude Include="Include\DeviceSimplifierSharedEnums.h" />
     <ClInclude Include="Include\DeviceSimplifierSharedStructs.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="Other\pch.h" />
     <ClInclude Include="Basics\SurfaceSimplifierInternal.h" />
     <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h" />
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h" />
@@ -244,6 +246,8 @@
     <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp" />
     <ClCompile Include="Other\MainSimplifier.cpp" />
     <ClCompile Include="Other\MainSimplifierInternal.cpp" />
+    <ClCompile Include="SharedData\SharedDataPipelineLayoutElements.cpp" />
+    <ClCompile Include="SharedData\SharedDataPipelineLayoutElementsInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineElements.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineElementsInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataSimplifierCore.cpp" />

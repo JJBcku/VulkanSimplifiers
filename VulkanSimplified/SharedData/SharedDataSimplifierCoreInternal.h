@@ -1,12 +1,14 @@
 #pragma once
 
 #include "SharedDataPipelineElementsInternal.h"
+#include "SharedDataPipelineLayoutElementsInternal.h"
 
 namespace VulkanSimplified
 {
 	class SharedDataSimplifierCoreInternal
 	{
 		SharedDataPipelineElementsInternal _pipelineData;
+		SharedDataPipelineLayoutElementsInternal _pipelineLayoutData;
 
 	public:
 		SharedDataSimplifierCoreInternal(size_t reserve);
@@ -17,5 +19,6 @@ namespace VulkanSimplified
 		SharedDataSimplifierCoreInternal& operator=(const SharedDataSimplifierCoreInternal&) noexcept = delete;
 
 		SharedDataPipelineElementsInternal& GetSharedDataPipelineElements();
+		SharedDataPipelineLayoutElementsInternal& GetSharedDataPipelineLayoutElements();
 	};
 }
