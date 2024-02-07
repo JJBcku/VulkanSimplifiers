@@ -120,6 +120,7 @@ int main()
         auto pipelineLayoutData = sharedData.GetSharedDataPipelineLayoutElements();
 
         auto pipelineLayoutTestPushConstantRange = pipelineLayoutData.AddPushConstantRange(VulkanSimplified::VERTEX, 0, 32);
+        auto pipelineSetLayoutBinding = pipelineLayoutData.AddDescriptorSetLayoutBinding(0, VulkanSimplified::PipelineLayoutDescriptorType::SAMPLER, 1, VulkanSimplified::VERTEX);
 
         main.reset();
     }
