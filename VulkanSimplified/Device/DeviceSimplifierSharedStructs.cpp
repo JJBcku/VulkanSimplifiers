@@ -5,7 +5,7 @@ namespace VulkanSimplified
 {
 	DeviceSettings::DeviceSettings()
 	{
-		depthUnrestricted = false;
+		unrestrictedDepth = false;
 		fillRectangleNV = false;
 		swapchainExtension = false;
 		memset(padding, 0, sizeof(padding));

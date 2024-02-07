@@ -18,6 +18,7 @@ namespace VulkanSimplified
 
 	enum ShaderStageFlags : uint64_t
 	{
+		NONE = 0,
 		VERTEX = 1,
 		FRAGMENT = 2,
 	};

@@ -59,12 +59,15 @@ int main()
 
         auto scoringID = deviceList.AddScoringFunction(GPURatingFunction, 0);
 
+        auto deviceAmount = deviceList.GetQualifyingDevicesAmount(scoringID);
+        auto deviceInfo = deviceList.GetSimplifiedDeviceInfo(scoringID, deviceAmount - 1);
+
         DeviceSettings deviceSettings;
-        deviceSettings.depthUnrestricted = true;
-        deviceSettings.fillRectangleNV = true;
+        deviceSettings.unrestrictedDepth = deviceInfo.unrestrictedDepth;
+        deviceSettings.fillRectangleNV = deviceInfo.fillRectangleNV;
         deviceSettings.swapchainExtension = true;
 
-        auto deviceID = deviceList.CreateDevice(scoringID, 0, deviceSettings);
+        auto deviceID = deviceList.CreateDevice(scoringID, deviceAmount - 1, deviceSettings);
         auto deviceDataList = deviceList.GetDeviceDataListSimplifier(deviceID);
         auto device = deviceDataList.GetDeviceCoreSimplifier();
 
@@ -132,7 +135,10 @@ int main()
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo)
 {
-    return deviceInfo.discreteGPU ? 0x10 : 0;
+    if (deviceInfo.swapchainExtension)
+        return deviceInfo.discreteGPU ? 0x10 : 0;
+    else
+        return std::numeric_limits<intmax_t>::lowest();
 }
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name)

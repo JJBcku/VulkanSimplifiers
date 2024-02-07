@@ -52,14 +52,17 @@ namespace VulkanSimplified
         std::vector<const char*> _requestedExtensions;
         _requestedExtensions.reserve(0x2);
 
-        if (deviceInfo.unrestrictedDepth && deviceSettings.depthUnrestricted)
+        if (deviceInfo.unrestrictedDepth && deviceSettings.unrestrictedDepth)
         {
             _requestedExtensions.push_back(VK_EXT_DEPTH_RANGE_UNRESTRICTED_EXTENSION_NAME);
-            _settings.depthUnrestricted = true;
+            _settings.unrestrictedDepth = true;
         }
         else
         {
-            _settings.depthUnrestricted = false;
+            if (!deviceInfo.unrestrictedDepth && deviceSettings.unrestrictedDepth)
+                throw std::runtime_error("DeviceCoreSimplifierInternal::CreateDevice Error: Program tried to create logical device with unrestricted depth enabled on an uncompatible physical device!");
+
+            _settings.unrestrictedDepth = false;
         }
 
         if (deviceInfo.fillRectangleNV && deviceSettings.fillRectangleNV)
@@ -69,6 +72,9 @@ namespace VulkanSimplified
         }
         else
         {
+            if (!deviceInfo.fillRectangleNV && deviceSettings.fillRectangleNV)
+                throw std::runtime_error("DeviceCoreSimplifierInternal::CreateDevice Error: Program tried to create logical device with Nvidia's fill rectangle extension enabled on an uncompatible physical device!");
+
             _settings.fillRectangleNV = false;
         }
 
@@ -79,6 +85,9 @@ namespace VulkanSimplified
         }
         else
         {
+            if (!deviceInfo.swapchainExtension && deviceSettings.swapchainExtension)
+                throw std::runtime_error("DeviceCoreSimplifierInternal::CreateDevice Error: Program tried to create logical device with swapchain extension enabled on an uncompatible physical device!");
+
             _settings.swapchainExtension = false;
         }
 

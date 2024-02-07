@@ -370,6 +370,51 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	SimplifiedDeviceInfo DeviceListSimplifierInternal::GetSimplifiedDeviceInfo(ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> scoringFunctionID, size_t position)
+	{
+		SimplifiedDeviceInfo ret;
+
+		if (position >= _deviceList.size())
+			throw std::runtime_error("DeviceListSimplifierInternal::GetSimplifiedDeviceInfo Error: Program tried to find device with position value bigger than the entire device list size!");
+
+		auto it = std::find(_deviceScoresList.begin(), _deviceScoresList.end(), scoringFunctionID);
+
+		if (it == _deviceScoresList.end())
+			throw std::runtime_error("DeviceListSimplifierInternal::GetSimplifiedDeviceInfo Error: Program tried to find a device from an empty list of eligible devices!");
+
+		size_t distance = static_cast<size_t>(std::distance(_deviceScoresList.begin(), it));
+		size_t fullPosition = distance + position;
+
+		if (fullPosition < distance)
+			throw std::runtime_error("DeviceListSimplifierInternal::GetSimplifiedDeviceInfo Error: Position calculation overflow!");
+
+		if (fullPosition >= _deviceScoresList.size() || _deviceScoresList[fullPosition] != scoringFunctionID)
+			throw std::runtime_error("DeviceListSimplifierInternal::GetSimplifiedDeviceInfo Error: Program tried to find a device with position value bigger than the eligible scored devices list size!");
+
+		ret = _deviceList[_deviceScoresList[fullPosition].GetDeviceID()].first;
+
+		return ret;
+	}
+
+	size_t DeviceListSimplifierInternal::GetQualifyingDevicesAmount(ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> scoringFunctionID)
+	{
+		size_t ret = 0;
+
+		auto it = std::find(_deviceScoresList.cbegin(), _deviceScoresList.cend(), scoringFunctionID);
+
+		if (it != _deviceScoresList.cend())
+		{
+			auto rit = std::find(_deviceScoresList.crbegin(), _deviceScoresList.crend(), scoringFunctionID);
+
+			size_t distanceFirst = static_cast<size_t>(std::distance(_deviceScoresList.cbegin(), it));
+			size_t distanceLast = static_cast<size_t>(std::distance(_deviceScoresList.cbegin(), rit.base()));
+
+			ret = distanceLast - distanceFirst;
+		}
+
+		return ret;
+	}
+
 	ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>> DeviceListSimplifierInternal::AddScoringFunction(std::function<intmax_t(const SimplifiedDeviceInfo&)> function, intmax_t minScore)
 	{
 		auto ret = _scoringFunctions.AddObject(function);
@@ -402,33 +447,27 @@ namespace VulkanSimplified
 	ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> DeviceListSimplifierInternal::CreateDevice(const ListObjectID<std::function<intmax_t(const SimplifiedDeviceInfo&)>>& scoringFunction, size_t position, DeviceSettings settings)
 	{
 		if (position >= _deviceList.size())
-			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than device list size!");
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than the entire device scores list size!");
 
 		auto it = std::find(_deviceScoresList.begin(), _deviceScoresList.end(), scoringFunction);
-
-		size_t currentPos = 0;
 
 		SimplifiedDeviceInfo createDeviceInfo;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
-		while (it != _deviceScoresList.end())
-		{
-			if (position == currentPos)
-			{
-				auto& device = _deviceList[it->GetDeviceID()];
-				createDeviceInfo = device.first;
-				physicalDevice = device.second;
-				break;
-			}
-			else
-			{
-				currentPos++;
-				it = std::find(it + 1, _deviceScoresList.end(), scoringFunction);
-			}
-		}
+		if (it == _deviceScoresList.end())
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create a device from an empty list of eligible devices!");
 
-		if (currentPos < position)
-			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create device with position value bigger than eligible scored devices list size!");
+		size_t distance = static_cast<size_t>(std::distance(_deviceScoresList.begin(), it));
+		size_t fullPosition = distance + position;
+
+		if (fullPosition < distance)
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Position calculation overflow!");
+
+		if (fullPosition >= _deviceScoresList.size() || _deviceScoresList[fullPosition] != scoringFunction)
+			throw std::runtime_error("DeviceListSimplifierInternal::CreateDevice Error: Program tried to create a device with position value bigger than the eligible scored devices list size!");
+
+		createDeviceInfo = _deviceList[_deviceScoresList[fullPosition].GetDeviceID()].first;
+		physicalDevice = _deviceList[_deviceScoresList[fullPosition].GetDeviceID()].second;
 
 		auto ret = _logicalDevices.AddObject(std::make_unique<DeviceDataListSimplifierInternal>(physicalDevice, createDeviceInfo, settings, _sharedDataList));
 

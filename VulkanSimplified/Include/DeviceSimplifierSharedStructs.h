@@ -6,7 +6,7 @@ namespace VulkanSimplified
 {
 	struct DeviceSettings
 	{
-		bool depthUnrestricted;
+		bool unrestrictedDepth;
 		bool fillRectangleNV;
 		bool swapchainExtension;
 		char padding[5];
