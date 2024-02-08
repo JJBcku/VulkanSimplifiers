@@ -88,13 +88,13 @@ namespace VulkanSimplified
 
 		std::optional<T>& GetObjectOptional() { return _object; }
 		const std::optional<T>& GetConstObjectOptional() const { return _object; }
-		std::optional<T> GetObjectOptionalCopy() { return _object; }
+		std::optional<T> GetObjectOptionalCopy() const { return _object; }
 
 		T& GetObject() { assert(_object.has_value()); return _object.value(); }
 		const T& GetConstObject() const { assert(_object.has_value()); return _object.value(); }
-		T GetObjectCopy() { assert(_object.has_value()); return _object.value(); }
+		T GetObjectCopy() const { assert(_object.has_value()); return _object.value(); }
 
-		bool HasValue() { return _object.has_value(); }
+		bool HasValue() const { return _object.has_value(); }
 
 		void DeleteObject() { _object.reset(); }
 
@@ -358,7 +358,7 @@ namespace VulkanSimplified
 			return it->GetObjectOptional();
 		}
 
-		const std::optional<T>& GetConstObjectOptional(ListObjectID<T> objectID)
+		const std::optional<T>& GetConstObjectOptional(ListObjectID<T> objectID) const
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -368,7 +368,7 @@ namespace VulkanSimplified
 			return it->GetConstObjectOptional();
 		}
 
-		std::optional<T> GetObjectOptionalCopy(ListObjectID<T> objectID)
+		std::optional<T> GetObjectOptionalCopy(ListObjectID<T> objectID) const
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -398,7 +398,7 @@ namespace VulkanSimplified
 			return it->GetConstObject();
 		}
 
-		T GetObjectCopy(ListObjectID<T> objectID)
+		T GetObjectCopy(ListObjectID<T> objectID) const
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
@@ -406,6 +406,18 @@ namespace VulkanSimplified
 				throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
 
 			return it->GetObjectCopy();
+		}
+
+		std::vector<T> GetObjectListCopy(const std::vector<ListObjectID<T>>& objectsIDList) const
+		{
+			std::vector<T> ret;
+
+			ret.reserve(objectsIDList);
+
+			for (auto ID : objectsIDList)
+				ret.push_back(GetConstObject(ID));
+
+			return ret;
 		}
 
 		size_t GetSize() const { return _list.size(); }

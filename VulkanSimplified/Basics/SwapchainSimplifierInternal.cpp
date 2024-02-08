@@ -290,7 +290,7 @@ namespace VulkanSimplified
 		}
 
 		auto& deviceList = _deviceList.GetConstDeviceDataListSimplifier(deviceID);
-		auto& device = deviceList.GetConstDeviceCoreSimplifierInternal();
+		auto& device = deviceList.GetDeviceCoreSimplifier();
 
 		_device = device.GetDevice();
 		_physicalDevice = device.GetPhysicalDevice();

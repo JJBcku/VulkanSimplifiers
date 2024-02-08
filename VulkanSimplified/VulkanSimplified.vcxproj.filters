@@ -132,6 +132,12 @@
     <ClInclude Include="Include\SharedDataPipelineLayoutElements.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
+    <ClInclude Include="Device\DevicePipelineDataInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DevicePipelineData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -217,6 +223,12 @@
     </ClCompile>
     <ClCompile Include="SharedData\SharedDataPipelineLayoutElements.cpp">
       <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DevicePipelineDataInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DevicePipelineData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

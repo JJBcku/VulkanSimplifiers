@@ -5,6 +5,7 @@
 
 #include "../Include/DeviceCoreSimplifier.h"
 #include "../Include/ShaderModulesSimplifier.h"
+#include "../Include/DevicePipelineData.h"
 
 namespace VulkanSimplified
 {
@@ -25,6 +26,11 @@ namespace VulkanSimplified
 	ShaderModulesSimplifier DeviceDataListSimplifier::GetShaderModulesSimplifier()
 	{
 		return ShaderModulesSimplifier(_internal.GetShaderModulesSimplifier());
+	}
+
+	DevicePipelineData DeviceDataListSimplifier::GetDevicePipelineData()
+	{
+		return DevicePipelineData(_internal.GetDevicePipelineData());
 	}
 
 }

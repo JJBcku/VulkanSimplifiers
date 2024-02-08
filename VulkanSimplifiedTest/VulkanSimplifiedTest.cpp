@@ -16,6 +16,7 @@
 #include <SharedDataSimplifierCore.h>
 
 #include <SharedDataPipelineLayoutElements.h>
+#include <DevicePipelineData.h>
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
@@ -121,6 +122,10 @@ int main()
 
         auto pipelineLayoutTestPushConstantRange = pipelineLayoutData.AddPushConstantRange(VulkanSimplified::VERTEX, 0, 32);
         auto pipelineSetLayoutBinding = pipelineLayoutData.AddDescriptorSetLayoutBinding(0, VulkanSimplified::PipelineLayoutDescriptorType::SAMPLER, 1, VulkanSimplified::VERTEX);
+
+        auto devicePipelineData = deviceDataList.GetDevicePipelineData();
+
+        auto deviceDescriptorSetLayout = devicePipelineData.AddDescriptorSetLayout({ {pipelineSetLayoutBinding} });
 
         main.reset();
     }

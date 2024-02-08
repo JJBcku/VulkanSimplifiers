@@ -26,5 +26,7 @@ namespace VulkanSimplified
 
 		ListObjectID<VkPushConstantRange> AddPushConstantRange(ShaderStageFlags shaderStages, uint32_t offset, uint32_t size);
 		ListObjectID<VkDescriptorSetLayoutBinding> AddDescriptorSetLayoutBinding(uint32_t binding, PipelineLayoutDescriptorType descriptorType, uint32_t descriptorCount, ShaderStageFlags shaderStages);
+
+		VkDescriptorSetLayoutBinding GetDescriptorSetLayoutBinding(ListObjectID<VkDescriptorSetLayoutBinding> bindingID) const;
 	};
 }

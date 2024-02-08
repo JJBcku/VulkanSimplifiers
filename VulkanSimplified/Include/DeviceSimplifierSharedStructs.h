@@ -1,6 +1,9 @@
 #pragma once
 
 #include "DeviceSimplifierSharedEnums.h"
+#include "VulkanSimplifierListTemplate.h"
+
+struct VkDescriptorSetLayoutBinding;
 
 namespace VulkanSimplified
 {
@@ -20,4 +23,6 @@ namespace VulkanSimplified
 		SwapchainPresentMode presentMode;
 		SwapchainImageAmount imageAmount;
 	};
+
+	using BindingIDsOptional = std::optional<ListObjectID<VkDescriptorSetLayoutBinding>>;
 }

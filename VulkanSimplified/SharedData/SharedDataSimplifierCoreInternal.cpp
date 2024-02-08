@@ -22,4 +22,14 @@ namespace VulkanSimplified
 		return _pipelineLayoutData;
 	}
 
+	const SharedDataPipelineElementsInternal& SharedDataSimplifierCoreInternal::GetConstSharedDataPipelineElements() const
+	{
+		return _pipelineData;
+	}
+
+	const SharedDataPipelineLayoutElementsInternal& SharedDataSimplifierCoreInternal::GetConstSharedDataPipelineLayoutElements() const
+	{
+		return _pipelineLayoutData;
+	}
+
 }

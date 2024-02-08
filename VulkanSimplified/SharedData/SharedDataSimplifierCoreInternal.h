@@ -20,5 +20,8 @@ namespace VulkanSimplified
 
 		SharedDataPipelineElementsInternal& GetSharedDataPipelineElements();
 		SharedDataPipelineLayoutElementsInternal& GetSharedDataPipelineLayoutElements();
+
+		const SharedDataPipelineElementsInternal& GetConstSharedDataPipelineElements() const;
+		const SharedDataPipelineLayoutElementsInternal& GetConstSharedDataPipelineLayoutElements() const;
 	};
 }
