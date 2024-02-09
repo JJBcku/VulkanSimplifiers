@@ -34,6 +34,16 @@ namespace VulkanSimplified
 		return _swapchain;
 	}
 
+	const DeviceListSimplifierInternal& BasicsSimplifierInternal::GetDeviceListSimplifier() const
+	{
+		return _deviceList;
+	}
+
+	const SwapchainSimplifierInternal& BasicsSimplifierInternal::GetSwapchainSimplifier() const
+	{
+		return _swapchain;
+	}
+
 }
 
 

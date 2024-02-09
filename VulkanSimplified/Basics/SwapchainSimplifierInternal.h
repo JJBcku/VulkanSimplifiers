@@ -66,5 +66,7 @@ namespace VulkanSimplified
 
 		uint32_t GetSwapchainWidth() const;
 		uint32_t GetSwapchainHeight() const;
+
+		VkFormat GetSwapchainFormat() const;
 	};
 }

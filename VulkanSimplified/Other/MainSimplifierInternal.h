@@ -26,6 +26,9 @@ namespace VulkanSimplified
 
 		BasicsSimplifierInternal& GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID);
 		SharedDataSimplifierCoreInternal& GetSharedDataCoreSimplifier();
+
+		const BasicsSimplifierInternal& GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID) const;
+		const SharedDataSimplifierCoreInternal& GetSharedDataCoreSimplifier() const;
 	};
 }
 

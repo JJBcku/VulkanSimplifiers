@@ -5,6 +5,7 @@ struct VkVertexInputBindingDescription;
 #include "VulkanSimplifierListTemplate.h"
 #include "SharedDataPipelineElements.h"
 #include "SharedDataPipelineLayoutElements.h"
+#include "SharedDataRenderPassElements.h"
 
 namespace VulkanSimplified
 {
@@ -24,6 +25,7 @@ namespace VulkanSimplified
 
 		SharedDataPipelineElements GetSharedDataPipelineElements();
 		SharedDataPipelineLayoutElements GetSharedDataPipelineLayoutElements();
+		SharedDataRenderPassElements GetSharedDataRenderPassElements();
 	};
 }
 

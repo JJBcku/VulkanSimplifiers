@@ -24,4 +24,9 @@ namespace VulkanSimplified
 		return SharedDataPipelineLayoutElements(_internal.GetSharedDataPipelineLayoutElements());
 	}
 
+	SharedDataRenderPassElements SharedDataSimplifierCore::GetSharedDataRenderPassElements()
+	{
+		return SharedDataRenderPassElements(_internal.GetSharedDataRenderPassElements());
+	}
+
 }

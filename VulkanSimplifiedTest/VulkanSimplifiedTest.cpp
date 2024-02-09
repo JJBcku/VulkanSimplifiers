@@ -128,6 +128,11 @@ int main()
         auto deviceDescriptorSetLayout = devicePipelineData.AddDescriptorSetLayout({ {pipelineSetLayoutBinding} });
         auto devicePipelineLayout = devicePipelineData.AddPipelineLayout({}, {});
 
+        auto renderPassData = sharedData.GetSharedDataRenderPassElements();
+
+        auto renderPassAttachmentDescriptor = renderPassData.AddAttachmentDescriptionWithSwapchainsFormat(false, instanceID, VulkanSimplified::PipelineMultisampleCount::SAMPLE_1,
+            VulkanSimplified::AttachmentLoadMode::CLEAR, VulkanSimplified::AttachmentStoreMode::STORE, VulkanSimplified::AttachmentLayout::IGNORED, VulkanSimplified::AttachmentLayout::PRESENT);
+
         main.reset();
     }
     catch (std::exception ex)

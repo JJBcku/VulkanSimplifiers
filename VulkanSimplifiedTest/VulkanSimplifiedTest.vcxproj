@@ -83,7 +83,7 @@
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4711;4710;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4711;4710;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,7 +107,7 @@
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4711;4710;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4711;4710;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4711;4710;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4711;4710;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +155,7 @@
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <DisableSpecificWarnings>4711;4710;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4711;4710;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

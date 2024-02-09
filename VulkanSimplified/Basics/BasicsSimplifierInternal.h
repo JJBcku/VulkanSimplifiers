@@ -40,8 +40,10 @@ namespace VulkanSimplified
 		BasicsSimplifierInternal& operator= (const BasicsSimplifierInternal&) = delete;
 
 		DeviceListSimplifierInternal& GetDeviceListSimplifier();
-
 		SwapchainSimplifierInternal& GetSwapchainSimplifier();
+
+		const DeviceListSimplifierInternal& GetDeviceListSimplifier() const;
+		const SwapchainSimplifierInternal& GetSwapchainSimplifier() const;
 	};
 }
 

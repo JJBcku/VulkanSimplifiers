@@ -233,6 +233,11 @@ namespace VulkanSimplified
 		return _swapchainExtend.height;
 	}
 
+	VkFormat SwapchainSimplifierInternal::GetSwapchainFormat() const
+	{
+		return _format;
+	}
+
 	void SwapchainSimplifierInternal::GetSwapchainImages()
 	{
 		uint32_t imagesAmount = 0;

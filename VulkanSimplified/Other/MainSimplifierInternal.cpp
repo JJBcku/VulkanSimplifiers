@@ -4,7 +4,7 @@
 namespace VulkanSimplified
 {
 
-	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount) : _sharedData(sharedDataReserveAmount)
+	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount) : _sharedData(sharedDataReserveAmount, *this)
 	{
 	}
 
@@ -25,6 +25,16 @@ namespace VulkanSimplified
 	}
 
 	SharedDataSimplifierCoreInternal& MainSimplifierInternal::GetSharedDataCoreSimplifier()
+	{
+		return _sharedData;
+	}
+
+	const BasicsSimplifierInternal& MainSimplifierInternal::GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID) const
+	{
+		return *_vulkanInstances.GetConstObject(instanceID);
+	}
+
+	const SharedDataSimplifierCoreInternal& MainSimplifierInternal::GetSharedDataCoreSimplifier() const
 	{
 		return _sharedData;
 	}

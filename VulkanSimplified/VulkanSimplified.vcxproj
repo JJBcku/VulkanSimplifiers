@@ -97,7 +97,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -126,7 +126,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -155,7 +155,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -184,7 +184,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExternalTemplatesDiagnostics>false</ExternalTemplatesDiagnostics>
-      <DisableSpecificWarnings>4710;4711;5045;4514;4464</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4710;4711;5045;4514;4464;4355</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -212,6 +212,8 @@
     <ClInclude Include="Include\MainSimplifier.h" />
     <ClInclude Include="Other\MainSimplifierInternal.h" />
     <ClInclude Include="Include\SharedDataPipelineLayoutElements.h" />
+    <ClInclude Include="Include\SharedDataRenderPassElements.h" />
+    <ClInclude Include="SharedData\SharedDataRenderPassElementsInternal.h" />
     <ClInclude Include="SharedData\SharedDataPipelineLayoutElementsInternal.h" />
     <ClInclude Include="SharedData\SharedDataPipelineElementsInternal.h" />
     <ClInclude Include="Include\SharedDataSimplifierCore.h" />
@@ -250,6 +252,8 @@
     <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp" />
     <ClCompile Include="Other\MainSimplifier.cpp" />
     <ClCompile Include="Other\MainSimplifierInternal.cpp" />
+    <ClCompile Include="SharedData\SharedDataRenderPassElements.cpp" />
+    <ClCompile Include="SharedData\SharedDataRenderPassElementsInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineLayoutElements.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineLayoutElementsInternal.cpp" />
     <ClCompile Include="SharedData\SharedDataPipelineElements.cpp" />

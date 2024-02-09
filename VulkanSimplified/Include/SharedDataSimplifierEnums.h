@@ -91,4 +91,23 @@ namespace VulkanSimplified
 		UNIFORM_BUFFER_DYNAMIC = 0X100,
 		STORAGE_BUFFER_DYNAMIC = 0X200,
 	};
+
+	enum class AttachmentStoreMode : uint64_t
+	{
+		STORE = 1,
+		IGNORE = 2,
+	};
+
+	enum class AttachmentLoadMode : uint64_t
+	{
+		LOAD = 1,
+		CLEAR = 2,
+		IGNORE = 4,
+	};
+
+	enum class AttachmentLayout : uint64_t
+	{
+		IGNORED = 1,
+		PRESENT = 2,
+	};
 }
