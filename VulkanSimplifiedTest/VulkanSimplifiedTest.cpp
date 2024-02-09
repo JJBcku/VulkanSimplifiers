@@ -136,6 +136,9 @@ int main()
 
         auto renderPassAttachmentReference = renderPassData.AddAttachmentReference(0, VulkanSimplified::AttachmentLayout::COLOR);
 
+        auto subpassDescriptor = renderPassData.AddSubpassDescriptorNoDepth(VulkanSimplified::PipelineBindPoint::GRAPHIC,
+            { renderPassAttachmentReference }, {});
+
         main.reset();
     }
     catch (std::exception ex)

@@ -29,7 +29,8 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _attachmentDescriptions(reserve)
+	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _attachmentDescriptions(reserve),
+		_attachmentReferences(reserve), _subpassDescriptions(reserve)
 	{
 		_ppadding = nullptr;
 	}
@@ -129,7 +130,73 @@ namespace VulkanSimplified
 		if (add.layout == VK_IMAGE_LAYOUT_MAX_ENUM)
 			throw std::runtime_error("SharedDataRenderPassElementsInternal::AddAttachmentReference Error: Program was given an erroneous layout variable!");
 
-		return _attachmentReference.AddUniqueObject(add);
+		return _attachmentReferences.AddUniqueObject(add);
+	}
+
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorNoDepth(PipelineBindPoint bindPoint, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
+	{
+		SubpassDescriptionData add;
+
+		add._bindPoint = bindPoint;
+		add._colorAttachments = colorAttachments;
+		add._preserveAttachments = preserveAttachments;
+
+		return _subpassDescriptions.AddUniqueObject(add);
+	}
+
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments,
+		ListObjectID<VkAttachmentReference> depthAttachment)
+	{
+		SubpassDescriptionData add;
+
+		add._bindPoint = bindPoint;
+		add._colorAttachments = colorAttachments;
+		add._preserveAttachments = preserveAttachments;
+		add._depthAttachment = depthAttachment;
+
+		return _subpassDescriptions.AddUniqueObject(add);
+	}
+
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithResolveAttachmentsNoDepth(PipelineBindPoint bindPoint, const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
+	{
+		SubpassDescriptionData add;
+
+		add._bindPoint = bindPoint;
+		add._preserveAttachments = preserveAttachments;
+
+		add._colorAttachments.reserve(colorAndResolveAttachments.size());
+		add._resolveAttachments.reserve(colorAndResolveAttachments.size());
+
+		for (auto& colorAndResolve : colorAndResolveAttachments)
+		{
+			add._colorAttachments.push_back(colorAndResolve.first);
+			add._resolveAttachments.push_back(colorAndResolve.second);
+		}
+
+		return _subpassDescriptions.AddUniqueObject(add);
+	}
+
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithResolveAttachmentsWithDepth(PipelineBindPoint bindPoint,
+		const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments, ListObjectID<VkAttachmentReference> depthAttachment)
+	{
+		SubpassDescriptionData add;
+
+		add._bindPoint = bindPoint;
+		add._preserveAttachments = preserveAttachments;
+		add._depthAttachment = depthAttachment;
+
+		add._colorAttachments.reserve(colorAndResolveAttachments.size());
+		add._resolveAttachments.reserve(colorAndResolveAttachments.size());
+
+		for (auto& colorAndResolve : colorAndResolveAttachments)
+		{
+			add._colorAttachments.push_back(colorAndResolve.first);
+			add._resolveAttachments.push_back(colorAndResolve.second);
+		}
+
+		return _subpassDescriptions.AddUniqueObject(add);
 	}
 
 }
@@ -142,4 +209,45 @@ bool operator==(const VkAttachmentDescription& first, const VkAttachmentDescript
 bool operator==(const VkAttachmentReference& first, const VkAttachmentReference& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VulkanSimplified::SubpassDescriptionData& first, const VulkanSimplified::SubpassDescriptionData& second) noexcept
+{
+	if (first._bindPoint != second._bindPoint)
+		return false;
+
+	if (first._colorAttachments.size() != second._colorAttachments.size())
+		return false;
+
+	if (first._resolveAttachments.size() != second._resolveAttachments.size())
+		return false;
+
+	if (first._preserveAttachments.size() != second._preserveAttachments.size())
+		return false;
+
+	if (first._depthAttachment.has_value() != second._depthAttachment.has_value())
+		return false;
+
+	if (first._depthAttachment.has_value() && first._depthAttachment.value() != second._depthAttachment.value())
+		return false;
+
+	for (size_t i = 0; i < first._colorAttachments.size(); ++i)
+	{
+		if (first._colorAttachments[i] != second._colorAttachments[i])
+			return false;
+	}
+
+	for (size_t i = 0; i < first._resolveAttachments.size(); ++i)
+	{
+		if (first._resolveAttachments[i] != second._resolveAttachments[i])
+			return false;
+	}
+
+	for (size_t i = 0; i < first._preserveAttachments.size(); ++i)
+	{
+		if (first._preserveAttachments[i] != second._preserveAttachments[i])
+			return false;
+	}
+
+	return true;
 }

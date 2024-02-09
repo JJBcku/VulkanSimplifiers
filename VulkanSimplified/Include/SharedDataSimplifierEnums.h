@@ -111,4 +111,10 @@ namespace VulkanSimplified
 		PRESENT = 2,
 		COLOR = 4,
 	};
+	
+	enum class PipelineBindPoint : uint64_t
+	{
+		GRAPHIC = 1,
+		COMPUTE = 2,
+	};
 }
