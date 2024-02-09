@@ -109,5 +109,6 @@ namespace VulkanSimplified
 	{
 		IGNORED = 1,
 		PRESENT = 2,
+		COLOR = 4,
 	};
 }

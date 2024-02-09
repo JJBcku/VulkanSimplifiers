@@ -7,6 +7,27 @@
 
 namespace VulkanSimplified
 {
+	VkImageLayout SharedDataRenderPassElementsInternal::GetImageLayout(AttachmentLayout layout)
+	{
+		VkImageLayout ret = VK_IMAGE_LAYOUT_MAX_ENUM;
+
+		switch (layout)
+		{
+		case VulkanSimplified::AttachmentLayout::IGNORED:
+			ret = VK_IMAGE_LAYOUT_UNDEFINED;
+			break;
+		case VulkanSimplified::AttachmentLayout::PRESENT:
+			ret = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+			break;
+		case VulkanSimplified::AttachmentLayout::COLOR:
+			ret = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			break;
+		default:
+			break;
+		}
+
+		return ret;
+	}
 
 	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _attachmentDescriptions(reserve)
 	{
@@ -87,36 +108,38 @@ namespace VulkanSimplified
 		add.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		add.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 
-		switch (initialLayout)
-		{
-		case VulkanSimplified::AttachmentLayout::IGNORED:
-			add.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			break;
-		case VulkanSimplified::AttachmentLayout::PRESENT:
-			add.initialLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			break;
-		default:
-			throw std::runtime_error("SharedDataRenderPassElementsInternal::AddAttachmentDescription Error: Program was given an erroneus initial layout value!");
-		}
+		add.initialLayout = GetImageLayout(initialLayout);
+		add.finalLayout = GetImageLayout(finalLayout);
 
-		switch (finalLayout)
-		{
-		case VulkanSimplified::AttachmentLayout::IGNORED:
-			add.finalLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			break;
-		case VulkanSimplified::AttachmentLayout::PRESENT:
-			add.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-			break;
-		default:
+		if (add.initialLayout == VK_IMAGE_LAYOUT_MAX_ENUM)
+			throw std::runtime_error("SharedDataRenderPassElementsInternal::AddAttachmentDescription Error: Program was given an erroneus initial layout value!");
+
+		if (add.finalLayout == VK_IMAGE_LAYOUT_MAX_ENUM)
 			throw std::runtime_error("SharedDataRenderPassElementsInternal::AddAttachmentDescription Error: Program was given an erroneus final layout value!");
-		}
 
 		return _attachmentDescriptions.AddUniqueObject(add);
+	}
+
+	ListObjectID<VkAttachmentReference> SharedDataRenderPassElementsInternal::AddAttachmentReference(uint32_t attachment, AttachmentLayout layout)
+	{
+		VkAttachmentReference add{};
+		add.attachment = attachment;
+		add.layout = GetImageLayout(layout);
+
+		if (add.layout == VK_IMAGE_LAYOUT_MAX_ENUM)
+			throw std::runtime_error("SharedDataRenderPassElementsInternal::AddAttachmentReference Error: Program was given an erroneous layout variable!");
+
+		return _attachmentReference.AddUniqueObject(add);
 	}
 
 }
 
 bool operator==(const VkAttachmentDescription& first, const VkAttachmentDescription& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkAttachmentReference& first, const VkAttachmentReference& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }

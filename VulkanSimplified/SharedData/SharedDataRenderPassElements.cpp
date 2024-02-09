@@ -21,4 +21,9 @@ namespace VulkanSimplified
 		return _internal.AddAttachmentDescriptionWithSwapchainsFormat(mayAlias, instanceID, sampleCount, loadMode, storeMode, initialLayout, finalLayout);
 	}
 
+	ListObjectID<VkAttachmentReference> SharedDataRenderPassElements::AddAttachmentReference(uint32_t attachment, AttachmentLayout layout)
+	{
+		return _internal.AddAttachmentReference(attachment, layout);
+	}
+
 }
