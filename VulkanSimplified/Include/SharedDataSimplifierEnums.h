@@ -117,4 +117,16 @@ namespace VulkanSimplified
 		GRAPHIC = 1,
 		COMPUTE = 2,
 	};
+
+	enum PipelineStage : uint64_t
+	{
+		TOP = 1,
+		BOTTOM = 2,
+	};
+
+	enum PipelineAccess : uint64_t
+	{
+		COLOR_READ = 1,
+		COLOR_WRITE = 2,
+	};
 }

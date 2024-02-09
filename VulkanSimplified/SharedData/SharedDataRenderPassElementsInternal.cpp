@@ -29,8 +29,34 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	VkPipelineStageFlags SharedDataRenderPassElementsInternal::GetStageFlags(PipelineStage stageMask)
+	{
+		VkPipelineStageFlags ret = 0;
+
+		if ((stageMask & PipelineStage::TOP) == PipelineStage::TOP)
+			ret |= VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+		if ((stageMask & PipelineStage::BOTTOM) == PipelineStage::BOTTOM)
+			ret |= VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+
+		return ret;
+	}
+
+	VkAccessFlags SharedDataRenderPassElementsInternal::GetAccessFlags(PipelineAccess accessMask)
+	{
+		VkAccessFlags ret = 0;
+
+		if ((accessMask & PipelineAccess::COLOR_READ) == PipelineAccess::COLOR_READ)
+			ret |= VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+
+		if ((accessMask & PipelineAccess::COLOR_WRITE) == PipelineAccess::COLOR_WRITE)
+			ret |= VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+		return ret;
+	}
+
 	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _attachmentDescriptions(reserve),
-		_attachmentReferences(reserve), _subpassDescriptions(reserve)
+		_attachmentReferences(reserve), _subpassDescriptions(reserve), _subpassDependencies(reserve)
 	{
 		_ppadding = nullptr;
 	}
@@ -133,11 +159,14 @@ namespace VulkanSimplified
 		return _attachmentReferences.AddUniqueObject(add);
 	}
 
-	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorNoDepth(PipelineBindPoint bindPoint, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorNoDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
 	{
 		SubpassDescriptionData add;
 
 		add._bindPoint = bindPoint;
+		add._inputAttachments = inputAttachments;
 		add._colorAttachments = colorAttachments;
 		add._preserveAttachments = preserveAttachments;
 
@@ -145,12 +174,13 @@ namespace VulkanSimplified
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithDepth(PipelineBindPoint bindPoint,
-		const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments,
-		ListObjectID<VkAttachmentReference> depthAttachment)
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments, ListObjectID<VkAttachmentReference> depthAttachment)
 	{
 		SubpassDescriptionData add;
 
 		add._bindPoint = bindPoint;
+		add._inputAttachments = inputAttachments;
 		add._colorAttachments = colorAttachments;
 		add._preserveAttachments = preserveAttachments;
 		add._depthAttachment = depthAttachment;
@@ -158,11 +188,15 @@ namespace VulkanSimplified
 		return _subpassDescriptions.AddUniqueObject(add);
 	}
 
-	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithResolveAttachmentsNoDepth(PipelineBindPoint bindPoint, const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
+	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithResolveAttachmentsNoDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments,
+		const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
 	{
 		SubpassDescriptionData add;
 
 		add._bindPoint = bindPoint;
+		add._inputAttachments = inputAttachments;
 		add._preserveAttachments = preserveAttachments;
 
 		add._colorAttachments.reserve(colorAndResolveAttachments.size());
@@ -178,12 +212,14 @@ namespace VulkanSimplified
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElementsInternal::AddSubpassDescriptorWithResolveAttachmentsWithDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments,
 		const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments,
 		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments, ListObjectID<VkAttachmentReference> depthAttachment)
 	{
 		SubpassDescriptionData add;
 
 		add._bindPoint = bindPoint;
+		add._inputAttachments = inputAttachments;
 		add._preserveAttachments = preserveAttachments;
 		add._depthAttachment = depthAttachment;
 
@@ -199,6 +235,56 @@ namespace VulkanSimplified
 		return _subpassDescriptions.AddUniqueObject(add);
 	}
 
+	ListObjectID<VkSubpassDependency> SharedDataRenderPassElementsInternal::AddSubpassDependency(std::optional<uint32_t> srcSubpass, std::optional<uint32_t> dstSubpass,
+		PipelineStage srcStageMask, PipelineStage dstStageMask, PipelineAccess srcAccessMask, PipelineAccess dstAccessMask)
+	{
+		VkSubpassDependency add{};
+		
+		if (srcSubpass.has_value())
+			add.srcSubpass = srcSubpass.value();
+		else
+			add.srcSubpass = VK_SUBPASS_EXTERNAL;
+
+		if (dstSubpass.has_value())
+			add.dstSubpass = dstSubpass.value();
+		else
+			add.dstSubpass = VK_SUBPASS_EXTERNAL;
+
+		add.srcStageMask = GetStageFlags(srcStageMask);
+		add.dstStageMask = GetStageFlags(dstStageMask);
+
+		add.srcAccessMask = GetAccessFlags(srcAccessMask);
+		add.dstAccessMask = GetAccessFlags(dstAccessMask);
+
+		return _subpassDependencies.AddUniqueObject(add);
+	}
+
+	VkAttachmentReference SharedDataRenderPassElementsInternal::GetAttachmentReference(ListObjectID<VkAttachmentReference> attachmentReferenceID) const
+	{
+		return _attachmentReferences.GetObjectCopy(attachmentReferenceID);
+	}
+
+	std::vector<VkAttachmentReference> SharedDataRenderPassElementsInternal::GetAttachmentReferencesList(const std::vector<ListObjectID<VkAttachmentReference>>& attachmentReferencesID) const
+	{
+		return _attachmentReferences.GetObjectListCopy(attachmentReferencesID);
+	}
+
+	std::vector<VkAttachmentDescription> SharedDataRenderPassElementsInternal::GetAttachmentDescriptionsList
+	(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptorsIDs) const
+	{
+		return _attachmentDescriptions.GetObjectListCopy(attachmentDescriptorsIDs);
+	}
+
+	std::vector<SubpassDescriptionData> SharedDataRenderPassElementsInternal::GetSubpassDescriptionsDataList(const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptionsIDs) const
+	{
+		return _subpassDescriptions.GetObjectListCopy(subpassDescriptionsIDs);
+	}
+
+	std::vector<VkSubpassDependency> SharedDataRenderPassElementsInternal::GetSubpassDependenciesList(const std::vector<ListObjectID<VkSubpassDependency>>& subpassDescriptionsIDs) const
+	{
+		return _subpassDependencies.GetObjectListCopy(subpassDescriptionsIDs);
+	}
+
 }
 
 bool operator==(const VkAttachmentDescription& first, const VkAttachmentDescription& second)
@@ -207,6 +293,11 @@ bool operator==(const VkAttachmentDescription& first, const VkAttachmentDescript
 }
 
 bool operator==(const VkAttachmentReference& first, const VkAttachmentReference& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkSubpassDependency& first, const VkSubpassDependency& second)
 {
 	return memcmp(&first, &second, sizeof(first)) == 0;
 }

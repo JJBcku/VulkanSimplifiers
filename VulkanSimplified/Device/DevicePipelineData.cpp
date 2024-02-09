@@ -22,4 +22,8 @@ namespace VulkanSimplified
 	{
 		return _internal.AddPipelineLayout(descriptorSetLayouts, pushConstantRanges);
 	}
+	ListObjectID<AutoCleanupRenderPass> DevicePipelineData::AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors, const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies)
+	{
+		return _internal.AddRenderPass(attachmentDescriptors, subpassDescriptions, subpassDependencies);
+	}
 }

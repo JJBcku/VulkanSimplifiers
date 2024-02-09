@@ -27,30 +27,38 @@ namespace VulkanSimplified
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElements::AddSubpassDescriptorNoDepth(PipelineBindPoint bindPoint,
-		const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
 	{
-		return _internal.AddSubpassDescriptorNoDepth(bindPoint, colorAttachments, preserveAttachments);
+		return _internal.AddSubpassDescriptorNoDepth(bindPoint, inputAttachments, colorAttachments, preserveAttachments);
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElements::AddSubpassDescriptorWithDepth(PipelineBindPoint bindPoint,
-		const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments,
-		ListObjectID<VkAttachmentReference> depthAttachment)
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments,
+		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments, ListObjectID<VkAttachmentReference> depthAttachment)
 	{
-		return _internal.AddSubpassDescriptorWithDepth(bindPoint, colorAttachments, preserveAttachments, depthAttachment);
+		return _internal.AddSubpassDescriptorWithDepth(bindPoint, inputAttachments, colorAttachments, preserveAttachments, depthAttachment);
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElements::AddSubpassDescriptorWithResolveAttachmentsNoDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments,
 		const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments,
 		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments)
 	{
-		return _internal.AddSubpassDescriptorWithResolveAttachmentsNoDepth(bindPoint, colorAndResolveAttachments, preserveAttachments);
+		return _internal.AddSubpassDescriptorWithResolveAttachmentsNoDepth(bindPoint, inputAttachments, colorAndResolveAttachments, preserveAttachments);
 	}
 
 	ListObjectID<SubpassDescriptionData> SharedDataRenderPassElements::AddSubpassDescriptorWithResolveAttachmentsWithDepth(PipelineBindPoint bindPoint,
+		const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments,
 		const std::vector<std::pair<ListObjectID<VkAttachmentReference>, ListObjectID<VkAttachmentReference>>>& colorAndResolveAttachments,
 		const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments, ListObjectID<VkAttachmentReference> depthAttachment)
 	{
-		return _internal.AddSubpassDescriptorWithResolveAttachmentsWithDepth(bindPoint, colorAndResolveAttachments, preserveAttachments, depthAttachment);
+		return _internal.AddSubpassDescriptorWithResolveAttachmentsWithDepth(bindPoint, inputAttachments, colorAndResolveAttachments, preserveAttachments, depthAttachment);
+	}
+
+	ListObjectID<VkSubpassDependency> SharedDataRenderPassElements::AddSubpassDependency(std::optional<uint32_t> srcSubpass, std::optional<uint32_t> dstSubpass, PipelineStage srcStageMask, PipelineStage dstStageMask, PipelineAccess srcAccessMask, PipelineAccess dstAccessMask)
+	{
+		return _internal.AddSubpassDependency(srcSubpass, dstSubpass, srcStageMask, dstStageMask, srcAccessMask, dstAccessMask);
 	}
 
 }

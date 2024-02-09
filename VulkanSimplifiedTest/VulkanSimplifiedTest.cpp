@@ -136,8 +136,13 @@ int main()
 
         auto renderPassAttachmentReference = renderPassData.AddAttachmentReference(0, VulkanSimplified::AttachmentLayout::COLOR);
 
-        auto subpassDescriptor = renderPassData.AddSubpassDescriptorNoDepth(VulkanSimplified::PipelineBindPoint::GRAPHIC,
+        auto subpassDescriptor = renderPassData.AddSubpassDescriptorNoDepth(VulkanSimplified::PipelineBindPoint::GRAPHIC, {},
             { renderPassAttachmentReference }, {});
+
+        auto subpassDependency = renderPassData.AddSubpassDependency({}, {}, VulkanSimplified::PipelineStage::TOP, VulkanSimplified::PipelineStage::BOTTOM,
+            VulkanSimplified::COLOR_READ, VulkanSimplified::COLOR_WRITE);
+
+        auto renderPass = devicePipelineData.AddRenderPass({ renderPassAttachmentDescriptor }, { subpassDescriptor }, {});
 
         main.reset();
     }

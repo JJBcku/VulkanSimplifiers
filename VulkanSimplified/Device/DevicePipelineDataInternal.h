@@ -3,8 +3,6 @@
 
 namespace VulkanSimplified
 {
-	class SharedDataSimplifierCoreInternal;
-	class SharedDataPipelineLayoutElementsInternal;
 
 	class AutoCleanupDescriptorSetLayout
 	{
@@ -42,16 +40,40 @@ namespace VulkanSimplified
 		AutoCleanupPipelineLayout& operator=(AutoCleanupPipelineLayout&& other) noexcept;
 	};
 
+	class AutoCleanupRenderPass
+	{
+		VkDevice _device;
+		void* _ppadding;
+		VkRenderPass _renderPass;
+
+	public:
+		AutoCleanupRenderPass(VkDevice device, VkRenderPass renderPass);
+		~AutoCleanupRenderPass();
+
+		AutoCleanupRenderPass(const AutoCleanupRenderPass&) noexcept = delete;
+		AutoCleanupRenderPass(AutoCleanupRenderPass&& other) noexcept;
+
+		AutoCleanupRenderPass& operator=(const AutoCleanupRenderPass&) noexcept = delete;
+		AutoCleanupRenderPass& operator=(AutoCleanupRenderPass&& other) noexcept;
+	};
+
+	class SharedDataSimplifierCoreInternal;
+	class SharedDataPipelineLayoutElementsInternal;
+	class SharedDataRenderPassElementsInternal;
+
+	struct SubpassDescriptionData;
+
 	class DevicePipelineDataInternal
 	{
-		const SharedDataSimplifierCoreInternal& _sharedDataList;
 		const SharedDataPipelineLayoutElementsInternal& _sharedPipelineLayout;
+		const SharedDataRenderPassElementsInternal& _sharedRenderPass;
 
 		VkDevice _device;
 		void* _ppadding;
 
 		ListTemplate<AutoCleanupDescriptorSetLayout> _descriptorSetLayouts;
 		ListTemplate<AutoCleanupPipelineLayout> _pipelineLayouts;
+		ListTemplate<AutoCleanupRenderPass> _renderPasses;
 
 	public:
 		DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList);
@@ -66,5 +88,8 @@ namespace VulkanSimplified
 			const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantRanges);
 
 		VkDescriptorSetLayout GetDescriptorSetLayout(ListObjectID<AutoCleanupDescriptorSetLayout> descriptorID) const;
+
+		ListObjectID<AutoCleanupRenderPass> AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors,
+			const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies);
 	};
 }
