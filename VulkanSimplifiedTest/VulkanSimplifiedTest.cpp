@@ -126,6 +126,7 @@ int main()
         auto devicePipelineData = deviceDataList.GetDevicePipelineData();
 
         auto deviceDescriptorSetLayout = devicePipelineData.AddDescriptorSetLayout({ {pipelineSetLayoutBinding} });
+        auto devicePipelineLayout = devicePipelineData.AddPipelineLayout({}, {});
 
         main.reset();
     }

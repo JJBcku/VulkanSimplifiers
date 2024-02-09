@@ -6,6 +6,7 @@ namespace VulkanSimplified
 {
 	class DevicePipelineDataInternal;
 	class AutoCleanupDescriptorSetLayout;
+	class AutoCleanupPipelineLayout;
 
 	class DevicePipelineData
 	{
@@ -18,5 +19,7 @@ namespace VulkanSimplified
 		DevicePipelineData& operator=(const DevicePipelineData&) noexcept = delete;
 
 		ListObjectID<AutoCleanupDescriptorSetLayout> AddDescriptorSetLayout(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingsIDList);
+		ListObjectID<AutoCleanupPipelineLayout> AddPipelineLayout(const std::vector<std::optional<ListObjectID<AutoCleanupDescriptorSetLayout>>>& descriptorSetLayouts,
+			const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantRanges);
 	};
 }

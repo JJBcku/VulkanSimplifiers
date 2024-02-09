@@ -11,7 +11,7 @@ namespace VulkanSimplified
 {
 	class SharedDataPipelineLayoutElementsInternal
 	{
-		ListTemplate<VkPushConstantRange> _pushConstants;
+		ListTemplate<VkPushConstantRange> _pushConstantRanges;
 		ListTemplate<VkDescriptorSetLayoutBinding> _descriptorLayoutBindings;
 
 	public:
@@ -28,6 +28,9 @@ namespace VulkanSimplified
 		ListObjectID<VkDescriptorSetLayoutBinding> AddDescriptorSetLayoutBinding(uint32_t binding, PipelineLayoutDescriptorType descriptorType, uint32_t descriptorCount, ShaderStageFlags shaderStages);
 
 		VkDescriptorSetLayoutBinding GetDescriptorSetLayoutBinding(ListObjectID<VkDescriptorSetLayoutBinding> bindingID) const;
-		std::vector<VkDescriptorSetLayoutBinding> GetDescriptorSetLayoutBindingsList(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingID) const;
+		std::vector<VkDescriptorSetLayoutBinding> GetDescriptorSetLayoutBindingsList(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingIDs) const;
+
+		VkPushConstantRange GetPushConstantsRange(ListObjectID<VkPushConstantRange> pushConstantsID) const;
+		std::vector<VkPushConstantRange> GetPushConstantsRangesList(const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantsIDs) const;
 	};
 }

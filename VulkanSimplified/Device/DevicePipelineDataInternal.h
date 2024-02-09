@@ -9,6 +9,7 @@ namespace VulkanSimplified
 	class AutoCleanupDescriptorSetLayout
 	{
 		VkDevice _device;
+		void* _ppadding;
 		VkDescriptorSetLayout _descriptorSetLayout;
 
 	public:
@@ -20,6 +21,25 @@ namespace VulkanSimplified
 
 		AutoCleanupDescriptorSetLayout& operator=(const AutoCleanupDescriptorSetLayout&) noexcept = delete;
 		AutoCleanupDescriptorSetLayout& operator=(AutoCleanupDescriptorSetLayout&& other) noexcept;
+
+		VkDescriptorSetLayout GetDescriptorSetLayout() const;
+	};
+
+	class AutoCleanupPipelineLayout
+	{
+		VkDevice _device;
+		void* _ppadding;
+		VkPipelineLayout _pipelineLayout;
+
+	public:
+		AutoCleanupPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout);
+		~AutoCleanupPipelineLayout();
+
+		AutoCleanupPipelineLayout(const AutoCleanupPipelineLayout&) noexcept = delete;
+		AutoCleanupPipelineLayout(AutoCleanupPipelineLayout&& other) noexcept;
+
+		AutoCleanupPipelineLayout& operator=(const AutoCleanupPipelineLayout&) noexcept = delete;
+		AutoCleanupPipelineLayout& operator=(AutoCleanupPipelineLayout&& other) noexcept;
 	};
 
 	class DevicePipelineDataInternal
@@ -31,6 +51,7 @@ namespace VulkanSimplified
 		void* _ppadding;
 
 		ListTemplate<AutoCleanupDescriptorSetLayout> _descriptorSetLayouts;
+		ListTemplate<AutoCleanupPipelineLayout> _pipelineLayouts;
 
 	public:
 		DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList);
@@ -41,5 +62,9 @@ namespace VulkanSimplified
 		DevicePipelineDataInternal& operator=(const DevicePipelineDataInternal&) noexcept = delete;
 
 		ListObjectID<AutoCleanupDescriptorSetLayout> AddDescriptorSetLayout(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingsIDList);
+		ListObjectID<AutoCleanupPipelineLayout> AddPipelineLayout(const std::vector<std::optional<ListObjectID<AutoCleanupDescriptorSetLayout>>>& descriptorSetLayouts,
+			const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantRanges);
+
+		VkDescriptorSetLayout GetDescriptorSetLayout(ListObjectID<AutoCleanupDescriptorSetLayout> descriptorID) const;
 	};
 }

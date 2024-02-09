@@ -17,4 +17,9 @@ namespace VulkanSimplified
 	{
 		return _internal.AddDescriptorSetLayout(bindingsIDList);
 	}
+	ListObjectID<AutoCleanupPipelineLayout> DevicePipelineData::AddPipelineLayout(const std::vector<std::optional<ListObjectID<AutoCleanupDescriptorSetLayout>>>& descriptorSetLayouts,
+		const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantRanges)
+	{
+		return _internal.AddPipelineLayout(descriptorSetLayouts, pushConstantRanges);
+	}
 }

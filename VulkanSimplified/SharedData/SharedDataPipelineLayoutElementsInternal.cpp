@@ -4,7 +4,7 @@
 namespace VulkanSimplified
 {
 
-	SharedDataPipelineLayoutElementsInternal::SharedDataPipelineLayoutElementsInternal(size_t reserve) : _pushConstants(reserve), _descriptorLayoutBindings(reserve)
+	SharedDataPipelineLayoutElementsInternal::SharedDataPipelineLayoutElementsInternal(size_t reserve) : _pushConstantRanges(reserve), _descriptorLayoutBindings(reserve)
 	{
 	}
 
@@ -34,7 +34,7 @@ namespace VulkanSimplified
 		add.offset = offset;
 		add.size = size;
 
-		return _pushConstants.AddUniqueObject(add);
+		return _pushConstantRanges.AddUniqueObject(add);
 	}
 
 	ListObjectID<VkDescriptorSetLayoutBinding> SharedDataPipelineLayoutElementsInternal::AddDescriptorSetLayoutBinding(uint32_t binding, PipelineLayoutDescriptorType descriptorType, uint32_t descriptorCount, ShaderStageFlags shaderStages)
@@ -97,9 +97,19 @@ namespace VulkanSimplified
 		return _descriptorLayoutBindings.GetObjectCopy(bindingID);
 	}
 
-	std::vector<VkDescriptorSetLayoutBinding> SharedDataPipelineLayoutElementsInternal::GetDescriptorSetLayoutBindingsList(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingID) const
+	std::vector<VkDescriptorSetLayoutBinding> SharedDataPipelineLayoutElementsInternal::GetDescriptorSetLayoutBindingsList(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingIDs) const
 	{
-		return _descriptorLayoutBindings.GetObjectListCopy(bindingID);
+		return _descriptorLayoutBindings.GetObjectListCopy(bindingIDs);
+	}
+
+	VkPushConstantRange SharedDataPipelineLayoutElementsInternal::GetPushConstantsRange(ListObjectID<VkPushConstantRange> pushConstantsID) const
+	{
+		return _pushConstantRanges.GetObjectCopy(pushConstantsID);
+	}
+
+	std::vector<VkPushConstantRange> SharedDataPipelineLayoutElementsInternal::GetPushConstantsRangesList(const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantsIDs) const
+	{
+		return _pushConstantRanges.GetObjectListCopy(pushConstantsIDs);
 	}
 
 }
