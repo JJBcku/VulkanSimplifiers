@@ -97,6 +97,11 @@ namespace VulkanSimplified
 		return _descriptorLayoutBindings.GetObjectCopy(bindingID);
 	}
 
+	std::vector<VkDescriptorSetLayoutBinding> SharedDataPipelineLayoutElementsInternal::GetDescriptorSetLayoutBindingsList(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingID) const
+	{
+		return _descriptorLayoutBindings.GetObjectListCopy(bindingID);
+	}
+
 }
 
 bool operator==(const VkPushConstantRange& first, const VkPushConstantRange& second)

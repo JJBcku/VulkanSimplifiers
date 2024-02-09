@@ -17,6 +17,6 @@ namespace VulkanSimplified
 
 		DevicePipelineData& operator=(const DevicePipelineData&) noexcept = delete;
 
-		ListObjectID<AutoCleanupDescriptorSetLayout> AddDescriptorSetLayout(const std::vector<BindingIDsOptional>& bindingsIDList);
+		ListObjectID<AutoCleanupDescriptorSetLayout> AddDescriptorSetLayout(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingsIDList);
 	};
 }

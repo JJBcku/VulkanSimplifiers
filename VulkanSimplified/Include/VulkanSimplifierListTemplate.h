@@ -306,26 +306,29 @@ namespace VulkanSimplified
 
 		void ShrinkToFit(size_t reserve = 0, bool addToReserved = true)
 		{
-			auto it = std::find(_list.begin(), _list.end(), false);
-
-			if (it == _list.end())
+			if (_deletedList.empty())
 				return;
 
 			std::vector<ListObjectTemplate<T>> tempList;
 
 			if (addToReserved)
 			{
-				tempList.reserve(_list.size() + reserve);
+				size_t fullres = GetUsedSize() + reserve;
+
+				if (fullres < reserve)
+					throw std::runtime_error("ListTemplate ShrinkToFit Error: reservation amount overflowed!");
+
+				tempList.reserve(fullres);
 			}
 			else
 			{
-				if (reserve > _list.size())
+				if (reserve > GetUsedSize())
 				{
 					tempList.reserve(reserve);
 				}
 				else
 				{
-					tempList.reserve(_list.size());
+					tempList.reserve(GetUsedSize());
 				}
 			}
 
@@ -346,6 +349,8 @@ namespace VulkanSimplified
 
 			_list = std::move(tempList);
 			_deletedList.clear();
+			_deletedList.shrink_to_fit();
+			_deletedList.reserve(_list.capacity());
 		}
 
 		std::optional<T>& GetObjectOptional(ListObjectID<T> objectID)
@@ -412,19 +417,59 @@ namespace VulkanSimplified
 		{
 			std::vector<T> ret;
 
-			ret.reserve(objectsIDList);
+			ret.resize(objectsIDList.size());
 
-			for (auto ID : objectsIDList)
-				ret.push_back(GetConstObject(ID));
+			size_t filledlist = 0;
+
+			for (auto& object : _list)
+			{
+				for (size_t i = 0; i < objectsIDList.size(); ++i)
+				{
+					if (objectsIDList[i] == object)
+					{
+						ret[i] = object.GetObjectCopy();
+						filledlist++;
+
+						if (filledlist == ret.size())
+							break;
+					}
+				}
+			}
 
 			return ret;
 		}
 
 		size_t GetSize() const { return _list.size(); }
-		size_t GetUsedSize() const { assert(_list.size() - _deletedList.size() <= _list.size()); return _list.size() - _deletedList.size(); }
+		size_t GetUsedSize() const
+		{
+			size_t ret = _list.size() - _deletedList.size();
+
+			if (ret > _list.size())
+				throw std::runtime_error("ListTemplate GetUsedSize Error: returned value underflowed!");
+
+			return ret;
+		}
+
 		size_t GetCapacity() const { return _list.capacity(); }
-		size_t GetUnusedCapacity() const { assert( _list.capacity() - _list.size() <= _list.capacity()); return _list.capacity() - _list.size(); }
-		size_t GetUnusedAndDeletedCapacity() const { assert( GetUnusedCapacity() + _deletedList.size() >= _deletedList.size()); return GetUnusedCapacity() + _deletedList.size(); }
+		size_t GetUnusedCapacity() const
+		{
+			size_t ret = _list.capacity() - _list.size();
+
+			if (ret > _list.capacity())
+				throw std::runtime_error("ListTemplate GetUnusedCapacity Error: returned value underflowed!");
+
+			return ret;
+		}
+
+		size_t GetUnusedAndDeletedCapacity() const
+		{
+			size_t ret = GetUnusedCapacity() + _deletedList.size();
+
+			if (ret < _deletedList.size())
+				throw std::runtime_error("ListTemplate GetUnusedAndDeletedCapacity Error: returned value overflowed!");
+
+			return ret;
+		}
 
 		void Reset(size_t reserve = 0)
 		{

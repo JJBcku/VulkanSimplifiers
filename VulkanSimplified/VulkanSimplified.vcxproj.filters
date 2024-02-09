@@ -136,7 +136,7 @@
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\DevicePipelineData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Devices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -228,7 +228,7 @@
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Device\DevicePipelineData.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

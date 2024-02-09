@@ -18,7 +18,7 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<AutoCleanupDescriptorSetLayout> DevicePipelineDataInternal::AddDescriptorSetLayout(const std::vector<BindingIDsOptional>& bindingsIDList)
+	ListObjectID<AutoCleanupDescriptorSetLayout> DevicePipelineDataInternal::AddDescriptorSetLayout(const std::vector<ListObjectID<VkDescriptorSetLayoutBinding>>& bindingsIDList)
 	{
 		VkDescriptorSetLayoutCreateInfo createInfo{};
 		VkDescriptorSetLayout add = VK_NULL_HANDLE;
@@ -27,23 +27,12 @@ namespace VulkanSimplified
 			throw std::runtime_error("DevicePipelineDataInternal::AddDescriptorSetLayout Error: binding list overflow!");
 
 		std::vector<VkDescriptorSetLayoutBinding> bindingList;
-		bindingList.reserve(bindingsIDList.size());
 
 		createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		
 		if (!bindingsIDList.empty())
 		{
-			for (auto& optionalID : bindingsIDList)
-			{
-				if (optionalID.has_value())
-				{
-					bindingList.push_back(_sharedPipelineLayout.GetDescriptorSetLayoutBinding(optionalID.value()));
-				}
-				else
-				{
-					bindingList.push_back(static_cast<VkDescriptorSetLayoutBinding>(VK_NULL_HANDLE));
-				}
-			}
+			bindingList = _sharedPipelineLayout.GetDescriptorSetLayoutBindingsList(bindingsIDList);
 
 			createInfo.bindingCount = static_cast<uint32_t>(bindingsIDList.size());
 			createInfo.pBindings = bindingList.data();

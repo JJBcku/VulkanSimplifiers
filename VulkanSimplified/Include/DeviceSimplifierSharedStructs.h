@@ -23,6 +23,4 @@ namespace VulkanSimplified
 		SwapchainPresentMode presentMode;
 		SwapchainImageAmount imageAmount;
 	};
-
-	using BindingIDsOptional = std::optional<ListObjectID<VkDescriptorSetLayoutBinding>>;
 }
