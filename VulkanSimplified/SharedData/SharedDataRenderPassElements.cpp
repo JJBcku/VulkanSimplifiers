@@ -15,10 +15,9 @@ namespace VulkanSimplified
 	}
 
 	ListObjectID<VkAttachmentDescription> SharedDataRenderPassElements::AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias,
-		ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID, PipelineMultisampleCount sampleCount, AttachmentLoadMode loadMode, AttachmentStoreMode storeMode,
-		AttachmentLayout initialLayout, AttachmentLayout finalLayout)
+		PipelineMultisampleCount sampleCount, AttachmentLoadMode loadMode, AttachmentStoreMode storeMode, AttachmentLayout initialLayout, AttachmentLayout finalLayout)
 	{
-		return _internal.AddAttachmentDescriptionWithSwapchainsFormat(mayAlias, instanceID, sampleCount, loadMode, storeMode, initialLayout, finalLayout);
+		return _internal.AddAttachmentDescriptionWithSwapchainsFormat(mayAlias, sampleCount, loadMode, storeMode, initialLayout, finalLayout);
 	}
 
 	ListObjectID<VkAttachmentReference> SharedDataRenderPassElements::AddAttachmentReference(uint32_t attachment, AttachmentLayout layout)

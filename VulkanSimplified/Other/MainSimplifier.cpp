@@ -9,23 +9,18 @@
 namespace VulkanSimplified
 {
 
-	MainSimplifier::MainSimplifier(size_t sharedDataReserveAmount)
+	MainSimplifier::MainSimplifier(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings)
 	{
-		_internal = std::make_unique<MainSimplifierInternal>(sharedDataReserveAmount);
+		_internal = std::make_unique<MainSimplifierInternal>(sharedDataReserveAmount, windowSettings, appSettings);
 	}
 
 	MainSimplifier::~MainSimplifier()
 	{
 	}
 
-	ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> MainSimplifier::AddInstance(WindowCreationData windowSettings, AppData appSettings)
+	BasicsSimplifier MainSimplifier::GetInstanceSimplifier()
 	{
-		return _internal->AddInstance(windowSettings, appSettings);
-	}
-
-	BasicsSimplifier MainSimplifier::GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID)
-	{
-		return BasicsSimplifier(_internal->GetInstanceSimplifier(instanceID));
+		return BasicsSimplifier(_internal->GetInstanceSimplifier());
 	}
 
 	SharedDataSimplifierCore MainSimplifier::GetSharedDataCoreSimplifier()

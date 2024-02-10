@@ -51,10 +51,9 @@ int main()
         appSettings.engineTitle = "No engine";
         appSettings.engineVersion = { 1, 0, 0, 0 };
 
-        std::unique_ptr<MainSimplifier> main = std::make_unique<MainSimplifier>(0x100);
+        std::unique_ptr<MainSimplifier> main = std::make_unique<MainSimplifier>(0x100, windowSettings, appSettings);
 
-        auto instanceID = main->AddInstance(windowSettings, appSettings);
-        auto instance = main->GetInstanceSimplifier(instanceID);
+        auto instance = main->GetInstanceSimplifier();
 
         auto deviceList = instance.GetDeviceListSimplifier();
 
@@ -94,8 +93,8 @@ int main()
 
         auto pipelineData = sharedData.GetSharedDataPipelineElements();
 
-        auto vertexPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::VERTEX, vertexShader, "main");
-        auto fragmentPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::FRAGMENT, fragmentShader, "main");
+        auto vertexPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::VERTEX, "main");
+        auto fragmentPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::FRAGMENT, "main");
 
         auto testBinding = pipelineData.AddBindingDescription(0, 0, false);
         auto testAttribute = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, 0);
@@ -130,7 +129,7 @@ int main()
 
         auto renderPassData = sharedData.GetSharedDataRenderPassElements();
 
-        auto renderPassAttachmentDescriptor = renderPassData.AddAttachmentDescriptionWithSwapchainsFormat(false, instanceID, VulkanSimplified::PipelineMultisampleCount::SAMPLE_1,
+        auto renderPassAttachmentDescriptor = renderPassData.AddAttachmentDescriptionWithSwapchainsFormat(false, VulkanSimplified::PipelineMultisampleCount::SAMPLE_1,
             VulkanSimplified::AttachmentLoadMode::CLEAR, VulkanSimplified::AttachmentStoreMode::STORE, VulkanSimplified::AttachmentLayout::IGNORED,
             VulkanSimplified::AttachmentLayout::PRESENT);
 

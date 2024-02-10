@@ -14,9 +14,9 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<ShaderStageCreationData> SharedDataPipelineElements::AddShaderPipelineData(ShaderStageType stage, ListObjectID<ShaderContainer> shader, const char* mainFunctionName)
+	ListObjectID<ShaderStageCreationData> SharedDataPipelineElements::AddShaderPipelineData(ShaderStageType stage, const char* mainFunctionName)
 	{
-		return _internal.AddShaderPipelineData(stage, shader, mainFunctionName);
+		return _internal.AddShaderPipelineData(stage, mainFunctionName);
 	}
 
 	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElements::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)

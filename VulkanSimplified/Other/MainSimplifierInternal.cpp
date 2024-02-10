@@ -4,7 +4,8 @@
 namespace VulkanSimplified
 {
 
-	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount) : _sharedData(sharedDataReserveAmount, *this)
+	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings) : _sharedData(sharedDataReserveAmount, *this),
+		_vulkanInstance(windowSettings, appSettings, _sharedData)
 	{
 	}
 
@@ -12,16 +13,9 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> MainSimplifierInternal::AddInstance(WindowCreationData windowSettings, AppData appSettings)
+	BasicsSimplifierInternal& MainSimplifierInternal::GetInstanceSimplifier()
 	{
-		std::unique_ptr<BasicsSimplifierInternal> add = std::make_unique<BasicsSimplifierInternal>(windowSettings, appSettings, _sharedData);
-
-		return _vulkanInstances.AddObject(std::move(add));
-	}
-
-	BasicsSimplifierInternal& MainSimplifierInternal::GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID)
-	{
-		return *_vulkanInstances.GetObject(instanceID);
+		return _vulkanInstance;
 	}
 
 	SharedDataSimplifierCoreInternal& MainSimplifierInternal::GetSharedDataCoreSimplifier()
@@ -29,9 +23,9 @@ namespace VulkanSimplified
 		return _sharedData;
 	}
 
-	const BasicsSimplifierInternal& MainSimplifierInternal::GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID) const
+	const BasicsSimplifierInternal& MainSimplifierInternal::GetInstanceSimplifier() const
 	{
-		return *_vulkanInstances.GetConstObject(instanceID);
+		return _vulkanInstance;
 	}
 
 	const SharedDataSimplifierCoreInternal& MainSimplifierInternal::GetSharedDataCoreSimplifier() const

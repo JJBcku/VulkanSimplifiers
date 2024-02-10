@@ -65,7 +65,7 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<VkAttachmentDescription> SharedDataRenderPassElementsInternal::AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias, ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID, PipelineMultisampleCount sampleCount,
+	ListObjectID<VkAttachmentDescription> SharedDataRenderPassElementsInternal::AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias, PipelineMultisampleCount sampleCount,
 		AttachmentLoadMode loadMode, AttachmentStoreMode storeMode, AttachmentLayout initialLayout, AttachmentLayout finalLayout)
 	{
 		VkAttachmentDescription add{};
@@ -73,7 +73,7 @@ namespace VulkanSimplified
 		if (mayAlias)
 			add.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 
-		auto& basics = _main.GetInstanceSimplifier(instanceID);
+		auto& basics = _main.GetInstanceSimplifier();
 		auto& swapchain = basics.GetSwapchainSimplifier();
 
 		add.format = swapchain.GetSwapchainFormat();

@@ -17,9 +17,9 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<ShaderStageCreationData> SharedDataPipelineElementsInternal::AddShaderPipelineData(ShaderStageType stage, ListObjectID<ShaderContainer> shader, const char* mainFunctionName)
+	ListObjectID<ShaderStageCreationData> SharedDataPipelineElementsInternal::AddShaderPipelineData(ShaderStageType stage, const char* mainFunctionName)
 	{
-		return _shaderPipelineData.AddUniqueObject(ShaderStageCreationData(stage, shader, mainFunctionName));
+		return _shaderPipelineData.AddUniqueObject(ShaderStageCreationData(stage, mainFunctionName));
 	}
 
 	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)
@@ -318,7 +318,7 @@ namespace VulkanSimplified
 		}
 	}
 
-	ShaderStageCreationData::ShaderStageCreationData(ShaderStageType stage, ListObjectID<ShaderContainer> mod, const char* name) : _mod(mod)
+	ShaderStageCreationData::ShaderStageCreationData(ShaderStageType stage, const char* name)
 	{
 		_stage = stage;
 		_name = name;
@@ -327,6 +327,20 @@ namespace VulkanSimplified
 
 	ShaderStageCreationData::~ShaderStageCreationData()
 	{
+	}
+
+	bool ShaderStageCreationData::operator==(const ShaderStageCreationData& other) const noexcept
+	{
+		if (_stage != other._stage)
+			return false;
+
+		if (_name == other._name)
+			return true;
+
+		if (_name != nullptr && other._name != nullptr)
+			return strcmp(_name, other._name) == 0;
+
+		return false;
 	}
 
 	bool PipelineViewportsStateList::operator==(const PipelineViewportsStateList& other) const noexcept

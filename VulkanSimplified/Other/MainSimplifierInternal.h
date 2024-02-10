@@ -12,22 +12,20 @@ namespace VulkanSimplified
 	class MainSimplifierInternal
 	{
 		SharedDataSimplifierCoreInternal _sharedData;
-		ListTemplate<std::unique_ptr<BasicsSimplifierInternal>> _vulkanInstances;
+		BasicsSimplifierInternal _vulkanInstance;
 
 	public:
-		MainSimplifierInternal(size_t sharedDataReserveAmount);
+		MainSimplifierInternal(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings);
 		~MainSimplifierInternal();
 
 		MainSimplifierInternal(const MainSimplifierInternal&) noexcept = delete;
 
 		MainSimplifierInternal& operator=(const MainSimplifierInternal&) = delete;
 
-		ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> AddInstance(WindowCreationData windowSettings, AppData appSettings);
-
-		BasicsSimplifierInternal& GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID);
+		BasicsSimplifierInternal& GetInstanceSimplifier();
 		SharedDataSimplifierCoreInternal& GetSharedDataCoreSimplifier();
 
-		const BasicsSimplifierInternal& GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID) const;
+		const BasicsSimplifierInternal& GetInstanceSimplifier() const;
 		const SharedDataSimplifierCoreInternal& GetSharedDataCoreSimplifier() const;
 	};
 }

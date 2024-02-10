@@ -45,7 +45,7 @@ namespace VulkanSimplified
 
 		SharedDataRenderPassElementsInternal& operator=(const SharedDataRenderPassElementsInternal&) noexcept = delete;
 
-		ListObjectID<VkAttachmentDescription> AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias, ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID, PipelineMultisampleCount sampleCount,
+		ListObjectID<VkAttachmentDescription> AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias, PipelineMultisampleCount sampleCount,
 			AttachmentLoadMode loadMode,  AttachmentStoreMode storeMode, AttachmentLayout initialLayout, AttachmentLayout finalLayout);
 		ListObjectID<VkAttachmentReference> AddAttachmentReference(uint32_t attachment, AttachmentLayout layout);
 

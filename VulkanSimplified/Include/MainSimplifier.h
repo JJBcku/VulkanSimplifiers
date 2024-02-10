@@ -16,16 +16,14 @@ namespace VulkanSimplified
 		std::unique_ptr<MainSimplifierInternal> _internal;
 
 	public:
-		MainSimplifier(size_t sharedDataReserveAmount);
+		MainSimplifier(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings);
 		~MainSimplifier();
 
 		MainSimplifier(const MainSimplifier&) noexcept = delete;
 
 		MainSimplifier& operator=(const MainSimplifier&) noexcept = delete;
 
-		ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> AddInstance(WindowCreationData windowSettings, AppData appSettings);
-
-		BasicsSimplifier GetInstanceSimplifier(ListObjectID<std::unique_ptr<BasicsSimplifierInternal>> instanceID);
+		BasicsSimplifier GetInstanceSimplifier();
 
 		SharedDataSimplifierCore GetSharedDataCoreSimplifier();
 	};
