@@ -294,6 +294,71 @@ namespace VulkanSimplified
 		return _pipelineViewportStates.AddUniqueObject({ viewportScissorPairs });
 	}
 
+	ShaderStageCreationData SharedDataPipelineElementsInternal::GetShaderStageCreationData(ListObjectID<ShaderStageCreationData> shaderDataID) const
+	{
+		return _shaderPipelineData.GetObjectCopy(shaderDataID);
+	}
+
+	VertexInputList SharedDataPipelineElementsInternal::GetVertexInputList(ListObjectID<VertexInputList> vertexInputID) const
+	{
+		return _vertexInputListDescriptions.GetObjectCopy(vertexInputID);
+	}
+
+	VkPipelineInputAssemblyStateCreateInfo SharedDataPipelineElementsInternal::GetInputAssemblyState(ListObjectID<VkPipelineInputAssemblyStateCreateInfo> inputAssemblyID) const
+	{
+		return _pipelineInputAssembly.GetObjectCopy(inputAssemblyID);
+	}
+
+	PipelineViewportsStateList SharedDataPipelineElementsInternal::GetPipelineViewportsStateList(ListObjectID<PipelineViewportsStateList> vieportsStateID) const
+	{
+		return _pipelineViewportStates.GetObjectCopy(vieportsStateID);
+	}
+
+	VkViewport SharedDataPipelineElementsInternal::GetViewport(ListObjectID<VkViewport> viewportID) const
+	{
+		return _pipelineViewports.GetObjectCopy(viewportID);
+	}
+
+	VkRect2D SharedDataPipelineElementsInternal::GetScissors(ListObjectID<VkRect2D> scissorsID) const
+	{
+		return _pipelineScissors.GetObjectCopy(scissorsID);
+	}
+
+	VkPipelineRasterizationStateCreateInfo SharedDataPipelineElementsInternal::GetPipelineRasterizationState(ListObjectID<VkPipelineRasterizationStateCreateInfo> rasterizationStateID) const
+	{
+		return _pipelineRasterizationStates.GetObjectCopy(rasterizationStateID);
+	}
+
+	VkPipelineMultisampleStateCreateInfo SharedDataPipelineElementsInternal::GetPipelineMultisampleState(ListObjectID<VkPipelineMultisampleStateCreateInfo> multisamplingStateID) const
+	{
+		return _pipelineMultiSampleStates.GetObjectCopy(multisamplingStateID);
+	}
+
+	VkPipelineDepthStencilStateCreateInfo SharedDataPipelineElementsInternal::GetPipelineDepthStencilState(ListObjectID<VkPipelineDepthStencilStateCreateInfo> depthStencilStateID) const
+	{
+		return _pipelineDepthStencilStates.GetObjectCopy(depthStencilStateID);
+	}
+
+	ColorBlendSettings SharedDataPipelineElementsInternal::GetColorBlendSettings(ListObjectID<ColorBlendSettings> colorBlendSettingsID) const
+	{
+		return _pipelineColorBlendStates.GetObjectCopy(colorBlendSettingsID);
+	}
+
+	std::vector<VkPipelineColorBlendAttachmentState> SharedDataPipelineElementsInternal::GetPipelineColorBlendAttachmentStatesList(const std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>>& pipelineColorBlendAttachmentIDs) const
+	{
+		return _pipelineBlendAttachmentStates.GetObjectListCopy(pipelineColorBlendAttachmentIDs);
+	}
+
+	std::vector<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::GetVertexInputBindingDescriptionsList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& vertexBindingsIDs) const
+	{
+		return _vertexInputBindingDescriptions.GetObjectListCopy(vertexBindingsIDs);
+	}
+
+	std::vector<VkVertexInputAttributeDescription> SharedDataPipelineElementsInternal::GetVertexInputAttributeDescriptionsList(const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& vertexAttributesIDs) const
+	{
+		return _vertexInputAttributeDescriptions.GetObjectListCopy(vertexAttributesIDs);
+	}
+
 	bool VertexInputList::operator==(const VertexInputList& other) const noexcept
 	{
 		if (_bindings.size() != other._bindings.size() || _attributes.size() != other._attributes.size())	
@@ -323,10 +388,6 @@ namespace VulkanSimplified
 		_stage = stage;
 		_name = name;
 		_ppadding = nullptr;
-	}
-
-	ShaderStageCreationData::~ShaderStageCreationData()
-	{
 	}
 
 	bool ShaderStageCreationData::operator==(const ShaderStageCreationData& other) const noexcept

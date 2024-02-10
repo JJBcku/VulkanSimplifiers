@@ -19,6 +19,8 @@ namespace VulkanSimplified
 
 		ShaderContainer& operator=(const ShaderContainer&) noexcept = delete;
 		ShaderContainer& operator=(ShaderContainer&& other) noexcept;
+
+		VkShaderModule GetShaderModule() const;
 	};
 
 	class ShaderModulesSimplifierInternal
@@ -39,5 +41,7 @@ namespace VulkanSimplified
 		ShaderModulesSimplifierInternal& operator=(ShaderModulesSimplifierInternal&&) noexcept = default;
 
 		ListObjectID<ShaderContainer> CreateShaderModule(const std::vector<unsigned char>& shaderCode);
+
+		VkShaderModule GetShaderModule(ListObjectID<ShaderContainer> shaderModuleID) const;
 	};
 }

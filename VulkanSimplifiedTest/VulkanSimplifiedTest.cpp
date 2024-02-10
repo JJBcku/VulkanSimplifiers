@@ -143,6 +143,26 @@ int main()
 
         auto renderPass = devicePipelineData.AddRenderPass({ renderPassAttachmentDescriptor }, { subpassDescriptor }, {});
 
+        VulkanSimplified::GraphicsPipelineCreateInfoList createInfo{};
+
+        createInfo._shaderStagesDataList.reserve(2);
+        createInfo._shaderStagesDataList.push_back({vertexShader, vertexPipelineData});
+        createInfo._shaderStagesDataList.push_back({fragmentShader, fragmentPipelineData});
+
+        createInfo._vertexInput = testVertexInput;
+        createInfo._inputAssembly = pipelineInputAssembly;
+        createInfo._viewportState = pipelineViewportState;
+        createInfo._rasterizationState = pipelineRasterizationState;
+        createInfo._multisamplingState = pipelineMultisampling;
+        createInfo._colorBlendState = pipelineColorBlendState;
+        createInfo._pipelineLayout = devicePipelineLayout;
+        createInfo._renderPass = renderPass;
+        createInfo._subpass = 0;
+        createInfo._basePipelineID._idType = VulkanSimplified::BasePipelineIDType::NONE;
+        createInfo._allowDerivatives = false;
+
+        auto pipeline = devicePipelineData.AddGraphicsPipelines({ createInfo });
+
         main.reset();
     }
     catch (std::exception ex)

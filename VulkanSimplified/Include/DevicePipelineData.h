@@ -32,5 +32,7 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupRenderPass> AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors,
 			const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies);
+
+		std::vector<ListObjectID<AutoCleanupGraphicsPipeline>> AddGraphicsPipelines(const std::vector<GraphicsPipelineCreateInfoList>& graphicsPipelinesDataLists);
 	};
 }

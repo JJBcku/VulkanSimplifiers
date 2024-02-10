@@ -26,4 +26,11 @@ namespace VulkanSimplified
 		MAX_MINUS_ONE = 0x10,
 		HALF_AMOUNT = 0x20,
 	};
+
+	enum class BasePipelineIDType : uint64_t
+	{
+		NONE = 0,
+		ALREADY_CREATED = 1,
+		IN_CURRENT_LIST = 2,
+	};
 }

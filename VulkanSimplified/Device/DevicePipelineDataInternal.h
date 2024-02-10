@@ -38,6 +38,8 @@ namespace VulkanSimplified
 
 		AutoCleanupPipelineLayout& operator=(const AutoCleanupPipelineLayout&) noexcept = delete;
 		AutoCleanupPipelineLayout& operator=(AutoCleanupPipelineLayout&& other) noexcept;
+
+		VkPipelineLayout GetPipelineLayout() const;
 	};
 
 	class AutoCleanupRenderPass
@@ -55,18 +57,44 @@ namespace VulkanSimplified
 
 		AutoCleanupRenderPass& operator=(const AutoCleanupRenderPass&) noexcept = delete;
 		AutoCleanupRenderPass& operator=(AutoCleanupRenderPass&& other) noexcept;
+
+		VkRenderPass GetRenderPass() const;
+	};
+
+	class AutoCleanupGraphicsPipeline
+	{
+		VkDevice _device;
+		void* _ppadding;
+		VkPipeline _pipeline;
+
+	public:
+		AutoCleanupGraphicsPipeline(VkDevice device, VkPipeline pipeline);
+		~AutoCleanupGraphicsPipeline();
+
+		AutoCleanupGraphicsPipeline(const AutoCleanupGraphicsPipeline&) noexcept = delete;
+		AutoCleanupGraphicsPipeline(AutoCleanupGraphicsPipeline&& other) noexcept;
+
+		AutoCleanupGraphicsPipeline& operator=(const AutoCleanupGraphicsPipeline&) noexcept = delete;
+		AutoCleanupGraphicsPipeline& operator=(AutoCleanupGraphicsPipeline&& other) noexcept;
+
+		VkPipeline GetGraphicsPipeline() const;
 	};
 
 	class SharedDataSimplifierCoreInternal;
 	class SharedDataPipelineLayoutElementsInternal;
+	class SharedDataPipelineElementsInternal;
 	class SharedDataRenderPassElementsInternal;
+
+	class ShaderModulesSimplifierInternal;
 
 	struct SubpassDescriptionData;
 
 	class DevicePipelineDataInternal
 	{
 		const SharedDataPipelineLayoutElementsInternal& _sharedPipelineLayout;
+		const SharedDataPipelineElementsInternal& _sharedPipelineData;
 		const SharedDataRenderPassElementsInternal& _sharedRenderPass;
+		const ShaderModulesSimplifierInternal& _deviceShaderList;
 
 		VkDevice _device;
 		void* _ppadding;
@@ -74,9 +102,10 @@ namespace VulkanSimplified
 		ListTemplate<AutoCleanupDescriptorSetLayout> _descriptorSetLayouts;
 		ListTemplate<AutoCleanupPipelineLayout> _pipelineLayouts;
 		ListTemplate<AutoCleanupRenderPass> _renderPasses;
+		ListTemplate<AutoCleanupGraphicsPipeline> _graphicsPipelines;
 
 	public:
-		DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList);
+		DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList, const ShaderModulesSimplifierInternal& deviceShaderList);
 		~DevicePipelineDataInternal();
 
 		DevicePipelineDataInternal(const DevicePipelineDataInternal&) noexcept = delete;
@@ -91,5 +120,11 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupRenderPass> AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors,
 			const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies);
+
+		std::vector<ListObjectID<AutoCleanupGraphicsPipeline>> AddGraphicsPipelines(const std::vector<GraphicsPipelineCreateInfoList>& graphicsPipelinesDataLists);
+
+		VkPipelineLayout GetPipelineLayout(ListObjectID<AutoCleanupPipelineLayout> pipelineLayoutID) const;
+		VkRenderPass GetRenderPass(ListObjectID<AutoCleanupRenderPass> renderPassID) const;
+		VkPipeline GetGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID) const;
 	};
 }

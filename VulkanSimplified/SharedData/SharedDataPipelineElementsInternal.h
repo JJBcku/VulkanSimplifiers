@@ -37,7 +37,6 @@ namespace VulkanSimplified
 
 	public:
 		ShaderStageCreationData(ShaderStageType stage, const char* name);
-		~ShaderStageCreationData();
 
 		bool operator==(const ShaderStageCreationData& other) const noexcept;
 	};
@@ -105,5 +104,24 @@ namespace VulkanSimplified
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);
 		ListObjectID<PipelineViewportsStateList> AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs);
+
+		ShaderStageCreationData GetShaderStageCreationData(ListObjectID<ShaderStageCreationData> shaderDataID) const;
+		VertexInputList GetVertexInputList(ListObjectID<VertexInputList> vertexInputID) const;
+
+		VkPipelineInputAssemblyStateCreateInfo GetInputAssemblyState(ListObjectID<VkPipelineInputAssemblyStateCreateInfo> inputAssemblyID) const;
+		PipelineViewportsStateList GetPipelineViewportsStateList(ListObjectID<PipelineViewportsStateList> vieportsStateID) const;
+
+		VkViewport GetViewport(ListObjectID<VkViewport> viewportID) const;
+		VkRect2D GetScissors(ListObjectID<VkRect2D> scissorsID) const;
+
+		VkPipelineRasterizationStateCreateInfo GetPipelineRasterizationState(ListObjectID<VkPipelineRasterizationStateCreateInfo> rasterizationStateID) const;
+		VkPipelineMultisampleStateCreateInfo GetPipelineMultisampleState(ListObjectID<VkPipelineMultisampleStateCreateInfo> multisamplingStateID) const;
+		VkPipelineDepthStencilStateCreateInfo GetPipelineDepthStencilState(ListObjectID<VkPipelineDepthStencilStateCreateInfo> depthStencilStateID) const;
+
+		ColorBlendSettings GetColorBlendSettings(ListObjectID<ColorBlendSettings> colorBlendSettingsID) const;
+
+		std::vector<VkVertexInputBindingDescription> GetVertexInputBindingDescriptionsList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& vertexBindingsIDs) const;
+		std::vector<VkVertexInputAttributeDescription> GetVertexInputAttributeDescriptionsList(const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& vertexAttributesIDs) const;
+		std::vector<VkPipelineColorBlendAttachmentState> GetPipelineColorBlendAttachmentStatesList(const std::vector<ListObjectID<VkPipelineColorBlendAttachmentState>>& pipelineColorBlendAttachmentIDs) const;
 	};
 }

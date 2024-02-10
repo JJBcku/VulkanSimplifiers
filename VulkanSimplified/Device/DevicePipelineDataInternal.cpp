@@ -6,11 +6,14 @@
 #include "../SharedData/SharedDataPipelineElementsInternal.h"
 #include "../SharedData/SharedDataRenderPassElementsInternal.h"
 
+#include "ShaderModulesSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 
-	DevicePipelineDataInternal::DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList) :
-		_sharedPipelineLayout(sharedDataList.GetConstSharedDataPipelineLayoutElements()), _sharedRenderPass(sharedDataList.GetSharedDataRenderPassElements())
+	DevicePipelineDataInternal::DevicePipelineDataInternal(VkDevice device, const SharedDataSimplifierCoreInternal& sharedDataList, const ShaderModulesSimplifierInternal& deviceShaderList) :
+		_sharedPipelineLayout(sharedDataList.GetConstSharedDataPipelineLayoutElements()), _sharedPipelineData(sharedDataList.GetConstSharedDataPipelineElements()),
+		_sharedRenderPass(sharedDataList.GetSharedDataRenderPassElements()), _deviceShaderList(deviceShaderList)
 	{
 		_device = device;
 		_ppadding = nullptr;
@@ -240,6 +243,277 @@ namespace VulkanSimplified
 		return _renderPasses.AddObject(AutoCleanupRenderPass(_device, add));
 	}
 
+	std::vector<ListObjectID<AutoCleanupGraphicsPipeline>> DevicePipelineDataInternal::AddGraphicsPipelines(const std::vector<GraphicsPipelineCreateInfoList>& graphicsPipelinesDataLists)
+	{
+		std::vector<ListObjectID<AutoCleanupGraphicsPipeline>> ret;
+		if (graphicsPipelinesDataLists.empty())
+			throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: Function was given no pipelines creation data!");
+
+		if (graphicsPipelinesDataLists.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: graphic pipelines creation data list overflowed!");
+
+		std::vector<VkGraphicsPipelineCreateInfo> _createInfosList;
+
+		std::vector<std::vector<VkPipelineShaderStageCreateInfo>> _shaderInfoList;
+
+		std::vector<std::vector<VkVertexInputBindingDescription>> _vertexInputBindingsList;
+		std::vector<std::vector<VkVertexInputAttributeDescription>> _vertexInputAttributesList;
+		std::vector<VkPipelineVertexInputStateCreateInfo> _vertexInputStatesList;
+
+		std::vector<VkPipelineInputAssemblyStateCreateInfo> _inputAssemblyStatesList;
+
+		std::vector<VkPipelineViewportStateCreateInfo> _pipelineViewportStatesList;
+		std::vector<std::vector<VkViewport>> _pipelineViewportList;
+		std::vector<std::vector<VkRect2D>> _pipelineViewportScissorsList;
+
+		std::vector<VkPipelineRasterizationStateCreateInfo> _pipelineRasterizationStatesList;
+		std::vector<VkPipelineMultisampleStateCreateInfo> _pipelineMultisamplingStatesList;
+		std::vector<VkPipelineDepthStencilStateCreateInfo> _pipelineDepthStencilStatesList;
+
+		std::vector<VkPipelineColorBlendStateCreateInfo> _pipelineColorBlendStatesList;
+		std::vector<std::vector<VkPipelineColorBlendAttachmentState>> _pipelineColorBlendAttachmentsList;
+
+		_createInfosList.reserve(graphicsPipelinesDataLists.size());
+		_vertexInputStatesList.reserve(graphicsPipelinesDataLists.size());
+		_inputAssemblyStatesList.reserve(graphicsPipelinesDataLists.size());
+		_pipelineViewportStatesList.reserve(graphicsPipelinesDataLists.size());
+		_pipelineRasterizationStatesList.reserve(graphicsPipelinesDataLists.size());
+		_pipelineMultisamplingStatesList.reserve(graphicsPipelinesDataLists.size());
+		_pipelineDepthStencilStatesList.reserve(graphicsPipelinesDataLists.size());
+		_pipelineColorBlendStatesList.reserve(graphicsPipelinesDataLists.size());
+
+		_shaderInfoList.resize(graphicsPipelinesDataLists.size());
+		_vertexInputBindingsList.resize(graphicsPipelinesDataLists.size());
+		_vertexInputAttributesList.resize(graphicsPipelinesDataLists.size());
+		_pipelineViewportList.resize(graphicsPipelinesDataLists.size());
+		_pipelineViewportScissorsList.resize(graphicsPipelinesDataLists.size());
+		_pipelineColorBlendAttachmentsList.resize(graphicsPipelinesDataLists.size());
+
+		for (size_t i = 0; i < graphicsPipelinesDataLists.size(); ++i)
+		{
+			VkGraphicsPipelineCreateInfo pipelineCreateInfo{};
+			pipelineCreateInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+
+			auto& pipelineData = graphicsPipelinesDataLists[i];
+
+			if (pipelineData._shaderStagesDataList.size() > std::numeric_limits<uint32_t>::max())
+				throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: shader stages data list overflowed!");
+
+			_shaderInfoList[i].reserve(pipelineData._shaderStagesDataList.size());
+
+			for (size_t j = 0; j < pipelineData._shaderStagesDataList.size(); ++j)
+			{
+				auto& shaderData = pipelineData._shaderStagesDataList[j];
+
+				auto shaderStageData = _sharedPipelineData.GetShaderStageCreationData(shaderData.second);
+
+				VkPipelineShaderStageCreateInfo add{};
+				add.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+				add.module = _deviceShaderList.GetShaderModule(shaderData.first);
+				add.pName = shaderStageData._name;
+
+				switch (shaderStageData._stage)
+				{
+				case VulkanSimplified::ShaderStageType::VERTEX:
+					add.stage = VK_SHADER_STAGE_VERTEX_BIT;
+					break;
+				case VulkanSimplified::ShaderStageType::FRAGMENT:
+					add.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+					break;
+				default:
+					break;
+				}
+
+				_shaderInfoList[i].push_back(add);
+			}
+
+			pipelineCreateInfo.stageCount = static_cast<uint32_t>(_shaderInfoList[i].size());
+			pipelineCreateInfo.pStages = _shaderInfoList[i].data();
+
+			{
+				auto vertexInputDataList = _sharedPipelineData.GetVertexInputList(pipelineData._vertexInput);
+
+				if (vertexInputDataList._bindings.size() > std::numeric_limits<uint32_t>::max())
+					throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: vertex input bindings data list overflowed!");
+
+				if (vertexInputDataList._attributes.size() > std::numeric_limits<uint32_t>::max())
+					throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: vertex input attributes data list overflowed!");
+
+				VkPipelineVertexInputStateCreateInfo vertexInputCreateInfo{};
+				vertexInputCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+
+				if (!vertexInputDataList._bindings.empty())
+				{
+					_vertexInputBindingsList[i] = _sharedPipelineData.GetVertexInputBindingDescriptionsList(vertexInputDataList._bindings);
+
+					vertexInputCreateInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(vertexInputDataList._bindings.size());
+					vertexInputCreateInfo.pVertexBindingDescriptions = _vertexInputBindingsList[i].data();
+				}
+
+				if (!vertexInputDataList._attributes.empty())
+				{
+					_vertexInputAttributesList[i] = _sharedPipelineData.GetVertexInputAttributeDescriptionsList(vertexInputDataList._attributes);
+
+					vertexInputCreateInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(vertexInputDataList._attributes.size());
+					vertexInputCreateInfo.pVertexAttributeDescriptions = _vertexInputAttributesList[i].data();
+				}
+
+				_vertexInputStatesList.push_back(vertexInputCreateInfo);
+				pipelineCreateInfo.pVertexInputState = &_vertexInputStatesList.back();
+			}
+
+			{
+				_inputAssemblyStatesList.push_back(_sharedPipelineData.GetInputAssemblyState(pipelineData._inputAssembly));
+
+				pipelineCreateInfo.pInputAssemblyState = &_inputAssemblyStatesList.back();
+			}
+
+			{
+				auto viewportData = _sharedPipelineData.GetPipelineViewportsStateList(pipelineData._viewportState);
+
+				VkPipelineViewportStateCreateInfo viewportCreateInfo{};
+				viewportCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+
+				if (!viewportData._viewportScissorPairs.empty())
+				{
+					if (viewportData._viewportScissorPairs.size() > std::numeric_limits<uint32_t>::max())
+						throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: viewport and scissor pair list overflowed!");
+
+					_pipelineViewportList[i].reserve(viewportData._viewportScissorPairs.size());
+					_pipelineViewportScissorsList[i].reserve(viewportData._viewportScissorPairs.size());
+
+					for (size_t j = 0; j < viewportData._viewportScissorPairs.size(); ++j)
+					{
+						_pipelineViewportList[i].push_back(_sharedPipelineData.GetViewport(viewportData._viewportScissorPairs[j].first));
+						_pipelineViewportScissorsList[i].push_back(_sharedPipelineData.GetScissors(viewportData._viewportScissorPairs[j].second));
+					}
+
+					viewportCreateInfo.viewportCount = static_cast<uint32_t>(viewportData._viewportScissorPairs.size());
+					viewportCreateInfo.scissorCount = static_cast<uint32_t>(viewportData._viewportScissorPairs.size());
+
+					viewportCreateInfo.pViewports = _pipelineViewportList[i].data();
+					viewportCreateInfo.pScissors = _pipelineViewportScissorsList[i].data();
+				}
+
+				_pipelineViewportStatesList.push_back(viewportCreateInfo);
+				pipelineCreateInfo.pViewportState = &_pipelineViewportStatesList.back();
+			}
+
+			{
+				_pipelineRasterizationStatesList.push_back(_sharedPipelineData.GetPipelineRasterizationState(pipelineData._rasterizationState));
+				pipelineCreateInfo.pRasterizationState = &_pipelineRasterizationStatesList.back();
+
+				_pipelineMultisamplingStatesList.push_back(_sharedPipelineData.GetPipelineMultisampleState(pipelineData._multisamplingState));
+				pipelineCreateInfo.pMultisampleState = &_pipelineMultisamplingStatesList.back();
+
+				if (pipelineData._depthStencilState.has_value())
+				{
+					_pipelineDepthStencilStatesList.push_back(_sharedPipelineData.GetPipelineDepthStencilState(pipelineData._depthStencilState.value()));
+					pipelineCreateInfo.pDepthStencilState = &_pipelineDepthStencilStatesList.back();
+				}
+			}
+
+			{
+				auto colorBlendingData = _sharedPipelineData.GetColorBlendSettings(pipelineData._colorBlendState);
+				
+				if (colorBlendingData._attachments.size() > std::numeric_limits<uint32_t>::max())
+					throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: color blending attachments list overflowed!");
+
+				VkPipelineColorBlendStateCreateInfo colorBlendCreateInfo{};
+				colorBlendCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+				colorBlendCreateInfo.blendConstants[0] = colorBlendingData._blendConstantR;
+				colorBlendCreateInfo.blendConstants[1] = colorBlendingData._blendConstantG;
+				colorBlendCreateInfo.blendConstants[2] = colorBlendingData._blendConstantB;
+				colorBlendCreateInfo.blendConstants[3] = colorBlendingData._blendConstantA;
+
+				if (!colorBlendingData._attachments.empty())
+				{
+					_pipelineColorBlendAttachmentsList[i] = _sharedPipelineData.GetPipelineColorBlendAttachmentStatesList(colorBlendingData._attachments);
+
+					colorBlendCreateInfo.attachmentCount = static_cast<uint32_t>(colorBlendingData._attachments.size());
+					colorBlendCreateInfo.pAttachments = _pipelineColorBlendAttachmentsList[i].data();
+				}
+
+				_pipelineColorBlendStatesList.push_back(colorBlendCreateInfo);
+				pipelineCreateInfo.pColorBlendState = &_pipelineColorBlendStatesList.back();
+			}
+
+			{
+				pipelineCreateInfo.layout = GetPipelineLayout(pipelineData._pipelineLayout);
+				pipelineCreateInfo.renderPass = GetRenderPass(pipelineData._renderPass);
+				pipelineCreateInfo.subpass = pipelineData._subpass;
+			}
+
+			{
+				pipelineCreateInfo.basePipelineIndex = -1;
+				pipelineCreateInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+				if (pipelineData._basePipelineID._idType != VulkanSimplified::BasePipelineIDType::NONE)
+				{
+					if (pipelineData._basePipelineID._idType == VulkanSimplified::BasePipelineIDType::ALREADY_CREATED)
+					{
+						pipelineCreateInfo.basePipelineHandle = GetGraphicsPipeline(pipelineData._basePipelineID._outsideID._basePipelineOutsideID);
+					}
+					else
+					{
+						size_t baseId = pipelineData._basePipelineID._insideID._basePipelineCurrentListID;
+
+						if (baseId >= std::numeric_limits<uint32_t>::max())
+							throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: base pipeline inside ID overflow!");
+
+						if (baseId >= graphicsPipelinesDataLists.size())
+							throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: base pipeline inside ID points outside the pipeline list!");
+
+						if (baseId >= i)
+							throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: base pipeline inside ID must point to an pipeline placed before this one in the list!");
+
+						pipelineCreateInfo.basePipelineIndex = static_cast<int32_t>(baseId);
+					}
+				}
+			}
+
+#if defined(_DEBUG) || defined(DEBUG) || defined(DEBUG_UTILS)
+			pipelineCreateInfo.flags |= VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT;
+#endif
+
+			if (pipelineData._allowDerivatives)
+				pipelineCreateInfo.flags |= VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT;
+
+			_createInfosList.push_back(pipelineCreateInfo);
+		}
+
+		std::vector<VkPipeline> output;
+		output.resize(graphicsPipelinesDataLists.size());
+
+		if (vkCreateGraphicsPipelines(_device, VK_NULL_HANDLE, static_cast<uint32_t>(_createInfosList.size()), _createInfosList.data(), nullptr, output.data()) != VK_SUCCESS)
+		{
+			throw std::runtime_error("DevicePipelineDataInternal::AddGraphicsPipelines Error: Program failed to create the graphic pipelines!");
+		}
+
+		ret.reserve(output.size());
+		for (auto& pipeline : output)
+		{
+			ret.emplace_back(_graphicsPipelines.AddObject(AutoCleanupGraphicsPipeline(_device, pipeline)));
+		}
+
+		return ret;
+	}
+
+	VkPipelineLayout DevicePipelineDataInternal::GetPipelineLayout(ListObjectID<AutoCleanupPipelineLayout> pipelineLayoutID) const
+	{
+		return _pipelineLayouts.GetConstObject(pipelineLayoutID).GetPipelineLayout();
+	}
+
+	VkRenderPass DevicePipelineDataInternal::GetRenderPass(ListObjectID<AutoCleanupRenderPass> renderPassID) const
+	{
+		return _renderPasses.GetConstObject(renderPassID).GetRenderPass();
+	}
+
+	VkPipeline DevicePipelineDataInternal::GetGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID) const
+	{
+		return _graphicsPipelines.GetConstObject(graphicsPipelineID).GetGraphicsPipeline();
+	}
+
 	AutoCleanupDescriptorSetLayout::AutoCleanupDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout)
 	{
 		_device = device;
@@ -314,6 +588,11 @@ namespace VulkanSimplified
 		return *this;
 	}
 
+	VkPipelineLayout AutoCleanupPipelineLayout::GetPipelineLayout() const
+	{
+		return _pipelineLayout;
+	}
+
 	AutoCleanupRenderPass::AutoCleanupRenderPass(VkDevice device, VkRenderPass renderPass) : _device(device), _ppadding(nullptr), _renderPass(renderPass)
 	{
 	}
@@ -342,6 +621,44 @@ namespace VulkanSimplified
 		other._renderPass = VK_NULL_HANDLE;
 
 		return *this;
+	}
+
+	VkRenderPass AutoCleanupRenderPass::GetRenderPass() const
+	{
+		return _renderPass;
+	}
+
+	AutoCleanupGraphicsPipeline::AutoCleanupGraphicsPipeline(VkDevice device, VkPipeline pipeline) : _device(device), _ppadding(nullptr), _pipeline(pipeline)
+	{
+	}
+
+	AutoCleanupGraphicsPipeline::~AutoCleanupGraphicsPipeline()
+	{
+		if (_pipeline != VK_NULL_HANDLE)
+			vkDestroyPipeline(_device, _pipeline, nullptr);
+	}
+
+	AutoCleanupGraphicsPipeline::AutoCleanupGraphicsPipeline(AutoCleanupGraphicsPipeline&& other) noexcept : _device(other._device), _ppadding(nullptr), _pipeline(other._pipeline)
+	{
+		other._device = VK_NULL_HANDLE;
+		other._pipeline = VK_NULL_HANDLE;
+	}
+
+	AutoCleanupGraphicsPipeline& AutoCleanupGraphicsPipeline::operator=(AutoCleanupGraphicsPipeline&& other) noexcept
+	{
+		_device = other._device;
+		_ppadding = nullptr;
+		_pipeline = other._pipeline;
+
+		other._device = VK_NULL_HANDLE;
+		other._pipeline = VK_NULL_HANDLE;
+
+		return *this;
+	}
+
+	VkPipeline AutoCleanupGraphicsPipeline::GetGraphicsPipeline() const
+	{
+		return _pipeline;
 	}
 
 }

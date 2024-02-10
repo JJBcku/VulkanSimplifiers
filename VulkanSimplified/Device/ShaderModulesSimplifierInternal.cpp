@@ -38,6 +38,11 @@ namespace VulkanSimplified
 		return _shaderModules.AddObject(std::move(add));
 	}
 
+	VkShaderModule ShaderModulesSimplifierInternal::GetShaderModule(ListObjectID<ShaderContainer> shaderModuleID) const
+	{
+		return _shaderModules.GetConstObject(shaderModuleID).GetShaderModule();
+	}
+
 	ShaderContainer::ShaderContainer()
 	{
 		_module = VK_NULL_HANDLE;
@@ -78,6 +83,11 @@ namespace VulkanSimplified
 		other._module = VK_NULL_HANDLE;
 
 		return *this;
+	}
+
+	VkShaderModule ShaderContainer::GetShaderModule() const
+	{
+		return _module;
 	}
 
 }

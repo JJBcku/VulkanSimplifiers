@@ -10,7 +10,7 @@ namespace VulkanSimplified
 		IDType _id;
 
 	public:
-		ListObjectID(IDType id) { _id = id; }
+		ListObjectID(IDType id = std::numeric_limits<IDType>::max()) { _id = id; }
 		ListObjectID(const ListObjectID& other) = default;
 		ListObjectID(ListObjectID&& other) noexcept = default;
 
@@ -127,18 +127,18 @@ namespace VulkanSimplified
 	template <class T>
 	class ListTemplate
 	{
-		IDType _nextID, _lastID;
+		IDType _nextID;
 		std::vector<ListObjectTemplate<T>> _list;
 		std::vector<size_t> _deletedList;
 
 		IDType GetNextId()
 		{
-			if (_nextID == std::numeric_limits<IDType>::lowest() && _lastID != _nextID)
+			IDType ret = _nextID;
+			if (_nextID == std::numeric_limits<IDType>::max())
 				throw std::runtime_error("ListTemplate Error: Id system overflowed!");
 
-			_lastID = _nextID;
 			_nextID++;
-			return _lastID;
+			return ret;
 		}
 
 	public:
@@ -146,7 +146,6 @@ namespace VulkanSimplified
 		ListTemplate(size_t reserve = 0)
 		{
 			_nextID = std::numeric_limits<IDType>::lowest();
-			_lastID = _nextID;
 
 			if (reserve != 0)
 			{
