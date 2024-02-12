@@ -147,10 +147,15 @@ namespace VulkanSimplified
 		return _attachmentDescriptions.AddUniqueObject(add);
 	}
 
-	ListObjectID<VkAttachmentReference> SharedDataRenderPassElementsInternal::AddAttachmentReference(uint32_t attachment, AttachmentLayout layout)
+	ListObjectID<VkAttachmentReference> SharedDataRenderPassElementsInternal::AddAttachmentReference(std::optional<uint32_t> attachment, AttachmentLayout layout)
 	{
 		VkAttachmentReference add{};
-		add.attachment = attachment;
+		
+		if (attachment.has_value())
+			add.attachment = attachment.value();
+		else
+			add.attachment = VK_ATTACHMENT_UNUSED;
+
 		add.layout = GetImageLayout(layout);
 
 		if (add.layout == VK_IMAGE_LAYOUT_MAX_ENUM)

@@ -26,7 +26,7 @@ namespace VulkanSimplified
 
 		ListObjectID<VkAttachmentDescription> AddAttachmentDescriptionWithSwapchainsFormat(bool mayAlias, PipelineMultisampleCount sampleCount,
 			AttachmentLoadMode loadMode, AttachmentStoreMode storeMode, AttachmentLayout initialLayout, AttachmentLayout finalLayout);
-		ListObjectID<VkAttachmentReference> AddAttachmentReference(uint32_t attachment, AttachmentLayout layout);
+		ListObjectID<VkAttachmentReference> AddAttachmentReference(std::optional<uint32_t> attachment, AttachmentLayout layout);
 
 		ListObjectID<SubpassDescriptionData> AddSubpassDescriptorNoDepth(PipelineBindPoint bindPoint, const std::vector<ListObjectID<VkAttachmentReference>>& inputAttachments,
 			const std::vector<ListObjectID<VkAttachmentReference>>& colorAttachments, const std::vector<ListObjectID<VkAttachmentReference>>& preserveAttachments);
