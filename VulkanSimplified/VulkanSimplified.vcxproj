@@ -200,6 +200,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Basics\BasicsSimplifierInternal.h" />
+    <ClInclude Include="Include\DeviceCommandRecorder.h" />
+    <ClInclude Include="Device\DeviceCommandRecorderInternal.h" />
     <ClInclude Include="Include\DeviceCommandBufferSimplifier.h" />
     <ClInclude Include="Device\DeviceCommandBufferSimplifierInternal.h" />
     <ClInclude Include="Include\DeviceImageSimplifier.h" />
@@ -243,6 +245,8 @@
     <ClCompile Include="Basics\BasicsSimplifier.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierInternal.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierSharedStructs.cpp" />
+    <ClCompile Include="Device\DeviceCommandRecorder.cpp" />
+    <ClCompile Include="Device\DeviceCommandRecorderInternal.cpp" />
     <ClCompile Include="Device\DeviceCommandBufferSimplifier.cpp" />
     <ClCompile Include="Device\DeviceCommandBufferSimplifierInternal.cpp" />
     <ClCompile Include="Device\DeviceImageSimplifier.cpp" />

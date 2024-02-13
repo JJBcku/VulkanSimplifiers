@@ -191,7 +191,7 @@ namespace VulkanSimplified
 			}
 		}
 
-		const ListObjectID<T> AddUniqueObject(const T& value, size_t add = 0)
+		ListObjectID<T> AddUniqueObject(const T& value, size_t add = 0)
 		{
 			auto found = std::find(_list.cbegin(), _list.cend(), value);
 
@@ -218,7 +218,7 @@ namespace VulkanSimplified
 			}
 		}
 
-		const ListObjectID<T> AddUniqueObject(T&& value, size_t add = 0)
+		ListObjectID<T> AddUniqueObject(T&& value, size_t add = 0)
 		{
 			auto found = std::find(_list.cbegin(), _list.cend(), value);
 
@@ -245,7 +245,7 @@ namespace VulkanSimplified
 			}
 		}
 
-		const ListObjectID<T> AddObject(const T& value, size_t add = 0)
+		ListObjectID<T> AddObject(const T& value, size_t add = 0)
 		{
 			if (!_deletedList.empty())
 			{
@@ -263,7 +263,7 @@ namespace VulkanSimplified
 			}
 		}
 
-		const ListObjectID<T> AddObject(T&& value, size_t add = 0)
+		ListObjectID<T> AddObject(T&& value, size_t add = 0)
 		{
 			if (!_deletedList.empty())
 			{

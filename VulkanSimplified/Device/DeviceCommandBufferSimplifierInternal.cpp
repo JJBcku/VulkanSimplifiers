@@ -2,6 +2,7 @@
 #include "DeviceCommandBufferSimplifierInternal.h"
 
 #include "DeviceCoreSimplifierInternal.h"
+#include "DeviceCommandRecorderInternal.h"
 
 namespace VulkanSimplified
 {
@@ -34,6 +35,71 @@ namespace VulkanSimplified
 		return _commandPools.AddObject(AutoCleanupCommandPool(_device, add));
 	}
 
+	ListObjectID<DeviceCommandRecorderInternal> DeviceCommandBufferSimplifierInternal::AddCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool, bool primaryBuffer)
+	{
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.commandPool = GetCommandPool(commandPool);
+
+		if (primaryBuffer)
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		else
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+
+		allocInfo.commandBufferCount = 1;
+
+		VkCommandBuffer add = VK_NULL_HANDLE;
+
+		if (vkAllocateCommandBuffers(_device, &allocInfo, &add) != VK_SUCCESS)
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::AddCommandBuffer Error: Program failed to allocate the command buffer!");
+
+		return _commandBuffers.AddObject(DeviceCommandRecorderInternal(add));
+	}
+
+	std::vector<ListObjectID<DeviceCommandRecorderInternal>> DeviceCommandBufferSimplifierInternal::AddCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool,
+		uint32_t bufferAmount, bool primaryBuffers)
+	{
+		std::vector<ListObjectID<DeviceCommandRecorderInternal>> ret;
+
+		if (bufferAmount == 0)
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::AddCommandBuffers Error: Program tried to create zero command buffers!");
+
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.commandPool = GetCommandPool(commandPool);
+
+		if (primaryBuffers)
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		else
+			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+
+		allocInfo.commandBufferCount = bufferAmount;
+
+		std::vector<VkCommandBuffer> list(bufferAmount, VK_NULL_HANDLE);
+
+		if (vkAllocateCommandBuffers(_device, &allocInfo, list.data()) != VK_SUCCESS)
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::AddCommandBuffers Error: Program failed to allocate the command buffers!");
+
+		ret.reserve(bufferAmount);
+
+		for (size_t i = 0; i < list.size(); ++i)
+		{
+			ret.push_back(_commandBuffers.AddObject(list[i]));
+		}
+
+		return ret;
+	}
+
+	VkCommandPool DeviceCommandBufferSimplifierInternal::GetCommandPool(ListObjectID<AutoCleanupCommandPool> commandPoolID) const
+	{
+		return _commandPools.GetConstObject(commandPoolID).GetCommandPool();
+	}
+
+	DeviceCommandRecorderInternal& DeviceCommandBufferSimplifierInternal::GetDeviceCommandBufferRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID)
+	{
+		return _commandBuffers.GetObject(commandBufferID);
+	}
+
 	AutoCleanupCommandPool::AutoCleanupCommandPool(VkDevice device, VkCommandPool commandPool) : _device(device), _ppadding(nullptr), _commandPool(commandPool)
 	{
 	}
@@ -62,6 +128,11 @@ namespace VulkanSimplified
 		other._commandPool = VK_NULL_HANDLE;
 
 		return *this;
+	}
+
+	VkCommandPool AutoCleanupCommandPool::GetCommandPool() const
+	{
+		return _commandPool;
 	}
 
 }

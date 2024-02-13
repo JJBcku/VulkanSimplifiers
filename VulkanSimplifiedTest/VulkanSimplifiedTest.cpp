@@ -174,6 +174,10 @@ int main()
 
         auto commandPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::GRAPHICS, true, true);
 
+        auto commandBufferID = commandBufferList.AddCommandBuffer(commandPool, true);
+
+        auto commandRecorder = commandBufferList.GetCommandBufferRecorder(commandBufferID);
+
         main.reset();
     }
     catch (std::exception ex)
