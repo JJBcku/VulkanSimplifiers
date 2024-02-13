@@ -55,7 +55,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _attachmentDescriptions(reserve),
+	SharedDataRenderPassElementsInternal::SharedDataRenderPassElementsInternal(size_t reserve, const SwapchainSimplifierInternal& ref) : _swapchain(ref), _attachmentDescriptions(reserve),
 		_attachmentReferences(reserve), _subpassDescriptions(reserve), _subpassDependencies(reserve)
 	{
 		_ppadding = nullptr;
@@ -73,10 +73,7 @@ namespace VulkanSimplified
 		if (mayAlias)
 			add.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
 
-		auto& basics = _main.GetInstanceSimplifier();
-		auto& swapchain = basics.GetSwapchainSimplifier();
-
-		add.format = swapchain.GetSwapchainFormat();
+		add.format = _swapchain.GetSwapchainFormat();
 
 		switch (sampleCount)
 		{

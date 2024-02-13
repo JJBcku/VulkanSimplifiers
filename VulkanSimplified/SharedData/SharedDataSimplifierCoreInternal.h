@@ -6,11 +6,11 @@
 
 namespace VulkanSimplified
 {
-	class MainSimplifierInternal;
+	class BasicsSimplifierInternal;
 
 	class SharedDataSimplifierCoreInternal
 	{
-		const MainSimplifierInternal& _main;
+		const BasicsSimplifierInternal& _basic;
 		void* _ppadding;
 
 		SharedDataPipelineElementsInternal _pipelineData;
@@ -18,7 +18,7 @@ namespace VulkanSimplified
 		SharedDataRenderPassElementsInternal _renderPassData;
 
 	public:
-		SharedDataSimplifierCoreInternal(size_t reserve, const MainSimplifierInternal& ref);
+		SharedDataSimplifierCoreInternal(size_t reserve, const BasicsSimplifierInternal& ref);
 		~SharedDataSimplifierCoreInternal();
 
 		SharedDataSimplifierCoreInternal(const SharedDataSimplifierCoreInternal&) noexcept = delete;

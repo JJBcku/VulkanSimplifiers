@@ -6,8 +6,8 @@
 namespace VulkanSimplified
 {
 
-	SharedDataSimplifierCoreInternal::SharedDataSimplifierCoreInternal(size_t reserve, const MainSimplifierInternal& ref) : _main(ref), _pipelineData(reserve),
-		_pipelineLayoutData(reserve), _renderPassData(reserve, ref)
+	SharedDataSimplifierCoreInternal::SharedDataSimplifierCoreInternal(size_t reserve, const BasicsSimplifierInternal& ref) : _basic(ref), _pipelineData(reserve),
+		_pipelineLayoutData(reserve), _renderPassData(reserve, ref.GetSwapchainSimplifier())
 	{
 		_ppadding = nullptr;
 	}

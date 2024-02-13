@@ -9,6 +9,7 @@
 namespace VulkanSimplified
 {
 	class SurfaceSimplifierInternal;
+	class SwapchainSimplifierInternal;
 	class VulkanCoreSimplifierInternal;
 
 	struct QueueFamilies;
@@ -90,9 +91,8 @@ namespace VulkanSimplified
 	{
 		const VulkanCoreSimplifierInternal& _coreSimplifier;
 		const SurfaceSimplifierInternal& _surfaceSimplifier;
+		const SwapchainSimplifierInternal& _swapchain;
 		const SharedDataSimplifierCoreInternal& _sharedDataList;
-
-		void* _ppadding;
 
 		ListTemplate<std::function<intmax_t (const SimplifiedDeviceInfo&)>> _scoringFunctions;
 		std::vector<DeviceScore> _deviceScoresList;
@@ -114,7 +114,8 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
 
 	public:
-		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier, const SharedDataSimplifierCoreInternal& sharedDataList);
+		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier, const SwapchainSimplifierInternal& swapchain,
+			const SharedDataSimplifierCoreInternal& sharedDataList);
 		~DeviceListSimplifierInternal();
 
 		DeviceListSimplifierInternal(const DeviceListSimplifierInternal&) = delete;

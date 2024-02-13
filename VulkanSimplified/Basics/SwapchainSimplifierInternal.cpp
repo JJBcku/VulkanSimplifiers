@@ -238,6 +238,11 @@ namespace VulkanSimplified
 		return _format;
 	}
 
+	std::vector<VkImageView> SwapchainSimplifierInternal::GetSwapchainImageViewList() const
+	{
+		return _swapchainImageViews;
+	}
+
 	void SwapchainSimplifierInternal::GetSwapchainImages()
 	{
 		uint32_t imagesAmount = 0;

@@ -469,7 +469,7 @@ namespace VulkanSimplified
 		createDeviceInfo = _deviceList[_deviceScoresList[fullPosition].GetDeviceID()].first;
 		physicalDevice = _deviceList[_deviceScoresList[fullPosition].GetDeviceID()].second;
 
-		auto ret = _logicalDevices.AddObject(std::make_unique<DeviceDataListSimplifierInternal>(physicalDevice, createDeviceInfo, settings, _sharedDataList));
+		auto ret = _logicalDevices.AddObject(std::make_unique<DeviceDataListSimplifierInternal>(physicalDevice, createDeviceInfo, settings, _sharedDataList, _swapchain));
 
 		return ret;
 	}
@@ -492,10 +492,9 @@ namespace VulkanSimplified
 	constexpr size_t scoringFunctionReserve = 0x10;
 
 	DeviceListSimplifierInternal::DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier,
-		const SharedDataSimplifierCoreInternal& sharedDataList) : _coreSimplifier(coreSimplifier), _surfaceSimplifier(surfaceSimplifier), _sharedDataList(sharedDataList),
-		_scoringFunctions(scoringFunctionReserve)
+		const SwapchainSimplifierInternal& swapchain, const SharedDataSimplifierCoreInternal& sharedDataList) : _coreSimplifier(coreSimplifier), _surfaceSimplifier(surfaceSimplifier),
+		_swapchain(swapchain), _sharedDataList(sharedDataList), _scoringFunctions(scoringFunctionReserve)
 	{
-		_ppadding = nullptr;
 
 		_apiVersion = coreSimplifier.GetUsedApiVersion();
 		assert(_apiVersion >= VK_MAKE_API_VERSION(0, 1, 0, 0));

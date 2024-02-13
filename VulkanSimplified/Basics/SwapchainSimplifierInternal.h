@@ -68,5 +68,7 @@ namespace VulkanSimplified
 		uint32_t GetSwapchainHeight() const;
 
 		VkFormat GetSwapchainFormat() const;
+
+		std::vector<VkImageView> GetSwapchainImageViewList() const;
 	};
 }

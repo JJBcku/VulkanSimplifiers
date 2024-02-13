@@ -3,10 +3,12 @@
 #include "DeviceCoreSimplifierInternal.h"
 #include "ShaderModulesSimplifierInternal.h"
 #include "DevicePipelineDataInternal.h"
+#include "DeviceImageSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
 	class SharedDataSimplifierCoreInternal;
+	class SwapchainSimplifierInternal;
 
 	class DeviceDataListSimplifierInternal
 	{
@@ -16,9 +18,11 @@ namespace VulkanSimplified
 		DeviceCoreSimplifierInternal _deviceCore;
 		ShaderModulesSimplifierInternal _shaderModules;
 		DevicePipelineDataInternal _pipelineData;
+		DeviceImageSimplifierInternal _imageData;
 
 	public:
-		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings, const SharedDataSimplifierCoreInternal& sharedDataList);
+		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings,
+			const SharedDataSimplifierCoreInternal& sharedDataList, const SwapchainSimplifierInternal& swapchain);
 		~DeviceDataListSimplifierInternal();
 
 		DeviceDataListSimplifierInternal(const DeviceDataListSimplifierInternal&) noexcept = delete;
@@ -30,10 +34,12 @@ namespace VulkanSimplified
 		DeviceCoreSimplifierInternal& GetDeviceCoreSimplifier();
 		ShaderModulesSimplifierInternal& GetShaderModulesSimplifier();
 		DevicePipelineDataInternal& GetDevicePipelineData();
+		DeviceImageSimplifierInternal& GetDeviceImageSimplifier();
 
 		const DeviceCoreSimplifierInternal& GetDeviceCoreSimplifier() const;
 		const ShaderModulesSimplifierInternal& GetShaderModulesSimplifier() const;
 		const DevicePipelineDataInternal& GetDevicePipelineData() const;
+		const DeviceImageSimplifierInternal& GetDeviceImageSimplifier() const;
 	};
 }
 

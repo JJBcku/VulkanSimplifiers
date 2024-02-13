@@ -14,8 +14,8 @@
 namespace VulkanSimplified
 {
 	BasicsSimplifierInternal::BasicsSimplifierInternal(WindowCreationData windowSettings, AppData appSettings,
-		const SharedDataSimplifierCoreInternal& sharedDataList) : _sharedDataList(sharedDataList), _windows(windowSettings), _core(appSettings), _surface(_windows, _core), _deviceList(_core, _surface, _sharedDataList),
-		_swapchain(_windows, _surface, _deviceList)
+		const SharedDataSimplifierCoreInternal& sharedDataList) : _sharedDataList(sharedDataList), _windows(windowSettings), _core(appSettings), _surface(_windows, _core),
+		_deviceList(_core, _surface, _swapchain, _sharedDataList), _swapchain(_windows, _surface, _deviceList)
 	{
 		_ppadding = nullptr;
 	}

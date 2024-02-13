@@ -6,6 +6,7 @@ namespace VulkanSimplified
     class DeviceCoreSimplifier;
     class ShaderModulesSimplifier;
     class DevicePipelineData;
+    class DeviceImageSimplifier;
 
     class DeviceDataListSimplifier
     {
@@ -20,5 +21,6 @@ namespace VulkanSimplified
         DeviceCoreSimplifier GetDeviceCoreSimplifier();
         ShaderModulesSimplifier GetShaderModulesSimplifier();
         DevicePipelineData GetDevicePipelineData();
+        DeviceImageSimplifier GetDeviceImageSimplifier();
     };
 }

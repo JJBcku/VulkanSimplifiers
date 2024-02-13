@@ -9,7 +9,7 @@ bool operator==(const VkSubpassDependency& first, const VkSubpassDependency& sec
 
 namespace VulkanSimplified
 {
-	class MainSimplifierInternal;
+	class SwapchainSimplifierInternal;
 	class BasicsSimplifierInternal;
 
 	struct SubpassDescriptionData
@@ -24,7 +24,7 @@ namespace VulkanSimplified
 
 	class SharedDataRenderPassElementsInternal
 	{
-		const MainSimplifierInternal& _main;
+		const SwapchainSimplifierInternal& _swapchain;
 		void* _ppadding;
 
 		ListTemplate<VkAttachmentDescription> _attachmentDescriptions;
@@ -38,7 +38,7 @@ namespace VulkanSimplified
 		VkAccessFlags GetAccessFlags(PipelineAccess accessMask);
 
 	public:
-		SharedDataRenderPassElementsInternal(size_t reserve, const MainSimplifierInternal& ref);
+		SharedDataRenderPassElementsInternal(size_t reserve, const SwapchainSimplifierInternal& ref);
 		~SharedDataRenderPassElementsInternal();
 
 		SharedDataRenderPassElementsInternal(const SharedDataRenderPassElementsInternal&) noexcept = delete;

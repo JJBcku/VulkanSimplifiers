@@ -4,7 +4,7 @@
 namespace VulkanSimplified
 {
 
-	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings) : _sharedData(sharedDataReserveAmount, *this),
+	MainSimplifierInternal::MainSimplifierInternal(size_t sharedDataReserveAmount, WindowCreationData windowSettings, AppData appSettings) : _sharedData(sharedDataReserveAmount, _vulkanInstance),
 		_vulkanInstance(windowSettings, appSettings, _sharedData)
 	{
 	}

@@ -200,6 +200,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Basics\BasicsSimplifierInternal.h" />
+    <ClInclude Include="Include\DeviceImageSimplifier.h" />
+    <ClInclude Include="Device\DeviceImageSimplifierInternal.h" />
     <ClInclude Include="Include\DevicePipelineData.h" />
     <ClInclude Include="Device\DevicePipelineDataInternal.h" />
     <ClInclude Include="Include\DeviceDataListSimplifier.h" />
@@ -239,6 +241,8 @@
     <ClCompile Include="Basics\BasicsSimplifier.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierInternal.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierSharedStructs.cpp" />
+    <ClCompile Include="Device\DeviceImageSimplifier.cpp" />
+    <ClCompile Include="Device\DeviceImageSimplifierInternal.cpp" />
     <ClCompile Include="Device\DevicePipelineData.cpp" />
     <ClCompile Include="Device\DevicePipelineDataInternal.cpp" />
     <ClCompile Include="Device\DeviceCoreSimplifier.cpp" />

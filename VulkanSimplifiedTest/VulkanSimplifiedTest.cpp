@@ -18,6 +18,8 @@
 #include <SharedDataPipelineLayoutElements.h>
 #include <DevicePipelineData.h>
 
+#include <DeviceImageSimplifier.h>
+
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name);
@@ -162,6 +164,10 @@ int main()
         createInfo._allowDerivatives = false;
 
         auto pipeline = devicePipelineData.AddGraphicsPipelines({ createInfo });
+
+        auto imageSimplifier = deviceDataList.GetDeviceImageSimplifier();
+
+        auto swapchainFramebuffers = imageSimplifier.AddSimpleSwapchainFramebuffer(renderPass);
 
         main.reset();
     }

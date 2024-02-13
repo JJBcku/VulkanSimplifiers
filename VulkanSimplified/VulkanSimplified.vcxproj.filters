@@ -144,6 +144,12 @@
     <ClInclude Include="Include\SharedDataRenderPassElements.h">
       <Filter>Header Files\SharedData</Filter>
     </ClInclude>
+    <ClInclude Include="Device\DeviceImageSimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceImageSimplifier.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -241,6 +247,12 @@
     </ClCompile>
     <ClCompile Include="SharedData\SharedDataRenderPassElements.cpp">
       <Filter>Source Files\SharedData</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceImageSimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceImageSimplifier.cpp">
+      <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
