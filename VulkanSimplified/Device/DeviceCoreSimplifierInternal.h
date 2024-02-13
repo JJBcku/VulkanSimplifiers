@@ -38,6 +38,8 @@ namespace VulkanSimplified
 		VkPhysicalDevice GetPhysicalDevice() const;
 
 		SimplifiedDeviceInfo GetDeviceInfo() const;
+
+		uint32_t GetBestQueueForTheType(QueueFamilyType type) const;
 	};
 }
 

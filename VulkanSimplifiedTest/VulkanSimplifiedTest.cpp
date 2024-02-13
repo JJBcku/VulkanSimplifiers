@@ -19,6 +19,7 @@
 #include <DevicePipelineData.h>
 
 #include <DeviceImageSimplifier.h>
+#include <DeviceCommandBufferSimplifier.h>
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
@@ -168,6 +169,10 @@ int main()
         auto imageSimplifier = deviceDataList.GetDeviceImageSimplifier();
 
         auto swapchainFramebuffers = imageSimplifier.AddSimpleSwapchainFramebuffer(renderPass);
+
+        auto commandBufferList = deviceDataList.GetDeviceCommandBufferSimplifier();
+
+        auto commandPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::GRAPHICS, true, true);
 
         main.reset();
     }

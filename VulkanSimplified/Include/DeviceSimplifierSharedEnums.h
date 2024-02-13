@@ -33,4 +33,11 @@ namespace VulkanSimplified
 		ALREADY_CREATED = 1,
 		IN_CURRENT_LIST = 2,
 	};
+
+	enum class QueueFamilyType : uint64_t
+	{
+		TRANSFER = 1,
+		COMPUTE = 2,
+		GRAPHICS = 4,
+	};
 }

@@ -4,6 +4,7 @@
 #include "ShaderModulesSimplifierInternal.h"
 #include "DevicePipelineDataInternal.h"
 #include "DeviceImageSimplifierInternal.h"
+#include "DeviceCommandBufferSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
@@ -19,6 +20,7 @@ namespace VulkanSimplified
 		ShaderModulesSimplifierInternal _shaderModules;
 		DevicePipelineDataInternal _pipelineData;
 		DeviceImageSimplifierInternal _imageData;
+		DeviceCommandBufferSimplifierInternal _commandBuffers;
 
 	public:
 		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings,
@@ -35,11 +37,13 @@ namespace VulkanSimplified
 		ShaderModulesSimplifierInternal& GetShaderModulesSimplifier();
 		DevicePipelineDataInternal& GetDevicePipelineData();
 		DeviceImageSimplifierInternal& GetDeviceImageSimplifier();
+		DeviceCommandBufferSimplifierInternal& GetDeviceCommandBufferSimplifier();
 
 		const DeviceCoreSimplifierInternal& GetDeviceCoreSimplifier() const;
 		const ShaderModulesSimplifierInternal& GetShaderModulesSimplifier() const;
 		const DevicePipelineDataInternal& GetDevicePipelineData() const;
 		const DeviceImageSimplifierInternal& GetDeviceImageSimplifier() const;
+		const DeviceCommandBufferSimplifierInternal& GetDeviceCommandBufferSimplifier() const;
 	};
 }
 

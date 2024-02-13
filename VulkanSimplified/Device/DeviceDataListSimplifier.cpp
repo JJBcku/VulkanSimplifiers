@@ -7,6 +7,7 @@
 #include "../Include/ShaderModulesSimplifier.h"
 #include "../Include/DevicePipelineData.h"
 #include "../Include/DeviceImageSimplifier.h"
+#include "../Include/DeviceCommandBufferSimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -37,6 +38,11 @@ namespace VulkanSimplified
 	DeviceImageSimplifier DeviceDataListSimplifier::GetDeviceImageSimplifier()
 	{
 		return DeviceImageSimplifier(_internal.GetDeviceImageSimplifier());
+	}
+
+	DeviceCommandBufferSimplifier DeviceDataListSimplifier::GetDeviceCommandBufferSimplifier()
+	{
+		return DeviceCommandBufferSimplifier(_internal.GetDeviceCommandBufferSimplifier());
 	}
 
 }

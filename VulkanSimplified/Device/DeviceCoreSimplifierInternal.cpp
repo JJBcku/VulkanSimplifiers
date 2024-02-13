@@ -243,4 +243,42 @@ namespace VulkanSimplified
         return _info;
     }
 
+    uint32_t DeviceCoreSimplifierInternal::GetBestQueueForTheType(QueueFamilyType type) const
+    {
+        std::optional<uint32_t> ret;
+
+        auto& families = _info.queueFamilies;
+
+        switch (type)
+        {
+        case VulkanSimplified::QueueFamilyType::TRANSFER:
+            if (families.transferFamily.has_value())
+                ret = families.transferFamily;
+            else
+            {
+                if (families.computeFamily.has_value())
+                    ret = families.computeFamily;
+                else
+                    ret = families.graphicsFamily;
+            }
+            break;
+        case VulkanSimplified::QueueFamilyType::COMPUTE:
+            if (families.computeFamily.has_value())
+                ret = families.computeFamily;
+            else
+                ret = families.graphicsFamily;
+            break;
+        case VulkanSimplified::QueueFamilyType::GRAPHICS:
+            ret = families.graphicsFamily;
+            break;
+        default:
+            throw std::runtime_error("DeviceCoreSimplifierInternal::GetBestQueueForTheType Error: Program was given an erroneous value of queue family type!");
+        }
+
+        if (!ret.has_value())
+            throw std::runtime_error("DeviceCoreSimplifierInternal::GetBestQueueForTheType Error: Program can't find any queue of any compatible family!");
+
+        return ret.value();
+    }
+
 }

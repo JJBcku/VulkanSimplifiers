@@ -150,6 +150,12 @@
     <ClInclude Include="Include\DeviceImageSimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="Device\DeviceCommandBufferSimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceCommandBufferSimplifier.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -252,6 +258,12 @@
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Device\DeviceImageSimplifier.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceCommandBufferSimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceCommandBufferSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>
