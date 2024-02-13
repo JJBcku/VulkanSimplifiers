@@ -174,9 +174,9 @@ int main()
 
         auto commandPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::GRAPHICS, true, true);
 
-        auto commandBufferID = commandBufferList.AddCommandBuffer(commandPool, true);
+        auto commandBufferID = commandBufferList.AddPrimaryCommandBuffer(commandPool);
 
-        auto commandRecorder = commandBufferList.GetCommandBufferRecorder(commandBufferID);
+        auto commandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID);
 
         main.reset();
     }

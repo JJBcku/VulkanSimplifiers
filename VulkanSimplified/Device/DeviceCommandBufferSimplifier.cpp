@@ -19,19 +19,19 @@ namespace VulkanSimplified
 		return _internal.AddCommandPool(queueFamily, transient, individualReset);
 	}
 
-	ListObjectID<DeviceCommandRecorderInternal> DeviceCommandBufferSimplifier::AddCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool, bool primaryBuffer)
+	ListObjectID<DeviceCommandRecorderInternal> DeviceCommandBufferSimplifier::AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool)
 	{
-		return _internal.AddCommandBuffer(commandPool, primaryBuffer);
+		return _internal.AddPrimaryCommandBuffer(commandPool);
 	}
 
-	std::vector<ListObjectID<DeviceCommandRecorderInternal>> DeviceCommandBufferSimplifier::AddCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount, bool primaryBuffers)
+	std::vector<ListObjectID<DeviceCommandRecorderInternal>> DeviceCommandBufferSimplifier::AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount)
 	{
-		return _internal.AddCommandBuffers(commandPool, bufferAmount, primaryBuffers);
+		return _internal.AddPrimaryCommandBuffers(commandPool, bufferAmount);
 	}
 
-	DeviceCommandRecorder DeviceCommandBufferSimplifier::GetCommandBufferRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID)
+	DeviceCommandRecorder DeviceCommandBufferSimplifier::GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID)
 	{
-		return DeviceCommandRecorder(_internal.GetDeviceCommandBufferRecorder(commandBufferID));
+		return DeviceCommandRecorder(_internal.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID));
 	}
 
 }

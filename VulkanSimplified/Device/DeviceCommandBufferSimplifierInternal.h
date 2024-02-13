@@ -34,7 +34,7 @@ namespace VulkanSimplified
 		VkDevice _device;
 
 		ListTemplate<AutoCleanupCommandPool> _commandPools;
-		ListTemplate<DeviceCommandRecorderInternal> _commandBuffers;
+		ListTemplate<DeviceCommandRecorderInternal> _primaryCommandBuffers;
 
 	public:
 		DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore);
@@ -45,11 +45,11 @@ namespace VulkanSimplified
 		DeviceCommandBufferSimplifierInternal& operator=(DeviceCommandBufferSimplifierInternal&) noexcept = delete;
 
 		ListObjectID<AutoCleanupCommandPool> AddCommandPool(QueueFamilyType queueFamily, bool transient, bool individualReset);
-		ListObjectID<DeviceCommandRecorderInternal> AddCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool, bool primaryBuffer);
-		std::vector<ListObjectID<DeviceCommandRecorderInternal>> AddCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount, bool primaryBuffers);
+		ListObjectID<DeviceCommandRecorderInternal> AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool);
+		std::vector<ListObjectID<DeviceCommandRecorderInternal>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
 
 		VkCommandPool GetCommandPool(ListObjectID<AutoCleanupCommandPool> commandPoolID) const;
 
-		DeviceCommandRecorderInternal& GetDeviceCommandBufferRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID);
+		DeviceCommandRecorderInternal& GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID);
 	};
 }

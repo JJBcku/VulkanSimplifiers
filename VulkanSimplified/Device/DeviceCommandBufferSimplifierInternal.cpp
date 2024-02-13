@@ -35,17 +35,12 @@ namespace VulkanSimplified
 		return _commandPools.AddObject(AutoCleanupCommandPool(_device, add));
 	}
 
-	ListObjectID<DeviceCommandRecorderInternal> DeviceCommandBufferSimplifierInternal::AddCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool, bool primaryBuffer)
+	ListObjectID<DeviceCommandRecorderInternal> DeviceCommandBufferSimplifierInternal::AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = GetCommandPool(commandPool);
-
-		if (primaryBuffer)
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		else
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer add = VK_NULL_HANDLE;
@@ -53,11 +48,11 @@ namespace VulkanSimplified
 		if (vkAllocateCommandBuffers(_device, &allocInfo, &add) != VK_SUCCESS)
 			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::AddCommandBuffer Error: Program failed to allocate the command buffer!");
 
-		return _commandBuffers.AddObject(DeviceCommandRecorderInternal(add));
+		return _primaryCommandBuffers.AddObject(DeviceCommandRecorderInternal(add));
 	}
 
-	std::vector<ListObjectID<DeviceCommandRecorderInternal>> DeviceCommandBufferSimplifierInternal::AddCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool,
-		uint32_t bufferAmount, bool primaryBuffers)
+	std::vector<ListObjectID<DeviceCommandRecorderInternal>> DeviceCommandBufferSimplifierInternal::AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool,
+		uint32_t bufferAmount)
 	{
 		std::vector<ListObjectID<DeviceCommandRecorderInternal>> ret;
 
@@ -67,12 +62,7 @@ namespace VulkanSimplified
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = GetCommandPool(commandPool);
-
-		if (primaryBuffers)
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		else
-			allocInfo.level = VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = bufferAmount;
 
 		std::vector<VkCommandBuffer> list(bufferAmount, VK_NULL_HANDLE);
@@ -84,7 +74,7 @@ namespace VulkanSimplified
 
 		for (size_t i = 0; i < list.size(); ++i)
 		{
-			ret.push_back(_commandBuffers.AddObject(list[i]));
+			ret.push_back(_primaryCommandBuffers.AddObject(list[i]));
 		}
 
 		return ret;
@@ -95,9 +85,9 @@ namespace VulkanSimplified
 		return _commandPools.GetConstObject(commandPoolID).GetCommandPool();
 	}
 
-	DeviceCommandRecorderInternal& DeviceCommandBufferSimplifierInternal::GetDeviceCommandBufferRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID)
+	DeviceCommandRecorderInternal& DeviceCommandBufferSimplifierInternal::GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID)
 	{
-		return _commandBuffers.GetObject(commandBufferID);
+		return _primaryCommandBuffers.GetObject(commandBufferID);
 	}
 
 	AutoCleanupCommandPool::AutoCleanupCommandPool(VkDevice device, VkCommandPool commandPool) : _device(device), _ppadding(nullptr), _commandPool(commandPool)
