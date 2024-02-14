@@ -178,6 +178,8 @@ int main()
 
         auto commandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID);
 
+        auto colorClearValue = pipelineData.AddClearColorValue(0.0f, 0.0f, 0.0f, 0.0f);
+
         main.reset();
     }
     catch (std::exception ex)

@@ -15,6 +15,10 @@ struct VkPipelineColorBlendAttachmentState;
 struct VkViewport;
 struct VkRect2D;
 
+union VkClearValue;
+union VkClearColorValue;
+struct VkClearDepthStencilValue;
+
 namespace VulkanSimplified
 {
 	class SharedDataPipelineElementsInternal;
@@ -52,6 +56,12 @@ namespace VulkanSimplified
 		ListObjectID<VkViewport> AddPipelineViewport(float x, float y, uint32_t width, uint32_t height, float minDepth, float maxDepth);
 		ListObjectID<VkRect2D> AddPipelineScissor(uint32_t offsetX, uint32_t offsetY, uint32_t width, uint32_t height);
 		ListObjectID<PipelineViewportsStateList> AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs);
+
+		ListObjectID<VkClearValue> AddClearColorValue(float r, float g, float b, float a);
+		ListObjectID<VkClearValue> AddClearColorValue(uint32_t r, uint32_t g, uint32_t b, uint32_t a);
+		ListObjectID<VkClearValue> AddClearColorValue(int32_t r, int32_t g, int32_t b, int32_t a);
+
+		ListObjectID<VkClearValue> AddClearDepthValue(float depth, uint32_t stencil = 0);
 	};
 }
 

@@ -5,6 +5,10 @@
 
 namespace VulkanSimplified
 {
+	ListObjectID<VkClearValue> SharedDataPipelineElementsInternal::AddClearValue(VkClearValue value)
+	{
+		return _clearValues.AddUniqueObject(value);
+	}
 
 	SharedDataPipelineElementsInternal::SharedDataPipelineElementsInternal(size_t reserve) : _shaderPipelineData(reserve), _vertexInputBindingDescriptions(reserve),
 		_vertexInputAttributeDescriptions(reserve), _vertexInputListDescriptions(reserve), _pipelineInputAssembly(reserve), _pipelineRasterizationStates(reserve),
@@ -290,8 +294,61 @@ namespace VulkanSimplified
 
 	ListObjectID<PipelineViewportsStateList> SharedDataPipelineElementsInternal::AddPipelineViewportState(const std::vector<std::pair<ListObjectID<VkViewport>, ListObjectID<VkRect2D>>>& viewportScissorPairs)
 	{
-
 		return _pipelineViewportStates.AddUniqueObject({ viewportScissorPairs });
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElementsInternal::AddClearColorValue(float r, float g, float b, float a)
+	{
+		VkClearValue clear{};
+
+		VkClearColorValue& color = clear.color;
+
+		color.float32[0] = r;
+		color.float32[1] = g;
+		color.float32[2] = b;
+		color.float32[3] = a;
+
+		return AddClearValue(clear);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElementsInternal::AddClearColorValue(uint32_t r, uint32_t g, uint32_t b, uint32_t a)
+	{
+		VkClearValue clear{};
+
+		VkClearColorValue& color = clear.color;
+
+		color.uint32[0] = r;
+		color.uint32[1] = g;
+		color.uint32[2] = b;
+		color.uint32[3] = a;
+
+		return AddClearValue(clear);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElementsInternal::AddClearColorValue(int32_t r, int32_t g, int32_t b, int32_t a)
+	{
+		VkClearValue clear{};
+
+		VkClearColorValue& color = clear.color;
+
+		color.int32[0] = r;
+		color.int32[1] = g;
+		color.int32[2] = b;
+		color.int32[3] = a;
+
+		return AddClearValue(clear);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElementsInternal::AddClearDepthValue(float depth, uint32_t stencil)
+	{
+		VkClearValue clear{};
+
+		VkClearDepthStencilValue& depthStencil = clear.depthStencil;
+
+		depthStencil.depth = depth;
+		depthStencil.stencil = stencil;
+
+		return AddClearValue(clear);
 	}
 
 	ShaderStageCreationData SharedDataPipelineElementsInternal::GetShaderStageCreationData(ListObjectID<ShaderStageCreationData> shaderDataID) const
@@ -520,4 +577,22 @@ bool operator==(const VkRect2D& first, const VkRect2D& second)
 		return false;
 
 	return first.extent == second.extent;
+}
+
+bool operator==(const VkClearValue& first, const VkClearValue& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkClearColorValue& first, const VkClearColorValue& second)
+{
+	return memcmp(&first, &second, sizeof(first)) == 0;
+}
+
+bool operator==(const VkClearDepthStencilValue& first, const VkClearDepthStencilValue& second)
+{
+	if (first.depth != second.depth)
+		return false;
+
+	return first.stencil == second.stencil;
 }

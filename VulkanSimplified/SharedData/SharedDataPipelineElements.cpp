@@ -79,4 +79,24 @@ namespace VulkanSimplified
 		return _internal.AddPipelineViewportState(viewportScissorPairs);
 	}
 
+	ListObjectID<VkClearValue> SharedDataPipelineElements::AddClearColorValue(float r, float g, float b, float a)
+	{
+		return _internal.AddClearColorValue(r, g, b, a);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElements::AddClearColorValue(uint32_t r, uint32_t g, uint32_t b, uint32_t a)
+	{
+		return _internal.AddClearColorValue(r, g, b, a);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElements::AddClearColorValue(int32_t r, int32_t g, int32_t b, int32_t a)
+	{
+		return _internal.AddClearColorValue(r, g, b, a);
+	}
+
+	ListObjectID<VkClearValue> SharedDataPipelineElements::AddClearDepthValue(float depth, uint32_t stencil)
+	{
+		return _internal.AddClearDepthValue(depth, stencil);
+	}
+
 }
