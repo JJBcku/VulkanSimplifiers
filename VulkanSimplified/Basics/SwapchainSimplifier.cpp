@@ -29,6 +29,11 @@ namespace VulkanSimplified
 		CreateSwapchainMain(deviceID, settings, true);
 	}
 
+	uint32_t SwapchainSimplifier::GetSwapchainImagesAmount() const
+	{
+		return _internal.GetSwapchainImagesAmount();
+	}
+
 	uint32_t SwapchainSimplifier::GetSwapchainWidth() const
 	{
 		return _internal.GetSwapchainWidth();

@@ -21,6 +21,8 @@
 #include <DeviceImageSimplifier.h>
 #include <DeviceCommandBufferSimplifier.h>
 
+#include <DeviceSynchronizationSimplifier.h>
+
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name);
@@ -179,6 +181,35 @@ int main()
         auto commandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID);
 
         auto colorClearValue = pipelineData.AddClearColorValue(0.0f, 0.0f, 0.0f, 0.0f);
+
+        auto deviceSynchronization = deviceDataList.GetDeviceSynchronizationSimplifier();
+
+        auto imageAvailableSemaphore = deviceSynchronization.AddSemaphore();
+        auto renderFinishedSemaphore = deviceSynchronization.AddSemaphore();
+        auto inFlightFence = deviceSynchronization.AddFence(true);
+
+        uint32_t imageAmount = 0;
+
+        uint32_t currentImage = 0;
+
+        while(imageAmount < 3000)
+        {
+            deviceSynchronization.WaitForFences({ inFlightFence }, std::numeric_limits<uint64_t>::max(), false);
+            deviceSynchronization.ResetFences({ inFlightFence });
+
+            commandRecorder.BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
+
+            commandRecorder.BeginRenderPass(renderPass, swapchainFramebuffers, currentImage, 0, 0, swapchainWidth, swapchainHeight, { colorClearValue }, false);
+            
+            commandRecorder.BindGraphicsPipeline(pipeline[0]);
+            commandRecorder.Draw(3, 1, 0, 0);
+
+            commandRecorder.EndRenderPass();
+
+            commandRecorder.EndCommandBuffer();
+
+            imageAmount++;
+        }
 
         main.reset();
     }

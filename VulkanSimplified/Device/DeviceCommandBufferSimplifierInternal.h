@@ -8,6 +8,10 @@ namespace VulkanSimplified
 	class DeviceCoreSimplifierInternal;
 	class DeviceCommandRecorderInternal;
 
+	class SharedDataSimplifierCoreInternal;
+	class DeviceImageSimplifierInternal;
+	class DevicePipelineDataInternal;
+
 	class AutoCleanupCommandPool
 	{
 		VkDevice _device;
@@ -30,14 +34,19 @@ namespace VulkanSimplified
 	class DeviceCommandBufferSimplifierInternal
 	{
 		const DeviceCoreSimplifierInternal& _deviceCore;
+		const DeviceImageSimplifierInternal& _imageData;
+		const DevicePipelineDataInternal& _pipelineData;
+		const SharedDataSimplifierCoreInternal& _sharedData;
 
 		VkDevice _device;
+		void* _ppadding;
 
 		ListTemplate<AutoCleanupCommandPool> _commandPools;
-		ListTemplate<DeviceCommandRecorderInternal> _primaryCommandBuffers;
+		ListTemplate<std::unique_ptr<DeviceCommandRecorderInternal>> _primaryCommandBuffers;
 
 	public:
-		DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore);
+		DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
+			const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData);
 		~DeviceCommandBufferSimplifierInternal();
 
 		DeviceCommandBufferSimplifierInternal(DeviceCommandBufferSimplifierInternal&) noexcept = delete;
@@ -45,11 +54,11 @@ namespace VulkanSimplified
 		DeviceCommandBufferSimplifierInternal& operator=(DeviceCommandBufferSimplifierInternal&) noexcept = delete;
 
 		ListObjectID<AutoCleanupCommandPool> AddCommandPool(QueueFamilyType queueFamily, bool transient, bool individualReset);
-		ListObjectID<DeviceCommandRecorderInternal> AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool);
-		std::vector<ListObjectID<DeviceCommandRecorderInternal>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
+		ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool);
+		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
 
 		VkCommandPool GetCommandPool(ListObjectID<AutoCleanupCommandPool> commandPoolID) const;
 
-		DeviceCommandRecorderInternal& GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID);
+		DeviceCommandRecorderInternal& GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> commandBufferID);
 	};
 }

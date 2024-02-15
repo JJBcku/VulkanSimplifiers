@@ -40,4 +40,11 @@ namespace VulkanSimplified
 		COMPUTE = 2,
 		GRAPHICS = 4,
 	};
+
+	enum class PrimaryBufferRecordingSettings : uint64_t
+	{
+		STANDARD = 1,
+		SINGLE_USE = 2,
+		MULTI_SUBMIT = 4,
+	};
 }

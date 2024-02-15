@@ -381,6 +381,11 @@ namespace VulkanSimplified
 		return _pipelineScissors.GetObjectCopy(scissorsID);
 	}
 
+	std::vector<VkClearValue> SharedDataPipelineElementsInternal::GetClearValues(const std::vector<ListObjectID<VkClearValue>>& clearValuesIDList) const
+	{
+		return _clearValues.GetObjectListCopy(clearValuesIDList);
+	}
+
 	VkPipelineRasterizationStateCreateInfo SharedDataPipelineElementsInternal::GetPipelineRasterizationState(ListObjectID<VkPipelineRasterizationStateCreateInfo> rasterizationStateID) const
 	{
 		return _pipelineRasterizationStates.GetObjectCopy(rasterizationStateID);

@@ -25,9 +25,9 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupCommandPool> AddCommandPool(QueueFamilyType queueFamily, bool transient, bool individualReset);
 
-		ListObjectID<DeviceCommandRecorderInternal> AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool);
-		std::vector<ListObjectID<DeviceCommandRecorderInternal>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
+		ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> AddPrimaryCommandBuffer(ListObjectID<AutoCleanupCommandPool> commandPool);
+		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
 
-		DeviceCommandRecorder GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<DeviceCommandRecorderInternal> commandBufferID);
+		DeviceCommandRecorder GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> commandBufferID);
 	};
 }

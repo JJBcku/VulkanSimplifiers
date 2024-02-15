@@ -9,6 +9,7 @@ namespace VulkanSimplified
     class DevicePipelineData;
     class DeviceImageSimplifier;
     class DeviceCommandBufferSimplifier;
+    class DeviceSynchronizationSimplifier;
 
     class DeviceDataListSimplifier
     {
@@ -25,5 +26,6 @@ namespace VulkanSimplified
         DevicePipelineData GetDevicePipelineData();
         DeviceImageSimplifier GetDeviceImageSimplifier();
         DeviceCommandBufferSimplifier GetDeviceCommandBufferSimplifier();
+        DeviceSynchronizationSimplifier GetDeviceSynchronizationSimplifier();
     };
 }

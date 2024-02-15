@@ -162,6 +162,12 @@
     <ClInclude Include="Include\DeviceCommandRecorder.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="Device\DeviceSynchronizationSimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceSynchronizationSimplifier.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -276,6 +282,12 @@
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Device\DeviceCommandRecorder.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceSynchronizationSimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceSynchronizationSimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>

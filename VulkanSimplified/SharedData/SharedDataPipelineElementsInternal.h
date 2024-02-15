@@ -127,6 +127,8 @@ namespace VulkanSimplified
 		VkViewport GetViewport(ListObjectID<VkViewport> viewportID) const;
 		VkRect2D GetScissors(ListObjectID<VkRect2D> scissorsID) const;
 
+		std::vector<VkClearValue> GetClearValues(const std::vector<ListObjectID<VkClearValue>>& clearValuesIDList) const;
+
 		VkPipelineRasterizationStateCreateInfo GetPipelineRasterizationState(ListObjectID<VkPipelineRasterizationStateCreateInfo> rasterizationStateID) const;
 		VkPipelineMultisampleStateCreateInfo GetPipelineMultisampleState(ListObjectID<VkPipelineMultisampleStateCreateInfo> multisamplingStateID) const;
 		VkPipelineDepthStencilStateCreateInfo GetPipelineDepthStencilState(ListObjectID<VkPipelineDepthStencilStateCreateInfo> depthStencilStateID) const;

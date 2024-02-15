@@ -64,6 +64,8 @@ namespace VulkanSimplified
 
 		bool DoSwapchainExist() const;
 
+		uint32_t GetSwapchainImagesAmount() const;
+
 		uint32_t GetSwapchainWidth() const;
 		uint32_t GetSwapchainHeight() const;
 

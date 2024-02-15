@@ -63,5 +63,7 @@ namespace VulkanSimplified
 		DeviceImageSimplifierInternal& operator=(const DeviceImageSimplifierInternal&) noexcept = delete;
 
 		ListObjectID<AutoCleanupSwapchainFramebuffer> AddSimpleSwapchainFramebuffer(ListObjectID<AutoCleanupRenderPass> renderPass);
+
+		VkFramebuffer GetSwapchainFrameBuffer(ListObjectID<AutoCleanupSwapchainFramebuffer> framebufferID, uint32_t frameID) const;
 	};
 }
