@@ -17,4 +17,9 @@ namespace VulkanSimplified
 	{
 	}
 
+	void DeviceCoreSimplifier::WaitForIdlesness()
+	{
+		_internal.WaitForIdlesness();
+	}
+
 }

@@ -1,5 +1,5 @@
 #include "VulkanSimplifierListTemplate.h"
-#include "DeviceSimplifierSharedEnums.h"
+#include "DeviceSimplifierSharedStructs.h"
 
 #include "DeviceCommandRecorder.h"
 
@@ -8,6 +8,7 @@ namespace VulkanSimplified
 	class DeviceCommandBufferSimplifierInternal;
 
 	class AutoCleanupCommandPool;
+	class AutoCleanupFence;
 	class DeviceCommandRecorderInternal;
 	class DeviceCommandRecorder;
 
@@ -29,5 +30,7 @@ namespace VulkanSimplified
 		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool, uint32_t bufferAmount);
 
 		DeviceCommandRecorder GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> commandBufferID);
+
+		void SubmitToQueue(QueueFamilyType queueType, const std::vector<QueueSubmitObject>& queueSubmitList, std::optional<ListObjectID<AutoCleanupFence>> fenceId);
 	};
 }

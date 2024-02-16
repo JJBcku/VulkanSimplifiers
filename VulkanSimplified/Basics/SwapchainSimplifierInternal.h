@@ -19,6 +19,9 @@ namespace VulkanSimplified
 	class DeviceListSimplifierInternal;
 	class DeviceDataListSimplifierInternal;
 
+	class AutoCleanupSemaphore;
+	class AutoCleanupFence;
+
 	class SwapchainSimplifierInternal
 	{
 		const WindowSimplifierInternal& _window;
@@ -32,6 +35,8 @@ namespace VulkanSimplified
 		VkFormat _format;
 		char _padding[8 - sizeof(_format)];
 		VkExtent2D _swapchainExtend;
+
+		ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> _deviceID;
 
 		std::vector<VkImage> _swapchainImages;
 		std::vector<VkImageView> _swapchainImageViews;
@@ -72,5 +77,10 @@ namespace VulkanSimplified
 		VkFormat GetSwapchainFormat() const;
 
 		std::vector<VkImageView> GetSwapchainImageViewList() const;
+
+		std::pair<uint32_t, bool> AcquireNextImage(uint64_t timeLimitInNanosecons, std::optional<ListObjectID<AutoCleanupSemaphore>> semaphoreID,
+			std::optional<ListObjectID<AutoCleanupFence>> fenceID);
+
+		bool PresentImage(const std::vector<ListObjectID<AutoCleanupSemaphore>>& waitSemaphores, uint32_t frameID);
 	};
 }

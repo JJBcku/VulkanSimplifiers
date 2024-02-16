@@ -9,6 +9,9 @@ namespace VulkanSimplified
 	class SwapchainSimplifierInternal;
 	class DeviceDataListSimplifierInternal;
 
+	class AutoCleanupSemaphore;
+	class AutoCleanupFence;
+
 	class SwapchainSimplifier
 	{
 		SwapchainSimplifierInternal& _internal;
@@ -28,6 +31,11 @@ namespace VulkanSimplified
 
 		uint32_t GetSwapchainWidth() const;
 		uint32_t GetSwapchainHeight() const;
+
+		std::pair<uint32_t, bool> AcquireNextImage(uint64_t timeLimitInNanosecons, std::optional<ListObjectID<AutoCleanupSemaphore>> semaphoreID,
+			std::optional<ListObjectID<AutoCleanupFence>> fenceID);
+
+		bool PresentImage(const std::vector<ListObjectID<AutoCleanupSemaphore>>& waitSemaphores, uint32_t frameID);
 	};
 }
 

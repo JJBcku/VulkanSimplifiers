@@ -23,6 +23,8 @@
 
 #include <DeviceSynchronizationSimplifier.h>
 
+#include <VulkanSimplifierListTemplate.h>
+
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name);
@@ -81,7 +83,7 @@ int main()
         VulkanSimplified::SwapchainSettings swapchainSettings{};
 
         swapchainSettings.format = VulkanSimplified::SwapchainFormatType::TEN_BIT;
-        swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::MAILBOX;
+        swapchainSettings.presentMode = VulkanSimplified::SwapchainPresentMode::FIFO;
         swapchainSettings.imageAmount = VulkanSimplified::SwapchainImageAmount::MAX;
 
         auto swapchain = instance.GetSwapchainSimplifier();
@@ -143,10 +145,10 @@ int main()
         auto subpassDescriptor = renderPassData.AddSubpassDescriptorNoDepth(VulkanSimplified::PipelineBindPoint::GRAPHIC, {},
             { renderPassAttachmentReference }, {});
 
-        auto subpassDependency = renderPassData.AddSubpassDependency({}, {}, VulkanSimplified::PipelineStage::TOP, VulkanSimplified::PipelineStage::BOTTOM,
-            VulkanSimplified::COLOR_READ, VulkanSimplified::COLOR_WRITE);
+        auto subpassDependency = renderPassData.AddSubpassDependency({}, 0, VulkanSimplified::PipelineStage::COLOR_ATTACHMENT_OUTPUT,
+            VulkanSimplified::PipelineStage::COLOR_ATTACHMENT_OUTPUT, VulkanSimplified::NO_ACCESS, VulkanSimplified::COLOR_WRITE);
 
-        auto renderPass = devicePipelineData.AddRenderPass({ renderPassAttachmentDescriptor }, { subpassDescriptor }, {});
+        auto renderPass = devicePipelineData.AddRenderPass({ renderPassAttachmentDescriptor }, { subpassDescriptor }, { subpassDependency });
 
         VulkanSimplified::GraphicsPipelineCreateInfoList createInfo{};
 
@@ -176,40 +178,75 @@ int main()
 
         auto commandPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::GRAPHICS, true, true);
 
-        auto commandBufferID = commandBufferList.AddPrimaryCommandBuffer(commandPool);
+        uint32_t frameAmount = swapchain.GetSwapchainImagesAmount();
 
-        auto commandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID);
+        std::vector<VulkanSimplified::ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
+        std::vector<VulkanSimplified::DeviceCommandRecorder> commandRecorderList;
 
-        auto colorClearValue = pipelineData.AddClearColorValue(0.0f, 0.0f, 0.0f, 0.0f);
+        for (uint32_t i = 0; i < frameAmount; ++i)
+        {
+            commandBufferIDList.push_back(commandBufferList.AddPrimaryCommandBuffer(commandPool));
+            commandRecorderList.push_back(commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferIDList[i]));
+        }
+
+        auto colorClearValue = pipelineData.AddClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
 
         auto deviceSynchronization = deviceDataList.GetDeviceSynchronizationSimplifier();
 
-        auto imageAvailableSemaphore = deviceSynchronization.AddSemaphore();
-        auto renderFinishedSemaphore = deviceSynchronization.AddSemaphore();
-        auto inFlightFence = deviceSynchronization.AddFence(true);
+        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> imageAvailableSemaphoresList;
+        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> renderFinishedSemaphoresList;
+        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupFence>> inFlightFencesList;
+
+        for (uint32_t i = 0; i < frameAmount; ++i)
+        {
+            imageAvailableSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
+            renderFinishedSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
+            inFlightFencesList.push_back(deviceSynchronization.AddFence(true));
+        }
 
         uint32_t imageAmount = 0;
 
         uint32_t currentImage = 0;
+        uint32_t currentSynchro = 0;
 
-        while(imageAmount < 3000)
+        while(imageAmount < 1000)
         {
-            deviceSynchronization.WaitForFences({ inFlightFence }, std::numeric_limits<uint64_t>::max(), false);
-            deviceSynchronization.ResetFences({ inFlightFence });
+            deviceSynchronization.WaitForFences({ inFlightFencesList[currentSynchro]}, 1000, false);
+            deviceSynchronization.ResetFences({ inFlightFencesList[currentSynchro] });
 
-            commandRecorder.BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
+            auto nextImage = swapchain.AcquireNextImage(std::numeric_limits<uint64_t>::max(), imageAvailableSemaphoresList[currentSynchro], {});
+            currentImage = nextImage.first;
 
-            commandRecorder.BeginRenderPass(renderPass, swapchainFramebuffers, currentImage, 0, 0, swapchainWidth, swapchainHeight, { colorClearValue }, false);
+            commandRecorderList[currentImage].ResetCommandBuffer(false);
+
+            commandRecorderList[currentImage].BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
+
+            commandRecorderList[currentImage].BeginRenderPass(renderPass, swapchainFramebuffers, currentImage, 0, 0, swapchainWidth, swapchainHeight, { colorClearValue }, false);
             
-            commandRecorder.BindGraphicsPipeline(pipeline[0]);
-            commandRecorder.Draw(3, 1, 0, 0);
+            commandRecorderList[currentImage].BindGraphicsPipeline(pipeline[0]);
+            commandRecorderList[currentImage].Draw(3, 1, 0, 0);
 
-            commandRecorder.EndRenderPass();
+            commandRecorderList[currentImage].EndRenderPass();
 
-            commandRecorder.EndCommandBuffer();
+            commandRecorderList[currentImage].EndCommandBuffer();
+
+            VulkanSimplified::QueueSubmitObject submitObject;
+            submitObject._commandBuffer = { commandBufferIDList[currentImage] };
+            submitObject._waitSemaphores = { {VulkanSimplified::PipelineStage::COLOR_ATTACHMENT_OUTPUT, imageAvailableSemaphoresList[currentSynchro]} };
+            submitObject._signalSemaphores = { renderFinishedSemaphoresList[currentSynchro] };
+
+            commandBufferList.SubmitToQueue(VulkanSimplified::QueueFamilyType::GRAPHICS, { submitObject }, { inFlightFencesList[currentSynchro] });
+
+            swapchain.PresentImage({ renderFinishedSemaphoresList[currentSynchro] }, currentImage);
 
             imageAmount++;
+            currentSynchro++;
+
+            if (currentSynchro >= frameAmount)
+                currentSynchro = 0;
         }
+
+        device.WaitForIdlesness();
 
         main.reset();
     }

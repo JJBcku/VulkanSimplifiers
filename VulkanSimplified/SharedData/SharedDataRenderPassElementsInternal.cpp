@@ -29,19 +29,6 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkPipelineStageFlags SharedDataRenderPassElementsInternal::GetStageFlags(PipelineStage stageMask)
-	{
-		VkPipelineStageFlags ret = 0;
-
-		if ((stageMask & PipelineStage::TOP) == PipelineStage::TOP)
-			ret |= VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-
-		if ((stageMask & PipelineStage::BOTTOM) == PipelineStage::BOTTOM)
-			ret |= VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
-
-		return ret;
-	}
-
 	VkAccessFlags SharedDataRenderPassElementsInternal::GetAccessFlags(PipelineAccess accessMask)
 	{
 		VkAccessFlags ret = 0;
@@ -252,8 +239,8 @@ namespace VulkanSimplified
 		else
 			add.dstSubpass = VK_SUBPASS_EXTERNAL;
 
-		add.srcStageMask = GetStageFlags(srcStageMask);
-		add.dstStageMask = GetStageFlags(dstStageMask);
+		add.srcStageMask = TranslatePipelineStage(srcStageMask);
+		add.dstStageMask = TranslatePipelineStage(dstStageMask);
 
 		add.srcAccessMask = GetAccessFlags(srcAccessMask);
 		add.dstAccessMask = GetAccessFlags(dstAccessMask);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DeviceSimplifierSharedEnums.h"
+#include "SharedDataSimplifierEnums.h"
 #include "VulkanSimplifierListTemplate.h"
 
 struct VkDescriptorSetLayoutBinding;
@@ -71,5 +72,16 @@ namespace VulkanSimplified
 
 		bool _allowDerivatives;
 		char ccpadding[7];
+	};
+
+	class AutoCleanupFence;
+	class AutoCleanupSemaphore;
+	class DeviceCommandRecorderInternal;
+
+	struct QueueSubmitObject
+	{
+		std::vector<std::pair<PipelineStage, ListObjectID<AutoCleanupSemaphore>>> _waitSemaphores;
+		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> _commandBuffer;
+		std::vector<ListObjectID<AutoCleanupSemaphore>> _signalSemaphores;
 	};
 }

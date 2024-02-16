@@ -65,6 +65,7 @@ namespace VulkanSimplified
 		void WaitForFences(const std::vector<ListObjectID<AutoCleanupFence>>& fencesIDList, uint64_t timeLimitInNanoseconds, bool waitAll);
 
 		VkSemaphore GetSemaphore(ListObjectID<AutoCleanupSemaphore> semaphoreID) const;
+		std::vector<VkSemaphore> GetSemaphoresList(const std::vector<ListObjectID<AutoCleanupSemaphore>>& semaphoresIDList) const;
 		VkFence GetFence(ListObjectID<AutoCleanupFence> fenceID) const;
 		std::vector<VkFence> GetFencesList(const std::vector<ListObjectID<AutoCleanupFence>>& fencesIDList) const;
 	};

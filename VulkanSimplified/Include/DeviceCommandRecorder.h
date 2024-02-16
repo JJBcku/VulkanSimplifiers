@@ -22,6 +22,8 @@ namespace VulkanSimplified
 
 		DeviceCommandRecorder& operator=(const DeviceCommandRecorder&) noexcept = delete;
 
+		void ResetCommandBuffer(bool releaseResources);
+
 		void BeginRecordingPrimaryBuffer(PrimaryBufferRecordingSettings settings);
 		void EndCommandBuffer();
 

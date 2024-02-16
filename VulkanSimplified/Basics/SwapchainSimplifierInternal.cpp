@@ -8,6 +8,8 @@
 #include "../Include/BasicsSimplifierSharedStructs.h"
 #include "../Include/DeviceSimplifierSharedStructs.h"
 
+#include "../Device/DeviceSynchronizationSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 	constexpr VkColorSpaceKHR colorspace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
@@ -248,6 +250,68 @@ namespace VulkanSimplified
 		return _swapchainImageViews;
 	}
 
+	std::pair<uint32_t, bool> SwapchainSimplifierInternal::AcquireNextImage(uint64_t timeLimitInNanosecons, std::optional<ListObjectID<AutoCleanupSemaphore>> semaphoreID, std::optional<ListObjectID<AutoCleanupFence>> fenceID)
+	{
+		auto& device = _deviceList.GetConstDeviceDataListSimplifier(_deviceID);
+		auto& synchronization = device.GetDeviceSynchronizationSimplifier();
+
+		std::pair<uint32_t, bool> ret = { std::numeric_limits<uint32_t>::max(), false };
+
+		VkSemaphore semaphore = VK_NULL_HANDLE;
+		VkFence fence = VK_NULL_HANDLE;
+
+		if (semaphoreID.has_value())
+			semaphore = synchronization.GetSemaphore(semaphoreID.value());
+
+		if (fenceID.has_value())
+			fence = synchronization.GetFence(fenceID.value());
+
+		VkResult result = vkAcquireNextImageKHR(_device, _swapchain, timeLimitInNanosecons, semaphore, fence, &ret.first);
+
+		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+			throw std::runtime_error("SwapchainSimplifierInternal::AcquireNextImage Error: Program failed to acquire next image!");
+
+		if (result == VK_SUCCESS)
+			ret.second = true;
+
+		return ret;
+	}
+
+	bool SwapchainSimplifierInternal::PresentImage(const std::vector<ListObjectID<AutoCleanupSemaphore>>& waitSemaphores, uint32_t frameID)
+	{
+		if (waitSemaphores.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("SwapchainSimplifierInternal::PresentImage Error: signal semaphores overflow!");
+
+		auto& device = _deviceList.GetConstDeviceDataListSimplifier(_deviceID);
+		auto& synchro = device.GetDeviceSynchronizationSimplifier();
+		auto& deviceCore = device.GetDeviceCoreSimplifier();
+		
+		VkQueue queue = deviceCore.GetQueue(VulkanSimplified::QueueFamilyType::GRAPHICS);
+
+		VkPresentInfoKHR presentInfo{};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &_swapchain;
+		presentInfo.pImageIndices = &frameID;
+
+		std::vector<VkSemaphore> semaphoreList;
+		
+		if (!waitSemaphores.empty())
+		{
+			semaphoreList = synchro.GetSemaphoresList(waitSemaphores);
+
+			presentInfo.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+			presentInfo.pWaitSemaphores = semaphoreList.data();
+		}
+
+		VkResult res = vkQueuePresentKHR(queue, &presentInfo);
+
+		if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR)
+			throw std::runtime_error("SwapchainSimplifierInternal::PresentImage Error: Program failed to present an image!");
+
+		return res == VK_SUCCESS;
+	}
+
 	void SwapchainSimplifierInternal::GetSwapchainImages()
 	{
 		uint32_t imagesAmount = 0;
@@ -304,6 +368,7 @@ namespace VulkanSimplified
 			}
 		}
 
+		_deviceID = deviceID;
 		auto& deviceList = _deviceList.GetConstDeviceDataListSimplifier(deviceID);
 		auto& device = deviceList.GetDeviceCoreSimplifier();
 
@@ -349,7 +414,8 @@ namespace VulkanSimplified
 		GetSwapchainImages();
 	}
 
-	SwapchainSimplifierInternal::SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface, const DeviceListSimplifierInternal& deviceList) : _window(window), _surface(surface), _deviceList(deviceList)
+	SwapchainSimplifierInternal::SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface,
+		const DeviceListSimplifierInternal& deviceList) : _window(window), _surface(surface), _deviceList(deviceList)
 	{
 		_ppadding = nullptr;
 

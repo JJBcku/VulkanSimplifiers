@@ -1,7 +1,7 @@
 #pragma once
 #include "../Include/VulkanSimplifierListTemplate.h"
 
-#include "../Include/DeviceSimplifierSharedEnums.h"
+#include "../Include/DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
@@ -11,6 +11,9 @@ namespace VulkanSimplified
 	class SharedDataSimplifierCoreInternal;
 	class DeviceImageSimplifierInternal;
 	class DevicePipelineDataInternal;
+	class DeviceSynchronizationSimplifierInternal;
+
+	class AutoCleanupFence;
 
 	class AutoCleanupCommandPool
 	{
@@ -37,16 +40,16 @@ namespace VulkanSimplified
 		const DeviceImageSimplifierInternal& _imageData;
 		const DevicePipelineDataInternal& _pipelineData;
 		const SharedDataSimplifierCoreInternal& _sharedData;
+		const DeviceSynchronizationSimplifierInternal& _synchronizationData;
 
 		VkDevice _device;
-		void* _ppadding;
 
 		ListTemplate<AutoCleanupCommandPool> _commandPools;
 		ListTemplate<std::unique_ptr<DeviceCommandRecorderInternal>> _primaryCommandBuffers;
 
 	public:
 		DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
-			const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData);
+			const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData, const DeviceSynchronizationSimplifierInternal& synchronizationData);
 		~DeviceCommandBufferSimplifierInternal();
 
 		DeviceCommandBufferSimplifierInternal(DeviceCommandBufferSimplifierInternal&) noexcept = delete;
@@ -60,5 +63,7 @@ namespace VulkanSimplified
 		VkCommandPool GetCommandPool(ListObjectID<AutoCleanupCommandPool> commandPoolID) const;
 
 		DeviceCommandRecorderInternal& GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> commandBufferID);
+
+		void SubmitToQueue(QueueFamilyType queueType, const std::vector<QueueSubmitObject>& queueSubmitList, std::optional<ListObjectID<AutoCleanupFence>> fenceId);
 	};
 }

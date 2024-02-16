@@ -34,7 +34,6 @@ namespace VulkanSimplified
 
 		VkImageLayout GetImageLayout(AttachmentLayout layout);
 
-		VkPipelineStageFlags GetStageFlags(PipelineStage stageMask);
 		VkAccessFlags GetAccessFlags(PipelineAccess accessMask);
 
 	public:

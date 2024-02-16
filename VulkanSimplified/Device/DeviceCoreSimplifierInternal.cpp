@@ -281,4 +281,31 @@ namespace VulkanSimplified
         return ret.value();
     }
 
+    VkQueue DeviceCoreSimplifierInternal::GetQueue(QueueFamilyType queueType) const
+    {
+        VkQueue ret = VK_NULL_HANDLE;
+
+        switch (queueType)
+        {
+        case VulkanSimplified::QueueFamilyType::TRANSFER:
+            ret = _transferQueue;
+            break;
+        case VulkanSimplified::QueueFamilyType::COMPUTE:
+            ret = _computeQueue;
+            break;
+        case VulkanSimplified::QueueFamilyType::GRAPHICS:
+            ret = _graphicQueue;
+            break;
+        default:
+            throw std::runtime_error("DeviceCoreSimplifierInternal::GetQueue Error: Program was given an erroneous queue type!");
+        }
+
+        return ret;
+    }
+
+    void DeviceCoreSimplifierInternal::WaitForIdlesness()
+    {
+        vkDeviceWaitIdle(_device);
+    }
+
 }

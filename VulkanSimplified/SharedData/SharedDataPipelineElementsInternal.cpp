@@ -240,6 +240,10 @@ namespace VulkanSimplified
 		switch (settings)
 		{
 		case VulkanSimplified::PipelineBlendSettings::OFF:
+			add.colorBlendOp = VK_BLEND_OP_ADD;
+			add.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_G_BIT;
+			add.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+			add.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
 			break;
 		case VulkanSimplified::PipelineBlendSettings::STANDARD_NO_ALPHA:
 			add.blendEnable = VK_TRUE;

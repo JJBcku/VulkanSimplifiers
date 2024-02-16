@@ -5,13 +5,14 @@
 #include "DeviceCommandRecorderInternal.h"
 
 #include "../SharedData/SharedDataSimplifierCoreInternal.h"
+#include "DeviceSynchronizationSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
-
 	DeviceCommandBufferSimplifierInternal::DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
-		const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData) : _deviceCore(deviceCore), _imageData(imageData), _pipelineData(pipelineData),
-		_sharedData(sharedData), _device(deviceCore.GetDevice()), _ppadding(nullptr)
+		const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData,
+		const DeviceSynchronizationSimplifierInternal& synchronizationData) : _deviceCore(deviceCore), _imageData(imageData), _pipelineData(pipelineData), _sharedData(sharedData),
+		_synchronizationData(synchronizationData), _device(deviceCore.GetDevice())
 	{
 	}
 
@@ -92,6 +93,99 @@ namespace VulkanSimplified
 	DeviceCommandRecorderInternal& DeviceCommandBufferSimplifierInternal::GetPrimaryDeviceCommandBuffersRecorder(ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>> commandBufferID)
 	{
 		return *_primaryCommandBuffers.GetObject(commandBufferID);
+	}
+
+	void DeviceCommandBufferSimplifierInternal::SubmitToQueue(QueueFamilyType queueType, const std::vector<QueueSubmitObject>& queueSubmitList,
+		std::optional<ListObjectID<AutoCleanupFence>> fenceId)
+	{
+		if (queueSubmitList.empty())
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: Program tried to submit an empty list!");
+
+		if (queueSubmitList.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: queue submit list overflow!");
+
+		VkQueue queue = _deviceCore.GetQueue(queueType);
+
+		std::vector<VkSubmitInfo> submitInfo;
+		std::vector<std::vector<VkSemaphore>> waitSemaphores;
+		std::vector<std::vector<VkPipelineStageFlags>> semaphoreStageFlags;
+		std::vector<std::vector<VkCommandBuffer>> commandBuffers;
+		std::vector<std::vector<VkSemaphore>> signalSemaphores;
+
+		submitInfo.reserve(queueSubmitList.size());
+
+		waitSemaphores.resize(queueSubmitList.size());
+		semaphoreStageFlags.resize(queueSubmitList.size());
+		commandBuffers.resize(queueSubmitList.size());
+		signalSemaphores.resize(queueSubmitList.size());
+
+		for (size_t i = 0; i < queueSubmitList.size(); ++i)
+		{
+			auto& submitObject = queueSubmitList[i];
+
+			if (submitObject._waitSemaphores.size() > std::numeric_limits<uint32_t>::max())
+				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: wait semaphores list overflow!");
+
+			if (submitObject._commandBuffer.empty())
+				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: Program tried to submit zero command buffers to queue!");
+
+			if (submitObject._commandBuffer.size() > std::numeric_limits<uint32_t>::max())
+				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: command buffer list overflow!");
+
+			if (submitObject._signalSemaphores.size() > std::numeric_limits<uint32_t>::max())
+				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: signal semaphores list overflow!");
+
+			VkSubmitInfo add{};
+			add.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			
+			if (!submitObject._waitSemaphores.empty())
+			{
+				auto& waitData = submitObject._waitSemaphores;
+
+				waitSemaphores[i].reserve(waitData.size());
+				semaphoreStageFlags[i].reserve(waitData.size());
+
+				for (size_t j = 0; j < waitData.size(); ++j)
+				{
+					semaphoreStageFlags[i].push_back(TranslatePipelineStage(waitData[j].first));
+					waitSemaphores[i].push_back(_synchronizationData.GetSemaphore(waitData[j].second));
+				}
+
+				add.waitSemaphoreCount = static_cast<uint32_t>(waitData.size());
+				add.pWaitSemaphores = waitSemaphores[i].data();
+				add.pWaitDstStageMask = semaphoreStageFlags[i].data();
+			}
+
+			{
+				auto& commandData = submitObject._commandBuffer;
+
+				commandBuffers[i].reserve(commandData.size());
+				for (size_t j = 0; j < commandData.size(); ++j)
+				{
+					commandBuffers[i].push_back(GetPrimaryDeviceCommandBuffersRecorder(commandData[j]).GetCommandBuffer());
+				}
+				add.commandBufferCount = static_cast<uint32_t>(commandData.size());
+				add.pCommandBuffers = commandBuffers[i].data();
+			}
+
+			if (!submitObject._signalSemaphores.empty())
+			{
+				signalSemaphores[i] = _synchronizationData.GetSemaphoresList(submitObject._signalSemaphores);
+
+				add.signalSemaphoreCount = static_cast<uint32_t>(signalSemaphores[i].size());
+				add.pSignalSemaphores = signalSemaphores[i].data();
+			}
+
+			submitInfo.push_back(add);
+		}
+
+		VkFence fence = VK_NULL_HANDLE;
+
+		if (fenceId.has_value())
+			fence = _synchronizationData.GetFence(fenceId.value());
+
+		if (vkQueueSubmit(queue, static_cast<uint32_t>(submitInfo.size()), submitInfo.data(), fence) != VK_SUCCESS)
+			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: Program failed to submit to the queue!");
 	}
 
 	AutoCleanupCommandPool::AutoCleanupCommandPool(VkDevice device, VkCommandPool commandPool) : _device(device), _ppadding(nullptr), _commandPool(commandPool)

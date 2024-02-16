@@ -44,4 +44,15 @@ namespace VulkanSimplified
 		return _internal.GetSwapchainHeight();
 	}
 
+	std::pair<uint32_t, bool> SwapchainSimplifier::AcquireNextImage(uint64_t timeLimitInNanosecons, std::optional<ListObjectID<AutoCleanupSemaphore>> semaphoreID,
+		std::optional<ListObjectID<AutoCleanupFence>> fenceID)
+	{
+		return _internal.AcquireNextImage(timeLimitInNanosecons, semaphoreID, fenceID);
+	}
+
+	bool SwapchainSimplifier::PresentImage(const std::vector<ListObjectID<AutoCleanupSemaphore>>& waitSemaphores, uint32_t frameID)
+	{
+		return _internal.PresentImage(waitSemaphores, frameID);
+	}
+
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+typedef uint32_t VkPipelineStageFlags;
+
 namespace VulkanSimplified
 {
 	enum class VertexAttributeFormats : uint64_t
@@ -122,11 +124,15 @@ namespace VulkanSimplified
 	{
 		TOP = 1,
 		BOTTOM = 2,
+		COLOR_ATTACHMENT_OUTPUT = 4,
 	};
+
+	VkPipelineStageFlags TranslatePipelineStage(PipelineStage stages);
 
 	enum PipelineAccess : uint64_t
 	{
 		COLOR_READ = 1,
 		COLOR_WRITE = 2,
+		NO_ACCESS = 0,
 	};
 }

@@ -34,4 +34,10 @@ namespace VulkanSimplified
 		return DeviceCommandRecorder(_internal.GetPrimaryDeviceCommandBuffersRecorder(commandBufferID));
 	}
 
+	void DeviceCommandBufferSimplifier::SubmitToQueue(QueueFamilyType queueType, const std::vector<QueueSubmitObject>& queueSubmitList,
+		std::optional<ListObjectID<AutoCleanupFence>> fenceId)
+	{
+		_internal.SubmitToQueue(queueType, queueSubmitList, fenceId);
+	}
+
 }

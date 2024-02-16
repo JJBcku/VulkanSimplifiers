@@ -14,6 +14,11 @@ namespace VulkanSimplified
 	{
 	}
 
+	void DeviceCommandRecorder::ResetCommandBuffer(bool releaseResources)
+	{
+		_internal.ResetCommandBuffer(releaseResources);
+	}
+
 	void DeviceCommandRecorder::BeginRecordingPrimaryBuffer(PrimaryBufferRecordingSettings settings)
 	{
 		_internal.BeginRecordingPrimaryBuffer(settings);

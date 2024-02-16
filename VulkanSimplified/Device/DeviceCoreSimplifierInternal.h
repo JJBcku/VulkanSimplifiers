@@ -40,6 +40,10 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo GetDeviceInfo() const;
 
 		uint32_t GetBestQueueForTheType(QueueFamilyType type) const;
+
+		VkQueue GetQueue(QueueFamilyType queueType) const;
+
+		void WaitForIdlesness();
 	};
 }
 

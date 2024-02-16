@@ -18,6 +18,21 @@ namespace VulkanSimplified
 	{
 	}
 
+	VkCommandBuffer DeviceCommandRecorderInternal::GetCommandBuffer() const
+	{
+		return _commandBuffer;
+	}
+
+	void DeviceCommandRecorderInternal::ResetCommandBuffer(bool releaseResources)
+	{
+		VkCommandBufferResetFlags flags{};
+
+		if (releaseResources)
+			flags = VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
+
+		vkResetCommandBuffer(_commandBuffer, flags);
+	}
+
 	void DeviceCommandRecorderInternal::BeginRecordingPrimaryBuffer(PrimaryBufferRecordingSettings settings)
 	{
 		VkCommandBufferBeginInfo beginInfo{};

@@ -134,6 +134,19 @@ namespace VulkanSimplified
 		return _semaphores.GetConstObject(semaphoreID).GetSemaphore();
 	}
 
+	std::vector<VkSemaphore> DeviceSynchronizationSimplifierInternal::GetSemaphoresList(const std::vector<ListObjectID<AutoCleanupSemaphore>>& semaphoresIDList) const
+	{
+		std::vector<VkSemaphore> ret;
+		ret.reserve(semaphoresIDList.size());
+
+		for (auto& semaphor : semaphoresIDList)
+		{
+			ret.push_back(GetSemaphore(semaphor));
+		}
+
+		return ret;
+	}
+
 	VkFence DeviceSynchronizationSimplifierInternal::GetFence(ListObjectID<AutoCleanupFence> fenceID) const
 	{
 		return _fences.GetConstObject(fenceID).GetFence();
