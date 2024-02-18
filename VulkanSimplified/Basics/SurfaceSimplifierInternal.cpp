@@ -30,6 +30,22 @@ namespace VulkanSimplified
         return _surface;
     }
 
+    void SurfaceSimplifierInternal::RecreateSurface()
+    {
+        if (_surface != VK_NULL_HANDLE)
+            DestroySurface();
+
+        auto window = _windowSimplifier.GetWindow();
+        assert(window != nullptr);
+
+        _surface = VK_NULL_HANDLE;
+
+        assert(_coreSimplifier.GetInstance() != VK_NULL_HANDLE);
+
+        if (SDL_Vulkan_CreateSurface(window, _coreSimplifier.GetInstance(), &_surface) != SDL_TRUE)
+            throw std::runtime_error("Error: Program failed to create a window's surface!");
+    }
+
     void SurfaceSimplifierInternal::DestroySurface()
     {
         if (_surface != VK_NULL_HANDLE)

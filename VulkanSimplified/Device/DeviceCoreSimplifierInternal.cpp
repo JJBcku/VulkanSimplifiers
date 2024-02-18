@@ -303,7 +303,7 @@ namespace VulkanSimplified
         return ret;
     }
 
-    void DeviceCoreSimplifierInternal::WaitForIdlesness()
+    void DeviceCoreSimplifierInternal::WaitForIdleness()
     {
         vkDeviceWaitIdle(_device);
     }

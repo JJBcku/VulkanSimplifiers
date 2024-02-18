@@ -24,6 +24,11 @@ namespace VulkanSimplified
 	{
 	}
 
+	WindowSimplifierInternal& BasicsSimplifierInternal::GetWindowSimplifier()
+	{
+		return _windows;
+	}
+
 	DeviceListSimplifierInternal& BasicsSimplifierInternal::GetDeviceListSimplifier()
 	{
 		return _deviceList;
@@ -42,6 +47,11 @@ namespace VulkanSimplified
 	const SwapchainSimplifierInternal& BasicsSimplifierInternal::GetSwapchainSimplifier() const
 	{
 		return _swapchain;
+	}
+
+	const WindowSimplifierInternal& BasicsSimplifierInternal::GetWindowSimplifier() const
+	{
+		return _windows;
 	}
 
 }

@@ -17,6 +17,11 @@ namespace VulkanSimplified
 	{
 	}
 
+	WindowSimplifier BasicsSimplifier::GetWindowSimplifier()
+	{
+		return WindowSimplifier(_internal.GetWindowSimplifier());
+	}
+
 	DeviceListSimplifier BasicsSimplifier::GetDeviceListSimplifier()
 	{
 		return DeviceListSimplifier(_internal.GetDeviceListSimplifier());

@@ -17,7 +17,7 @@ namespace VulkanSimplified
 
 		DeviceCoreSimplifier& operator=(const DeviceCoreSimplifier&) noexcept = delete;
 
-		void WaitForIdlesness();
+		void WaitForIdleness();
 	};
 }
 

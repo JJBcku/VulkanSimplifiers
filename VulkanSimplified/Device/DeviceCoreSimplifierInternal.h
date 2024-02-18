@@ -43,7 +43,7 @@ namespace VulkanSimplified
 
 		VkQueue GetQueue(QueueFamilyType queueType) const;
 
-		void WaitForIdlesness();
+		void WaitForIdleness();
 	};
 }
 

@@ -9,6 +9,7 @@
 #include "../Include/DeviceSimplifierSharedStructs.h"
 
 #include "../Device/DeviceSynchronizationSimplifierInternal.h"
+#include "../Device/DeviceImageSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
@@ -205,6 +206,10 @@ namespace VulkanSimplified
 	{
 		if (_swapchain != VK_NULL_HANDLE)
 		{
+			auto& framebufferList = _deviceList.GetDeviceDataListSimplifier(_deviceID).GetDeviceImageSimplifier();
+
+			framebufferList.DestroySwapchainFramebuffers();
+
 			for (size_t i = 0; i < _swapchainImageViews.size(); ++i)
 			{
 				vkDestroyImageView(_device, _swapchainImageViews[i], nullptr);
@@ -306,7 +311,7 @@ namespace VulkanSimplified
 
 		VkResult res = vkQueuePresentKHR(queue, &presentInfo);
 
-		if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR)
+		if (res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR && res != VK_ERROR_OUT_OF_DATE_KHR)
 			throw std::runtime_error("SwapchainSimplifierInternal::PresentImage Error: Program failed to present an image!");
 
 		return res == VK_SUCCESS;
@@ -378,6 +383,9 @@ namespace VulkanSimplified
 		assert(_device != VK_NULL_HANDLE);
 		assert(_physicalDevice != VK_NULL_HANDLE);
 
+		if (vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_physicalDevice, _surface.GetSurface(), &_surfaceCapabilities) != VK_SUCCESS)
+			throw std::runtime_error("SwapchainSimplifierInternal::CreateSwapchain Error: Program failed to query physical device surface capabilities!");
+
 		VkSwapchainCreateInfoKHR createInfo{};
 
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
@@ -389,6 +397,9 @@ namespace VulkanSimplified
 		createInfo.imageArrayLayers = 1;
 		_swapchainExtend.width = _window.GetWindowWidth();
 		_swapchainExtend.height = _window.GetWindowHeight();
+
+		_swapchainExtend.width = std::clamp(_swapchainExtend.width, _surfaceCapabilities.minImageExtent.width, _surfaceCapabilities.maxImageExtent.width);
+		_swapchainExtend.height = std::clamp(_swapchainExtend.height, _surfaceCapabilities.minImageExtent.height, _surfaceCapabilities.maxImageExtent.height);
 		createInfo.imageExtent = _swapchainExtend;
 		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -415,7 +426,7 @@ namespace VulkanSimplified
 	}
 
 	SwapchainSimplifierInternal::SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface,
-		const DeviceListSimplifierInternal& deviceList) : _window(window), _surface(surface), _deviceList(deviceList)
+		DeviceListSimplifierInternal& deviceList) : _window(window), _surface(surface), _deviceList(deviceList)
 	{
 		_ppadding = nullptr;
 
@@ -424,6 +435,8 @@ namespace VulkanSimplified
 		_physicalDevice = VK_NULL_HANDLE;
 		_format = VK_FORMAT_MAX_ENUM;
 		_swapchainExtend = { 0, 0 };
+		_surfaceCapabilities = {};
+		_upadding = 0;
 
 		memset(_padding, 0, sizeof(_padding));
 		memset(_padding2, 0, sizeof(_padding2));

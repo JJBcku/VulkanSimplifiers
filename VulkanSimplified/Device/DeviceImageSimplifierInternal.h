@@ -1,3 +1,4 @@
+#pragma once
 #include "../Include/VulkanSimplifierListTemplate.h"
 
 namespace VulkanSimplified
@@ -64,6 +65,8 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupSwapchainFramebuffer> AddSimpleSwapchainFramebuffer(ListObjectID<AutoCleanupRenderPass> renderPass);
 
-		VkFramebuffer GetSwapchainFrameBuffer(ListObjectID<AutoCleanupSwapchainFramebuffer> framebufferID, uint32_t frameID) const;
+		VkFramebuffer GetSwapchainFramebuffer(ListObjectID<AutoCleanupSwapchainFramebuffer> framebufferID, uint32_t frameID) const;
+
+		void DestroySwapchainFramebuffers();
 	};
 }

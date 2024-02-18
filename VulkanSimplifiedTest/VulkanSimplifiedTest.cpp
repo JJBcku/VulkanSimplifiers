@@ -8,6 +8,7 @@
 #include <BasicsSimplifier.h>
 #include <DeviceListSimplifier.h>
 #include <SwapchainSimplifier.h>
+#include <WindowSimplifier.h>
 
 #include <VulkanSimplifierListTemplate.h>
 #include <DeviceCoreSimplifier.h>
@@ -47,7 +48,7 @@ int main()
         windowSettings.windowTitle = "Vulkan Simplified Test Window";
         windowSettings.windowHeight = 600;
         windowSettings.windowWidth = 800;
-        windowSettings.properties = VulkanSimplified::WindowProperties::NONE;
+        windowSettings.properties = VulkanSimplified::WindowProperties::RESIZABLE;
 
         AppData appSettings{};
         appSettings.appTitle = "Simplified Vulkan Test App";
@@ -79,6 +80,8 @@ int main()
         auto device = deviceDataList.GetDeviceCoreSimplifier();
 
         auto shaders = deviceDataList.GetShaderModulesSimplifier();
+
+        auto window = instance.GetWindowSimplifier();
 
         VulkanSimplified::SwapchainSettings swapchainSettings{};
 
@@ -113,10 +116,14 @@ int main()
         auto swapchainWidth = swapchain.GetSwapchainWidth();
         auto swapchainHeight = swapchain.GetSwapchainHeight();
 
-        auto pipelineViewport = pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchainWidth, swapchainHeight, 0.0f, 1.0f);
-        auto pipelineScissor = pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight);
+        std::vector<VulkanSimplified::ListObjectID<VkViewport>> pipelineViewport;
+        pipelineViewport.push_back(pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchainWidth, swapchainHeight, 0.0f, 1.0f));
+        std::vector<VulkanSimplified::ListObjectID<VkRect2D>> pipelineScissor;
+        pipelineScissor.push_back(pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight));
 
-        auto pipelineViewportState = pipelineData.AddPipelineViewportState({ {pipelineViewport, pipelineScissor} });
+        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::PipelineViewportsStateList>> pipelineViewportStatesList;
+
+        pipelineViewportStatesList.push_back(pipelineData.AddPipelineViewportState({ {pipelineViewport[0], pipelineScissor[0]} }));
         auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, true);
 
         auto pipelineMultisampling = pipelineData.AddPipelineMultisampleState(VulkanSimplified::PipelineMultisampleCount::SAMPLE_1, false, 0.0f);
@@ -158,7 +165,7 @@ int main()
 
         createInfo._vertexInput = testVertexInput;
         createInfo._inputAssembly = pipelineInputAssembly;
-        createInfo._viewportState = pipelineViewportState;
+        createInfo._viewportState = pipelineViewportStatesList[0];
         createInfo._rasterizationState = pipelineRasterizationState;
         createInfo._multisamplingState = pipelineMultisampling;
         createInfo._colorBlendState = pipelineColorBlendState;
@@ -168,7 +175,7 @@ int main()
         createInfo._basePipelineID._idType = VulkanSimplified::BasePipelineIDType::NONE;
         createInfo._allowDerivatives = false;
 
-        auto pipeline = devicePipelineData.AddGraphicsPipelines({ createInfo });
+        auto pipelineList = devicePipelineData.AddGraphicsPipelines({ createInfo });
 
         auto imageSimplifier = deviceDataList.GetDeviceImageSimplifier();
 
@@ -209,13 +216,67 @@ int main()
         uint32_t currentImage = 0;
         uint32_t currentSynchro = 0;
 
-        while(imageAmount < 1000)
+        size_t pipelineID = 0;
+
+        bool redoSwapchain = false;
+
+        while(!window.GetQuit())
         {
-            deviceSynchronization.WaitForFences({ inFlightFencesList[currentSynchro]}, 1000, false);
+            window.HandleEvents();
+
+            if (window.GetPaused())
+            {
+                using namespace std::chrono_literals;
+                std::this_thread::sleep_for(10ms);
+                continue;
+            }
+
+            deviceSynchronization.WaitForFences({ inFlightFencesList[currentSynchro] }, 1000, false);
             deviceSynchronization.ResetFences({ inFlightFencesList[currentSynchro] });
+
+            redoSwapchain = redoSwapchain || window.GetResized();
+
+            if (redoSwapchain)
+            {
+                device.WaitForIdleness();
+                swapchain.ReCreateSwapchain(deviceID, swapchainSettings);
+
+                swapchainWidth = swapchain.GetSwapchainWidth();
+                swapchainHeight = swapchain.GetSwapchainHeight();
+
+                swapchainFramebuffers = imageSimplifier.AddSimpleSwapchainFramebuffer(renderPass);
+
+                auto newViewport = pipelineData.AddPipelineViewport(0, 0, swapchainWidth, swapchainHeight, 0.0f, 1.0f);
+                auto newScissors = pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight);
+
+                auto scissorFind = std::find(pipelineScissor.begin(), pipelineScissor.end(), newScissors);
+
+                if (scissorFind != pipelineScissor.cend())
+                {
+                    pipelineID = static_cast<size_t>(std::distance(pipelineScissor.begin(), scissorFind));
+                }
+                else
+                {
+                    pipelineID = pipelineScissor.size();
+
+                    pipelineViewport.push_back(newViewport);
+                    pipelineScissor.push_back(newScissors);
+
+                    pipelineViewportStatesList.push_back(pipelineData.AddPipelineViewportState({ {pipelineViewport[pipelineID], pipelineScissor[pipelineID]} }));
+
+                    createInfo._viewportState = pipelineViewportStatesList[pipelineID];
+
+                    auto newPipelines = devicePipelineData.AddGraphicsPipelines({ createInfo });
+
+                    pipelineList.push_back(newPipelines[0]);
+                }
+
+                redoSwapchain = false;
+            }
 
             auto nextImage = swapchain.AcquireNextImage(std::numeric_limits<uint64_t>::max(), imageAvailableSemaphoresList[currentSynchro], {});
             currentImage = nextImage.first;
+            redoSwapchain = !nextImage.second;
 
             commandRecorderList[currentImage].ResetCommandBuffer(false);
 
@@ -223,7 +284,7 @@ int main()
 
             commandRecorderList[currentImage].BeginRenderPass(renderPass, swapchainFramebuffers, currentImage, 0, 0, swapchainWidth, swapchainHeight, { colorClearValue }, false);
             
-            commandRecorderList[currentImage].BindGraphicsPipeline(pipeline[0]);
+            commandRecorderList[currentImage].BindGraphicsPipeline(pipelineList[pipelineID]);
             commandRecorderList[currentImage].Draw(3, 1, 0, 0);
 
             commandRecorderList[currentImage].EndRenderPass();
@@ -237,7 +298,9 @@ int main()
 
             commandBufferList.SubmitToQueue(VulkanSimplified::QueueFamilyType::GRAPHICS, { submitObject }, { inFlightFencesList[currentSynchro] });
 
-            swapchain.PresentImage({ renderFinishedSemaphoresList[currentSynchro] }, currentImage);
+            bool result = swapchain.PresentImage({ renderFinishedSemaphoresList[currentSynchro] }, currentImage);
+
+            redoSwapchain = !result || redoSwapchain;
 
             imageAmount++;
             currentSynchro++;
@@ -246,7 +309,7 @@ int main()
                 currentSynchro = 0;
         }
 
-        device.WaitForIdlesness();
+        device.WaitForIdleness();
 
         main.reset();
     }

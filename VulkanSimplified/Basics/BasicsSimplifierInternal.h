@@ -39,11 +39,13 @@ namespace VulkanSimplified
 		BasicsSimplifierInternal(const BasicsSimplifierInternal&) = delete;
 		BasicsSimplifierInternal& operator= (const BasicsSimplifierInternal&) = delete;
 
+		WindowSimplifierInternal& GetWindowSimplifier();
 		DeviceListSimplifierInternal& GetDeviceListSimplifier();
 		SwapchainSimplifierInternal& GetSwapchainSimplifier();
 
 		const DeviceListSimplifierInternal& GetDeviceListSimplifier() const;
 		const SwapchainSimplifierInternal& GetSwapchainSimplifier() const;
+		const WindowSimplifierInternal& GetWindowSimplifier() const;
 	};
 }
 

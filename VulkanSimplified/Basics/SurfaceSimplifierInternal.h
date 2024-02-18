@@ -21,5 +21,7 @@ namespace VulkanSimplified
         SurfaceSimplifierInternal& operator=(const SurfaceSimplifierInternal&) noexcept = delete;
 
         VkSurfaceKHR GetSurface() const;
+
+        void RecreateSurface();
     };
 }

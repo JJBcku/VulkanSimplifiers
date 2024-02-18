@@ -242,6 +242,7 @@
     <ClInclude Include="Basics\VulkanCoreSimplifierInternal.h" />
     <ClInclude Include="Include\VulkanSimplifierListTemplate.h" />
     <ClInclude Include="Basics\WindowSimplifierInternal.h" />
+    <ClInclude Include="Include\WindowSimplifier.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp" />
@@ -289,6 +290,7 @@
     <ClCompile Include="Basics\VulkanCoreSimplifierInternal.cpp" />
     <ClCompile Include="Other\VulkanSimplifierListTemplate.cpp" />
     <ClCompile Include="Basics\WindowSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\WindowSimplifier.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

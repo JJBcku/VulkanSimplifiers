@@ -46,11 +46,16 @@ namespace VulkanSimplified
 		return _swapchainFramebuffers.AddObject(AutoCleanupSwapchainFramebuffer(_device, std::move(_framebufferList)));
 	}
 
-	VkFramebuffer DeviceImageSimplifierInternal::GetSwapchainFrameBuffer(ListObjectID<AutoCleanupSwapchainFramebuffer> framebufferID, uint32_t frameID) const
+	VkFramebuffer DeviceImageSimplifierInternal::GetSwapchainFramebuffer(ListObjectID<AutoCleanupSwapchainFramebuffer> framebufferID, uint32_t frameID) const
 	{
 		auto& framebuffer = _swapchainFramebuffers.GetConstObject(framebufferID);
 
 		return framebuffer.GetFramebuffer(frameID);
+	}
+
+	void DeviceImageSimplifierInternal::DestroySwapchainFramebuffers()
+	{
+		_swapchainFramebuffers.Reset();
 	}
 
 	AutoCleanupFramebuffer::AutoCleanupFramebuffer(VkDevice device, VkFramebuffer framebuffer) : _device(device), _ppadding(nullptr), _framebuffer(framebuffer)

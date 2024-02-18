@@ -14,6 +14,11 @@ namespace VulkanSimplified
 
 		_window = CreateWindow(data);
 		padding = 0;
+
+		_minimized = false;
+		_hidden = false;
+		_quit = false;
+		_resized = false;
 	}
 
 	WindowSimplifierInternal::~WindowSimplifierInternal()
@@ -35,6 +40,89 @@ namespace VulkanSimplified
 	uint32_t WindowSimplifierInternal::GetWindowHeight() const
 	{
 		return _height;
+	}
+
+	std::vector<SDL_Event> WindowSimplifierInternal::GetEvents() const
+	{
+		std::vector<SDL_Event> ret;
+		ret.reserve(0x10);
+		SDL_Event event{};
+
+		while (SDL_PollEvent(&event) != 0)
+		{
+			if (ret.size() == ret.capacity())
+				ret.reserve(ret.capacity() << 1);
+
+			ret.push_back(event);
+		}
+
+		return ret;
+	}
+
+	void WindowSimplifierInternal::HandleEvents()
+	{
+		auto events = GetEvents();
+
+		for (auto& event : events)
+		{
+			if (event.type == SDL_QUIT)
+			{
+				_quit = true;
+			}
+			else if ((event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+			{
+				_quit = true;
+			}
+			else if (event.type == SDL_WINDOWEVENT)
+			{
+				switch (event.window.event)
+				{
+				case SDL_WINDOWEVENT_SHOWN:
+					_hidden = false;
+					_minimized = false;
+					break;
+				case SDL_WINDOWEVENT_HIDDEN:
+					_hidden = true;
+					break;
+				case SDL_WINDOWEVENT_RESIZED:
+					_resized = true;
+					_width = static_cast<uint32_t>(event.window.data1);
+					_height = static_cast<uint32_t>(event.window.data2);
+					break;
+				case SDL_WINDOWEVENT_MINIMIZED:
+					_minimized = true;
+					break;
+				case SDL_WINDOWEVENT_MAXIMIZED:
+					_minimized = false;
+					_hidden = false;
+					break;
+				case SDL_WINDOWEVENT_RESTORED:
+					_minimized = false;
+					_hidden = false;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	bool WindowSimplifierInternal::GetQuit() const
+	{
+		return _quit;
+	}
+
+	bool WindowSimplifierInternal::GetPaused() const
+	{
+		return _minimized || _hidden;
+	}
+
+	bool WindowSimplifierInternal::GetResized()
+	{
+		bool ret = _resized;
+		_resized = false;
+
+		return ret;
 	}
 
 	SDL_Window* WindowSimplifierInternal::CreateWindow(WindowCreationData data) const

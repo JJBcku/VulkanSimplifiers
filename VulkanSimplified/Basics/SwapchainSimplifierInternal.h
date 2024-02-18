@@ -26,7 +26,7 @@ namespace VulkanSimplified
 	{
 		const WindowSimplifierInternal& _window;
 		const SurfaceSimplifierInternal& _surface;
-		const DeviceListSimplifierInternal& _deviceList;
+		DeviceListSimplifierInternal& _deviceList;
 		void* _ppadding;
 
 		VkSwapchainKHR _swapchain;
@@ -35,6 +35,8 @@ namespace VulkanSimplified
 		VkFormat _format;
 		char _padding[8 - sizeof(_format)];
 		VkExtent2D _swapchainExtend;
+		VkSurfaceCapabilitiesKHR _surfaceCapabilities;
+		uint32_t _upadding;
 
 		ListObjectID<std::unique_ptr<DeviceDataListSimplifierInternal>> _deviceID;
 
@@ -60,7 +62,7 @@ namespace VulkanSimplified
 		void DestroySwapchain();
 
 	public:
-		SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface, const DeviceListSimplifierInternal& deviceList);
+		SwapchainSimplifierInternal(const WindowSimplifierInternal& window, const SurfaceSimplifierInternal& surface, DeviceListSimplifierInternal& deviceList);
 		~SwapchainSimplifierInternal();
 
 		SwapchainSimplifierInternal& operator=(const SwapchainSimplifierInternal&) noexcept = delete;

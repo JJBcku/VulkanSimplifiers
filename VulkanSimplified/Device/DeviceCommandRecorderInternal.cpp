@@ -81,7 +81,7 @@ namespace VulkanSimplified
 		VkRenderPassBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		beginInfo.renderPass = _pipelineData.GetRenderPass(renderPassID);
-		beginInfo.framebuffer = _imagesData.GetSwapchainFrameBuffer(framebuffer, frameID);
+		beginInfo.framebuffer = _imagesData.GetSwapchainFramebuffer(framebuffer, frameID);
 		beginInfo.renderArea.offset.x = static_cast<int32_t>(beginX);
 		beginInfo.renderArea.offset.y = static_cast<int32_t>(beginY);
 		beginInfo.renderArea.extent.width = extendWidth;

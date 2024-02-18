@@ -2,11 +2,13 @@
 
 #include "BasicsSimplifierSharedStructs.h"
 #include "DeviceListSimplifier.h"
+#include "WindowSimplifier.h"
 
 namespace VulkanSimplified
 {
 	class BasicsSimplifierInternal;
 	class SwapchainSimplifier;
+	class WindowSimplifier;
 
 	struct WindowCreationData;
 	struct AppData;
@@ -23,8 +25,8 @@ namespace VulkanSimplified
 		BasicsSimplifier(const BasicsSimplifier&) = delete;
 		BasicsSimplifier& operator= (const BasicsSimplifier&) = delete;
 
+		WindowSimplifier GetWindowSimplifier();
 		DeviceListSimplifier GetDeviceListSimplifier();
-
 		SwapchainSimplifier GetSwapchainSimplifier();
 	};
 }

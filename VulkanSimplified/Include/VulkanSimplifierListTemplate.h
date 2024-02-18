@@ -8,17 +8,18 @@ namespace VulkanSimplified
 	class ListObjectID
 	{
 		IDType _id;
+		IDType _vectorID;
 
 	public:
-		ListObjectID(IDType id = std::numeric_limits<IDType>::max()) { _id = id; }
+		ListObjectID(IDType id = std::numeric_limits<IDType>::max(), IDType vectorID = std::numeric_limits<IDType>::max()) : _id(id), _vectorID(vectorID) {}
 		ListObjectID(const ListObjectID& other) = default;
 		ListObjectID(ListObjectID&& other) noexcept = default;
 
 		ListObjectID<T>& operator=(const ListObjectID<T>& other) = default;
-		ListObjectID<T>& operator=(ListObjectID<T>&&) = default;
+		ListObjectID<T>& operator=(ListObjectID<T>&&) noexcept = default;
 
-		bool operator==(const ListObjectID<T>& other) const = default;
-		std::strong_ordering operator<=>(const ListObjectID<T>&) const = default;
+		bool operator==(const ListObjectID<T>& other) const noexcept = default;
+		std::strong_ordering operator<=>(const ListObjectID<T>&) const noexcept = default;
 	};
 
 	template<class T>
@@ -128,6 +129,7 @@ namespace VulkanSimplified
 	class ListTemplate
 	{
 		IDType _nextID;
+		IDType _vectorID;
 		std::vector<ListObjectTemplate<T>> _list;
 		std::vector<size_t> _deletedList;
 
@@ -146,6 +148,7 @@ namespace VulkanSimplified
 		ListTemplate(size_t reserve = 0)
 		{
 			_nextID = std::numeric_limits<IDType>::lowest();
+			_vectorID = std::numeric_limits<IDType>::lowest();
 
 			if (reserve != 0)
 			{
@@ -204,7 +207,7 @@ namespace VulkanSimplified
 				if (!_deletedList.empty())
 				{
 					size_t pos = _deletedList.back();
-					_list[pos].ReplaceValue(GetNextId(), value);
+					_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), value);
 					_deletedList.pop_back();
 					return _list[pos].GetObjectID();
 				}
@@ -212,7 +215,7 @@ namespace VulkanSimplified
 				{
 					CheckCapacity(add);
 
-					_list.emplace_back(GetNextId(), value);
+					_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), value);
 					return _list.back().GetObjectID();
 				}
 			}
@@ -231,7 +234,7 @@ namespace VulkanSimplified
 				if (!_deletedList.empty())
 				{
 					size_t pos = _deletedList.back();
-					_list[pos].ReplaceValue(GetNextId(), std::move(value));
+					_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
 					_deletedList.pop_back();
 					return _list[pos].GetObjectID();
 				}
@@ -239,7 +242,7 @@ namespace VulkanSimplified
 				{
 					CheckCapacity(add);
 
-					_list.emplace_back(GetNextId(), std::move(value));
+					_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
 					return _list.back().GetObjectID();
 				}
 			}
@@ -250,7 +253,7 @@ namespace VulkanSimplified
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(GetNextId(), value);
+				_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), value);
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -258,7 +261,7 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(GetNextId(), value);
+				_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), value);
 				return _list.back().GetObjectID();
 			}
 		}
@@ -268,7 +271,7 @@ namespace VulkanSimplified
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(GetNextId(), std::move(value));
+				_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -276,7 +279,7 @@ namespace VulkanSimplified
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(GetNextId(), std::move(value));
+				_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
 				return _list.back().GetObjectID();
 			}
 		}
@@ -474,6 +477,11 @@ namespace VulkanSimplified
 		{
 			_list.clear();
 			_deletedList.clear();
+
+			if (_vectorID == std::numeric_limits<IDType>::max())
+				throw std::runtime_error("ListTemplate Reset Error: vector ID overflow!");
+
+			_vectorID++;
 
 			if (reserve != 0)
 			{
