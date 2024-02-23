@@ -47,4 +47,12 @@ namespace VulkanSimplified
 		SINGLE_USE = 2,
 		MULTI_SUBMIT = 4,
 	};
+
+	enum class MemoryPropertiesIDType : uint64_t
+	{
+		NONE = 0,
+		UNCACHED = 1,
+		CACHED_INCOHERENT = 2,
+		CACHED_COHERENT = 3,
+	};
 }

@@ -52,6 +52,17 @@ namespace VulkanSimplified
 
 		QueueFamilies();
 	};
+	
+	struct MemoryHeapSizes
+	{
+		uint64_t externalUncachedDeviceAccessibleMemorySize, externalCachedCoherentDeviceAccessibleMemorySize, externalCachedIncoherentDeviceAccessibleMemorySize;
+		uint64_t localMemorySize;
+		uint64_t sharedUncachedMemorySize;
+		uint64_t sharedCachedCoherentMemorySize;
+		uint64_t sharedCachedIncoherentMemorySize;
+
+		MemoryHeapSizes();
+	};
 
 	struct SimplifiedDeviceInfo
 	{
@@ -72,7 +83,7 @@ namespace VulkanSimplified
 
 		QueueFamilies queueFamilies;
 
-		uint64_t nonLocalMemorySize, localMemorySize, sharedMemorySize;
+		MemoryHeapSizes memoryHeapBiggestSizes;
 		
 		SimplifiedDeviceInfo();
 	};

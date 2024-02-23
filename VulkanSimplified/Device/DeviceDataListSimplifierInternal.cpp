@@ -7,7 +7,7 @@ namespace VulkanSimplified
 		const DeviceSettings& deviceSettings, const SharedDataSimplifierCoreInternal& sharedDataList, const SwapchainSimplifierInternal& swapchain) : _sharedDataList(sharedDataList),
 		_deviceCore(device, deviceInfo, deviceSettings), _shaderModules(_deviceCore.GetDevice()), _pipelineData(_deviceCore.GetDevice(), _sharedDataList, _shaderModules),
 		_imageData(_deviceCore.GetDevice(), swapchain, _pipelineData), _commandBuffers(_deviceCore, _imageData, _pipelineData, _sharedDataList, _synchronizationData),
-		_synchronizationData(_deviceCore.GetDevice())
+		_synchronizationData(_deviceCore.GetDevice()), _memoryData(device, _deviceCore.GetDevice())
 	{
 		_ppadding = nullptr;
 	}
@@ -46,6 +46,11 @@ namespace VulkanSimplified
 		return _synchronizationData;
 	}
 
+	DeviceMemorySimplifierInternal& DeviceDataListSimplifierInternal::GetDeviceMemorySimplifier()
+	{
+		return _memoryData;
+	}
+
 	const DeviceCoreSimplifierInternal& DeviceDataListSimplifierInternal::GetDeviceCoreSimplifier() const
 	{
 		return _deviceCore;
@@ -74,6 +79,11 @@ namespace VulkanSimplified
 	const DeviceSynchronizationSimplifierInternal& DeviceDataListSimplifierInternal::GetDeviceSynchronizationSimplifier() const
 	{
 		return _synchronizationData;
+	}
+
+	const DeviceMemorySimplifierInternal& DeviceDataListSimplifierInternal::GetDeviceMemorySimplifier() const
+	{
+		return _memoryData;
 	}
 
 }

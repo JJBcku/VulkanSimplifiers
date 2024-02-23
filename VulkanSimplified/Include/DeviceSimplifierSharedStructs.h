@@ -84,4 +84,52 @@ namespace VulkanSimplified
 		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> _commandBuffer;
 		std::vector<ListObjectID<AutoCleanupSemaphore>> _signalSemaphores;
 	};
+
+	class AutoCleanupSharedUncachedDeviceMemory;
+	class AutoCleanupSharedCachedCoherentDeviceMemory;
+	class AutoCleanupSharedCachedIncoherentDeviceMemory;
+
+	union SharedDeviceMemoryID
+	{
+		MemoryPropertiesIDType _type = MemoryPropertiesIDType::NONE;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupSharedUncachedDeviceMemory> _ID;
+		} _unchachedID;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> _ID;
+		} _cachedCoherentID;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> _ID;
+		} _cachedIncoherentID;
+	};
+
+	class AutoCleanupAccesibleUncachedExternalMemory;
+	class AutoCleanupAccesibleCachedCoherentExternalMemory;
+	class AutoCleanupAccesibleCachedIncoherentExternalMemory;
+
+	union ExternalAccessibleMemoryID
+	{
+		MemoryPropertiesIDType _type = MemoryPropertiesIDType::NONE;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupAccesibleUncachedExternalMemory> _ID;
+		} _unchachedID;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupAccesibleCachedCoherentExternalMemory> _ID;
+		} _cachedCoherentID;
+		struct
+		{
+			MemoryPropertiesIDType _type;
+			ListObjectID<AutoCleanupAccesibleCachedIncoherentExternalMemory> _ID;
+		} _cachedIncoherentID;
+	};
 }

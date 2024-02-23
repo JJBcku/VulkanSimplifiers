@@ -171,6 +171,12 @@
     <ClInclude Include="Include\WindowSimplifier.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
+    <ClInclude Include="Device\DeviceMemorySimplifierInternal.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DeviceMemorySimplifier.h">
+      <Filter>Header Files\Devices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -295,6 +301,12 @@
     </ClCompile>
     <ClCompile Include="Basics\WindowSimplifier.cpp">
       <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceMemorySimplifierInternal.cpp">
+      <Filter>Source Files\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceMemorySimplifier.cpp">
+      <Filter>Source Files\Devices</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -8,7 +8,8 @@
 #include "../Include/DevicePipelineData.h"
 #include "../Include/DeviceImageSimplifier.h"
 #include "../Include/DeviceCommandBufferSimplifier.h"
-#include "../Include//DeviceSynchronizationSimplifier.h"
+#include "../Include/DeviceSynchronizationSimplifier.h"
+#include "../Include/DeviceMemorySimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -49,6 +50,11 @@ namespace VulkanSimplified
 	DeviceSynchronizationSimplifier DeviceDataListSimplifier::GetDeviceSynchronizationSimplifier()
 	{
 		return DeviceSynchronizationSimplifier(_internal.GetDeviceSynchronizationSimplifier());
+	}
+
+	DeviceMemorySimplifier DeviceDataListSimplifier::GetDeviceMemorySimplifier()
+	{
+		return DeviceMemorySimplifier(_internal.GetDeviceMemorySimplifier());
 	}
 
 }

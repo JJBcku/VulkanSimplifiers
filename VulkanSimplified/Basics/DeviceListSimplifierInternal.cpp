@@ -325,43 +325,79 @@ namespace VulkanSimplified
 		ret.queueFamilies = deviceInfo.queueFamilies;
 
 		VkMemoryPropertyFlags deviceLocalMemoryProperties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-		VkMemoryPropertyFlags NOTdeviceLocalMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-		VkMemoryPropertyFlags sharedMemoryMemoryProperties = deviceLocalMemoryProperties | NOTdeviceLocalMemoryProperties;
+		VkMemoryPropertyFlags externalUncachedMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags externalCachedCoherentMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags externalCachedIncoherentMemoryProperties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags sharedUncachedMemoryProperties = deviceLocalMemoryProperties | externalUncachedMemoryProperties;
+		VkMemoryPropertyFlags sharedCachedCoherentMemoryProperties = deviceLocalMemoryProperties | externalCachedCoherentMemoryProperties;
+		VkMemoryPropertyFlags sharedCachedIncoherentMemoryProperties = deviceLocalMemoryProperties | externalCachedIncoherentMemoryProperties;
 
-		VkMemoryPropertyFlags deviceLocalMemoryRejectedProperties = NOTdeviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-		VkMemoryPropertyFlags NOTdeviceLocalMemoryRejectedProperties = deviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
-		VkMemoryPropertyFlags sharedMemoryMemoryRejectedProperties = VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags deviceLocalMemoryRejectedProperties = externalCachedCoherentMemoryProperties;
+		VkMemoryPropertyFlags externalUncachedMemoryRejectedProperties = deviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags externalCachedCoherentMemoryRejectedProperties = deviceLocalMemoryProperties;
+		VkMemoryPropertyFlags externalCachedIncoherentMemoryRejectedProperties = deviceLocalMemoryProperties | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags sharedUncachedMemoryRejectedProperties = VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		VkMemoryPropertyFlags sharedCachedCoherentMemoryRejectedProperties = 0;
+		VkMemoryPropertyFlags sharedCachedIncoherentMemoryRejectedProperties = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
 		auto& memoryInfo = deviceInfo.properties.memory;
-		for (uint32_t i = 0; i < memoryInfo.memoryHeapCount; ++i)
+		for (uint32_t j = 0; j < memoryInfo.memoryTypeCount; ++j)
 		{
-			for (uint32_t j = 0; j < memoryInfo.memoryTypeCount; ++j)
-			{
-				if (memoryInfo.memoryTypes[j].heapIndex != i)
-					continue;
+			const VkMemoryHeap& heap = memoryInfo.memoryHeaps[memoryInfo.memoryTypes[j].heapIndex];
+			const VkMemoryPropertyFlags& flags = memoryInfo.memoryTypes[j].propertyFlags;
 
-				if ((memoryInfo.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+			if ((heap.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
+			{
+				if ((flags & deviceLocalMemoryProperties) == deviceLocalMemoryProperties && (flags & deviceLocalMemoryRejectedProperties) == 0)
 				{
-					if ((memoryInfo.memoryTypes[j].propertyFlags & deviceLocalMemoryProperties) == deviceLocalMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & deviceLocalMemoryRejectedProperties) == 0)
+					if (ret.memoryHeapBiggestSizes.localMemorySize < heap.size)
 					{
-						if (ret.localMemorySize < memoryInfo.memoryHeaps[i].size)
-						{
-							ret.localMemorySize = memoryInfo.memoryHeaps[i].size;
-						}
-					}
-					else if ((memoryInfo.memoryTypes[j].propertyFlags & sharedMemoryMemoryProperties) == sharedMemoryMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & sharedMemoryMemoryRejectedProperties) == 0)
-					{
-						if (ret.sharedMemorySize < memoryInfo.memoryHeaps[i].size)
-						{
-							ret.sharedMemorySize = memoryInfo.memoryHeaps[i].size;
-						}
+						ret.memoryHeapBiggestSizes.localMemorySize = heap.size;
 					}
 				}
-				else if (memoryInfo.memoryHeaps[i].flags == 0 && (memoryInfo.memoryTypes[j].propertyFlags & NOTdeviceLocalMemoryProperties) == NOTdeviceLocalMemoryProperties && (memoryInfo.memoryTypes[j].propertyFlags & NOTdeviceLocalMemoryRejectedProperties) == 0)
+				else if ((flags & sharedUncachedMemoryProperties) == sharedUncachedMemoryProperties && (flags & sharedUncachedMemoryRejectedProperties) == 0)
 				{
-					if (ret.nonLocalMemorySize < memoryInfo.memoryHeaps[i].size)
+					if (ret.memoryHeapBiggestSizes.sharedUncachedMemorySize < heap.size)
 					{
-						ret.nonLocalMemorySize = memoryInfo.memoryHeaps[i].size;
+						ret.memoryHeapBiggestSizes.sharedUncachedMemorySize = heap.size;
+					}
+				}
+				else if ((flags & sharedCachedCoherentMemoryProperties) == sharedCachedCoherentMemoryProperties && (flags & sharedCachedCoherentMemoryRejectedProperties) == 0)
+				{
+					if (ret.memoryHeapBiggestSizes.sharedCachedCoherentMemorySize < heap.size)
+					{
+						ret.memoryHeapBiggestSizes.sharedCachedCoherentMemorySize = heap.size;
+					}
+				}
+				else if ((flags & sharedCachedIncoherentMemoryProperties) == sharedCachedIncoherentMemoryProperties && (flags & sharedCachedIncoherentMemoryRejectedProperties) == 0)
+				{
+					if (ret.memoryHeapBiggestSizes.sharedCachedIncoherentMemorySize < heap.size)
+					{
+						ret.memoryHeapBiggestSizes.sharedCachedIncoherentMemorySize = heap.size;
+					}
+				}
+			}
+			else if (heap.flags == 0)
+			{
+				if ((flags & externalUncachedMemoryProperties) == externalUncachedMemoryProperties && (flags & externalUncachedMemoryRejectedProperties) == 0)
+				{
+					if (ret.memoryHeapBiggestSizes.externalUncachedDeviceAccessibleMemorySize < heap.size)
+					{
+						ret.memoryHeapBiggestSizes.externalUncachedDeviceAccessibleMemorySize = heap.size;
+					}
+				}
+				else if ((flags & externalCachedCoherentMemoryProperties) == externalCachedCoherentMemoryProperties && (flags & externalCachedCoherentMemoryRejectedProperties) == 0)
+				{
+					if (ret.memoryHeapBiggestSizes.externalCachedCoherentDeviceAccessibleMemorySize < heap.size)
+					{
+						ret.memoryHeapBiggestSizes.externalCachedCoherentDeviceAccessibleMemorySize = heap.size;
+					}
+				}
+				else if ((flags & externalCachedIncoherentMemoryProperties) == externalCachedIncoherentMemoryProperties && (flags & externalCachedIncoherentMemoryRejectedProperties) == 0)
+				{
+					if (ret.memoryHeapBiggestSizes.externalCachedIncoherentDeviceAccessibleMemorySize < heap.size)
+					{
+						ret.memoryHeapBiggestSizes.externalCachedIncoherentDeviceAccessibleMemorySize = heap.size;
 					}
 				}
 			}

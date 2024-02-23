@@ -37,14 +37,21 @@ namespace VulkanSimplified
 
         minSwapchainImages = 0;
         maxSwapchainImages = 0;
-
-        nonLocalMemorySize = 0;
-        localMemorySize = 0;
-        sharedMemorySize = 0;
     }
 
     QueueFamilies::QueueFamilies()
     {
+    }
+
+    MemoryHeapSizes::MemoryHeapSizes()
+    {
+        externalUncachedDeviceAccessibleMemorySize = 0;
+        externalCachedCoherentDeviceAccessibleMemorySize = 0;
+        externalCachedIncoherentDeviceAccessibleMemorySize = 0;
+        localMemorySize = 0;
+        sharedUncachedMemorySize = 0;
+        sharedCachedCoherentMemorySize = 0;
+        sharedCachedIncoherentMemorySize = 0;
     }
 
 }
