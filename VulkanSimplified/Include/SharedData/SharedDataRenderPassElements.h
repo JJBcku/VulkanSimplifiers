@@ -1,6 +1,5 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
 #include "SharedDataSimplifierEnums.h"
 
 struct VkAttachmentDescription;
@@ -13,6 +12,9 @@ namespace VulkanSimplified
 	class SharedDataRenderPassElementsInternal;
 
 	struct SubpassDescriptionData;
+
+	template<class T>
+	class ListObjectID;
 
 	class SharedDataRenderPassElements
 	{

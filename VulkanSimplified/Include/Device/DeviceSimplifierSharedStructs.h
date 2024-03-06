@@ -1,8 +1,8 @@
 #pragma once
 
 #include "DeviceSimplifierSharedEnums.h"
-#include "SharedDataSimplifierEnums.h"
-#include "VulkanSimplifierListTemplate.h"
+#include "../SharedData/SharedDataSimplifierEnums.h"
+#include "../Common/ListObjectID.h"
 
 struct VkDescriptorSetLayoutBinding;
 struct VkPipelineInputAssemblyStateCreateInfo;
@@ -20,13 +20,6 @@ namespace VulkanSimplified
 		char padding[5];
 
 		DeviceSettings();
-	};
-
-	struct SwapchainSettings
-	{
-		SwapchainFormatType format;
-		SwapchainPresentMode presentMode;
-		SwapchainImageAmount imageAmount;
 	};
 
 	struct ShaderContainer;

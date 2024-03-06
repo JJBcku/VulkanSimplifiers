@@ -1,27 +1,9 @@
 #pragma once
 
+#include "../Include/Common/ListObjectID.h"
+
 namespace VulkanSimplified
 {
-	using IDType = uint64_t;
-
-	template<class T>
-	class ListObjectID
-	{
-		IDType _id;
-		IDType _vectorID;
-
-	public:
-		ListObjectID(IDType id = std::numeric_limits<IDType>::max(), IDType vectorID = std::numeric_limits<IDType>::max()) : _id(id), _vectorID(vectorID) {}
-		ListObjectID(const ListObjectID& other) = default;
-		ListObjectID(ListObjectID&& other) noexcept = default;
-
-		ListObjectID<T>& operator=(const ListObjectID<T>& other) = default;
-		ListObjectID<T>& operator=(ListObjectID<T>&&) noexcept = default;
-
-		bool operator==(const ListObjectID<T>& other) const noexcept = default;
-		std::strong_ordering operator<=>(const ListObjectID<T>&) const noexcept = default;
-	};
-
 	template<class T>
 	class ListObjectTemplate
 	{

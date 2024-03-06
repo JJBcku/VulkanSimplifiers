@@ -1,7 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceSynchronizationSimplifier.h"
+#include "../Include/Device/DeviceSynchronizationSimplifier.h"
 
 #include "DeviceSynchronizationSimplifierInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
 
 namespace VulkanSimplified
 {

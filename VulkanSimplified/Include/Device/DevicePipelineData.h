@@ -16,6 +16,9 @@ namespace VulkanSimplified
 
 	struct SubpassDescriptionData;
 
+	template<class T>
+	class ListObjectID;
+
 	class DevicePipelineData
 	{
 		DevicePipelineDataInternal& _internal;

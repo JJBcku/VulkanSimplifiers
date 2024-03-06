@@ -3,7 +3,7 @@
 
 #include "../Basics/DeviceListSimplifierInternal.h"
 
-#include "../Include/ShaderModulesSimplifier.h"
+#include "../Include/Device/ShaderModulesSimplifier.h"
 #include "ShaderModulesSimplifierInternal.h"
 
 namespace VulkanSimplified

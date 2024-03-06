@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-
 #include "WindowSimplifierInternal.h"
 #include "VulkanCoreSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"

@@ -1,15 +1,15 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceDataListSimplifier.h"
+#include "../Include/Device/DeviceDataListSimplifier.h"
 
 #include "DeviceDataListSimplifierInternal.h"
 
-#include "../Include/DeviceCoreSimplifier.h"
-#include "../Include/ShaderModulesSimplifier.h"
-#include "../Include/DevicePipelineData.h"
-#include "../Include/DeviceImageSimplifier.h"
-#include "../Include/DeviceCommandBufferSimplifier.h"
-#include "../Include/DeviceSynchronizationSimplifier.h"
-#include "../Include/DeviceMemorySimplifier.h"
+#include "../Include/Device/DeviceCoreSimplifier.h"
+#include "../Include/Device/ShaderModulesSimplifier.h"
+#include "../Include/Device/DevicePipelineData.h"
+#include "../Include/Device/DeviceImageSimplifier.h"
+#include "../Include/Device/DeviceCommandBufferSimplifier.h"
+#include "../Include/Device/DeviceSynchronizationSimplifier.h"
+#include "../Include/Device/DeviceMemorySimplifier.h"
 
 namespace VulkanSimplified
 {

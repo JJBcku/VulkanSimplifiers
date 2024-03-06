@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
 
 namespace VulkanSimplified
 {

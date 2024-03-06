@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
 
-#include "../Include/SharedDataSimplifierEnums.h"
+#include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
 bool operator==(const VkPushConstantRange& first, const VkPushConstantRange& second);
 bool operator==(const VkDescriptorSetLayoutBinding& first, const VkDescriptorSetLayoutBinding& second);

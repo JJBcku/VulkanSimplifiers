@@ -1,10 +1,12 @@
-#include "VulkanSimplifierListTemplate.h"
 #include "DeviceSimplifierSharedStructs.h"
 
 #include "DeviceCommandRecorder.h"
 
 namespace VulkanSimplified
 {
+	template<class T>
+	class ListObjectTemplate;
+
 	class DeviceCommandBufferSimplifierInternal;
 
 	class AutoCleanupCommandPool;

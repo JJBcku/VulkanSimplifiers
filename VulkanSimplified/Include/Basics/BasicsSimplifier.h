@@ -1,14 +1,11 @@
 #pragma once
 
-#include "BasicsSimplifierSharedStructs.h"
-#include "DeviceListSimplifier.h"
-#include "WindowSimplifier.h"
-
 namespace VulkanSimplified
 {
 	class BasicsSimplifierInternal;
 	class SwapchainSimplifier;
 	class WindowSimplifier;
+	class DeviceListSimplifier;
 
 	struct WindowCreationData;
 	struct AppData;
@@ -17,6 +14,7 @@ namespace VulkanSimplified
 	class BasicsSimplifier
 	{
 		BasicsSimplifierInternal& _internal;
+		void* _ppadding;
 
 	public:
 		BasicsSimplifier(BasicsSimplifierInternal& ref);

@@ -1,5 +1,5 @@
 #include "../Other/pch.h"
-#include "../Include/SharedDataSimplifierEnums.h"
+#include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
 namespace VulkanSimplified
 {

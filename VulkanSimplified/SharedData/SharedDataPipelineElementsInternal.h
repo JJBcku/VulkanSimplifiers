@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-#include "../Include/SharedDataSimplifierEnums.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
+#include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
 bool operator==(const VkVertexInputBindingDescription& first, const VkVertexInputBindingDescription& second);
 bool operator==(const VkVertexInputAttributeDescription& first, const VkVertexInputAttributeDescription& second);

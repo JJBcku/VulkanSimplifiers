@@ -8,8 +8,8 @@ namespace VulkanSimplified
 	{
 		VEC2_FLOAT = 1,
 		VEC2_DOUBLE = 2,
-		VEC4_FLOAT = 4,
-		VEC4_DOUBLE = 8,
+		VEC4_FLOAT = 3,
+		VEC4_DOUBLE = 4,
 	};
 
 	enum class ShaderStageType : uint64_t

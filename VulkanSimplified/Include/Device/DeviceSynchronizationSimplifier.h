@@ -1,13 +1,14 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
-
 namespace VulkanSimplified
 {
 	class DeviceSynchronizationSimplifierInternal;
 
 	class AutoCleanupSemaphore;
 	class AutoCleanupFence;
+
+	template<class T>
+	class ListObjectID;
 
 	class DeviceSynchronizationSimplifier
 	{

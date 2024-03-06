@@ -1,6 +1,5 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
 #include "SharedDataSimplifierEnums.h"
 
 struct VkVertexInputBindingDescription;
@@ -28,6 +27,9 @@ namespace VulkanSimplified
 	struct ShaderStageCreationData;
 	struct PipelineViewportsStateList;
 	struct ColorBlendSettings;
+
+	template<class T>
+	class ListObjectID;
 
 	class SharedDataPipelineElements
 	{

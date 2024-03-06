@@ -1,13 +1,14 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
-
 namespace VulkanSimplified
 {
 	class DeviceImageSimplifierInternal;
 
 	class AutoCleanupSwapchainFramebuffer;
 	class AutoCleanupRenderPass;
+
+	template<class T>
+	class ListObjectID;
 
 	class DeviceImageSimplifier
 	{

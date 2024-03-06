@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Include/BasicsSimplifierSharedStructs.h"
-#include "../Include/BasicsSimplifierSharedEnums.h"
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
+#include "../Include/Basics/BasicsSimplifierSharedEnums.h"
 
 namespace VulkanSimplified
 {

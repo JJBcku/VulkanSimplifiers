@@ -1,5 +1,5 @@
 #include "../Other/pch.h"
-#include "../Include/BasicsSimplifierSharedStructs.h"
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {

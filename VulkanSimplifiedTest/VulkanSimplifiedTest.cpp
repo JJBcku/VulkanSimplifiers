@@ -1,32 +1,36 @@
 #include "stdafx.h"
 
-#include <BasicsSimplifierSharedStructs.h>
-#include <DeviceSimplifierSharedStructs.h>
+#include <Basics/BasicsSimplifierSharedStructs.h>
+#include <Device/DeviceSimplifierSharedStructs.h>
 
-#include <MainSimplifier.h>
+#include <Common/MainSimplifier.h>
 
-#include <BasicsSimplifier.h>
-#include <DeviceListSimplifier.h>
-#include <SwapchainSimplifier.h>
-#include <WindowSimplifier.h>
+#include <Basics/BasicsSimplifier.h>
+#include <Basics/DeviceListSimplifier.h>
+#include <Basics/SwapchainSimplifier.h>
+#include <Basics/SwapchainSimplifierEnums.h>
+#include <Basics/SwapchainSimplifierStructs.h>
+#include <Basics/WindowSimplifier.h>
 
-#include <VulkanSimplifierListTemplate.h>
-#include <DeviceCoreSimplifier.h>
-#include <ShaderModulesSimplifier.h>
+#include <Device/DeviceDataListSimplifier.h>
+#include <Device/DeviceCoreSimplifier.h>
+#include <Device/ShaderModulesSimplifier.h>
 
-#include <SharedDataSimplifierCore.h>
+#include <SharedData/SharedDataSimplifierCore.h>
 
-#include <SharedDataPipelineLayoutElements.h>
-#include <DevicePipelineData.h>
+#include <SharedData/SharedDataPipelineLayoutElements.h>
+#include <SharedData/SharedDataPipelineElements.h>
+#include <SharedData/SharedDataRenderPassElements.h>
+#include <Device/DevicePipelineData.h>
 
-#include <DeviceImageSimplifier.h>
-#include <DeviceCommandBufferSimplifier.h>
+#include <Device/DeviceImageSimplifier.h>
+#include <Device/DeviceCommandBufferSimplifier.h>
 
-#include <DeviceSynchronizationSimplifier.h>
+#include <Device/DeviceSynchronizationSimplifier.h>
 
-#include <VulkanSimplifierListTemplate.h>
+#include <Common/ListObjectID.h>
 
-#include <DeviceMemorySimplifier.h>
+#include <Device/DeviceMemorySimplifier.h>
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
@@ -52,6 +56,7 @@ int main()
     using VulkanSimplified::DeviceSettings;
     using VulkanSimplified::SharedDataSimplifierCore;
     using VulkanSimplified::MainSimplifier;
+    using VulkanSimplified::ListObjectID;
 
     std::cout << "Vulkan Simplified testing started!\n";
 
@@ -131,12 +136,12 @@ int main()
         auto swapchainWidth = swapchain.GetSwapchainWidth();
         auto swapchainHeight = swapchain.GetSwapchainHeight();
 
-        std::vector<VulkanSimplified::ListObjectID<VkViewport>> pipelineViewport;
+        std::vector<ListObjectID<VkViewport>> pipelineViewport;
         pipelineViewport.push_back(pipelineData.AddPipelineViewport(0.0f, 0.0f, swapchainWidth, swapchainHeight, 0.0f, 1.0f));
-        std::vector<VulkanSimplified::ListObjectID<VkRect2D>> pipelineScissor;
+        std::vector<ListObjectID<VkRect2D>> pipelineScissor;
         pipelineScissor.push_back(pipelineData.AddPipelineScissor(0, 0, swapchainWidth, swapchainHeight));
 
-        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::PipelineViewportsStateList>> pipelineViewportStatesList;
+        std::vector<ListObjectID<VulkanSimplified::PipelineViewportsStateList>> pipelineViewportStatesList;
 
         pipelineViewportStatesList.push_back(pipelineData.AddPipelineViewportState({ {pipelineViewport[0], pipelineScissor[0]} }));
         auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, true);
@@ -202,7 +207,7 @@ int main()
 
         uint32_t frameAmount = swapchain.GetSwapchainImagesAmount();
 
-        std::vector<VulkanSimplified::ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
+        std::vector<ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
         std::vector<VulkanSimplified::DeviceCommandRecorder> commandRecorderList;
 
         commandBufferIDList.reserve(frameAmount);
@@ -220,9 +225,9 @@ int main()
 
         auto deviceMemory = deviceDataList.GetDeviceMemorySimplifier();
 
-        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> imageAvailableSemaphoresList;
-        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> renderFinishedSemaphoresList;
-        std::vector<VulkanSimplified::ListObjectID<VulkanSimplified::AutoCleanupFence>> inFlightFencesList;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> imageAvailableSemaphoresList;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> renderFinishedSemaphoresList;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupFence>> inFlightFencesList;
 
         imageAvailableSemaphoresList.reserve(frameAmount);
         renderFinishedSemaphoresList.reserve(frameAmount);

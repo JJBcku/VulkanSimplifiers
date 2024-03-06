@@ -1,7 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceCommandBufferSimplifier.h"
+#include "../Include/Device/DeviceCommandBufferSimplifier.h"
 
 #include "DeviceCommandBufferSimplifierInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
 
 namespace VulkanSimplified
 {

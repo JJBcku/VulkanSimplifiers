@@ -1,7 +1,5 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
-
 #include "SharedDataSimplifierEnums.h"
 
 struct VkPushConstantRange;
@@ -10,6 +8,9 @@ struct VkDescriptorSetLayoutBinding;
 namespace VulkanSimplified
 {
 	class SharedDataPipelineLayoutElementsInternal;
+
+	template<class T>
+	class ListObjectID;
 
 	class SharedDataPipelineLayoutElements
 	{

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
-
 namespace VulkanSimplified
 {
 	class ShaderModulesSimplifierInternal;
 
 	struct ShaderContainer;
+
+	template<class T>
+	class ListObjectID;
 
 	class ShaderModulesSimplifier
 	{

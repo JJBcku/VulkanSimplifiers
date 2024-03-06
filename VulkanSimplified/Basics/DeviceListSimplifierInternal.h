@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-#include "../Include/BasicsSimplifierSharedStructs.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
 
 #include "../Device/DeviceDataListSimplifierInternal.h"
-#include "../Include/DeviceCoreSimplifier.h"
+#include "../Include/Device/DeviceCoreSimplifier.h"
 
 namespace VulkanSimplified
 {

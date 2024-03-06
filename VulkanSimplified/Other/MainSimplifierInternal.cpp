@@ -1,6 +1,8 @@
 #include "../Other/pch.h"
 #include "MainSimplifierInternal.h"
 
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
+
 namespace VulkanSimplified
 {
 

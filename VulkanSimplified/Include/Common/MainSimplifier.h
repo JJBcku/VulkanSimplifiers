@@ -1,7 +1,3 @@
-#include "BasicsSimplifierSharedStructs.h"
-
-#include "VulkanSimplifierListTemplate.h"
-
 namespace VulkanSimplified
 {
 	class BasicsSimplifier;
@@ -10,6 +6,9 @@ namespace VulkanSimplified
 	class SharedDataSimplifierCore;
 
 	class MainSimplifierInternal;
+
+	struct WindowCreationData;
+	struct AppData;
 
 	class MainSimplifier
 	{

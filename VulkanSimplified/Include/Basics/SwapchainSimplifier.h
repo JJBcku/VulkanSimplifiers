@@ -1,9 +1,5 @@
 #pragma once
 
-#include "VulkanSimplifierListTemplate.h"
-
-#include "DeviceSimplifierSharedStructs.h"
-
 namespace VulkanSimplified
 {
 	class SwapchainSimplifierInternal;
@@ -11,6 +7,11 @@ namespace VulkanSimplified
 
 	class AutoCleanupSemaphore;
 	class AutoCleanupFence;
+
+	template<class T>
+	class ListObjectID;
+
+	struct SwapchainSettings;
 
 	class SwapchainSimplifier
 	{

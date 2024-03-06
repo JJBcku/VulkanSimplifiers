@@ -1,6 +1,6 @@
-#include "../Include/VulkanSimplifierListTemplate.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
 
-#include "../Include/DeviceSimplifierSharedEnums.h"
+#include "../Include/Device/DeviceSimplifierSharedEnums.h"
 
 namespace VulkanSimplified
 {

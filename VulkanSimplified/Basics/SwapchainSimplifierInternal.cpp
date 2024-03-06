@@ -5,8 +5,9 @@
 #include "DeviceListSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"
 
-#include "../Include/BasicsSimplifierSharedStructs.h"
-#include "../Include/DeviceSimplifierSharedStructs.h"
+#include "../Include/Basics/SwapchainSimplifierEnums.h"
+#include "../Include/Basics/SwapchainSimplifierStructs.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
 #include "../Device/DeviceSynchronizationSimplifierInternal.h"
 #include "../Device/DeviceImageSimplifierInternal.h"

@@ -1,15 +1,11 @@
 #pragma once
 
-struct VkVertexInputBindingDescription;
-
-#include "VulkanSimplifierListTemplate.h"
-#include "SharedDataPipelineElements.h"
-#include "SharedDataPipelineLayoutElements.h"
-#include "SharedDataRenderPassElements.h"
-
 namespace VulkanSimplified
 {
 	class SharedDataSimplifierCoreInternal;
+	class SharedDataPipelineElements;
+	class SharedDataPipelineLayoutElements;
+	class SharedDataRenderPassElements;
 
 	class SharedDataSimplifierCore
 	{

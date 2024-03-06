@@ -9,7 +9,7 @@
 
 #include "SwapchainSimplifierInternal.h"
 
-#include "../Include/DeviceListSimplifier.h"
+#include "../Include/Basics/DeviceListSimplifier.h"
 
 namespace VulkanSimplified
 {

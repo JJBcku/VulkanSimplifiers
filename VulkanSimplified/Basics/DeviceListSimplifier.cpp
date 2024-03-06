@@ -1,13 +1,17 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceListSimplifier.h"
+#include "../Include/Basics/DeviceListSimplifier.h"
 
-#include "../Include/BasicsSimplifierSharedStructs.h"
-#include "../Include/DeviceCoreSimplifier.h"
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
+#include "../Include/Device/DeviceCoreSimplifier.h"
+#include "../Device/DeviceDataListSimplifierInternal.h"
 #include "DeviceListSimplifierInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
+#include "../Include/Device/DeviceDataListSimplifier.h"
 
 namespace VulkanSimplified
 {
-	DeviceListSimplifier::DeviceListSimplifier(DeviceListSimplifierInternal& ref) : _internal(ref)
+	DeviceListSimplifier::DeviceListSimplifier(DeviceListSimplifierInternal& ref) : _internal(ref), _ppadding(nullptr)
 	{
 	}
 

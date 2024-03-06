@@ -1,5 +1,5 @@
-#include "../Include/VulkanSimplifierListTemplate.h"
-#include "../Include/DeviceSimplifierSharedStructs.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {

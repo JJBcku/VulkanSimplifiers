@@ -1,10 +1,10 @@
 #pragma once
-#include "VulkanSimplifierListTemplate.h"
-
-#include "DeviceDataListSimplifier.h"
 
 namespace VulkanSimplified
 {
+	template<class T>
+	class ListObjectID;
+
 	class DeviceListSimplifierInternal;
 
 	struct SimplifiedDeviceInfo;
@@ -12,10 +12,13 @@ namespace VulkanSimplified
 
 	class DeviceCoreSimplifierInternal;
 	class DeviceCoreSimplifier;
+	class DeviceDataListSimplifier;
+	class DeviceDataListSimplifierInternal;
 
 	class DeviceListSimplifier
 	{
 		DeviceListSimplifierInternal& _internal;
+		void* _ppadding;
 
 	public:
 		DeviceListSimplifier(DeviceListSimplifierInternal& internal);

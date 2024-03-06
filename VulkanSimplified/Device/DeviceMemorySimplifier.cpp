@@ -1,6 +1,7 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceMemorySimplifier.h"
+#include "../Include/Device/DeviceMemorySimplifier.h"
 
+#include "../Include/Common/ListObjectID.h"
 #include "DeviceMemorySimplifierInternal.h"
 
 namespace VulkanSimplified

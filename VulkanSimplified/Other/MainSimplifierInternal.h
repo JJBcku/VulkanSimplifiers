@@ -3,12 +3,11 @@
 #include "../Basics/BasicsSimplifierInternal.h"
 #include "../SharedData/SharedDataSimplifierCoreInternal.h"
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-
-#include "../Include/BasicsSimplifierSharedStructs.h"
-
 namespace VulkanSimplified
 {
+	struct WindowCreationData;
+	struct AppData;
+
 	class MainSimplifierInternal
 	{
 		SharedDataSimplifierCoreInternal _sharedData;

@@ -1,5 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/SharedDataSimplifierCore.h"
+#include "../Include/SharedData/SharedDataSimplifierCore.h"
+
+#include "../Include/SharedData/SharedDataPipelineElements.h"
+#include "../Include/SharedData/SharedDataPipelineLayoutElements.h"
+#include "../Include/SharedData/SharedDataRenderPassElements.h"
 
 #include "SharedDataSimplifierCoreInternal.h"
 

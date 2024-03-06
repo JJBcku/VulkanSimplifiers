@@ -1,7 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceCommandRecorder.h"
+#include "../Include/Device/DeviceCommandRecorder.h"
 
 #include "DeviceCommandRecorderInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
 
 namespace VulkanSimplified
 {

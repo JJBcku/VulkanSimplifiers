@@ -1,5 +1,8 @@
 #include "../Other/pch.h"
-#include "../Include/SwapchainSimplifier.h"
+#include "../Include/Basics/SwapchainSimplifier.h"
+
+#include "../Include/Basics/SwapchainSimplifierStructs.h"
+#include "../Include/Basics/SwapchainSimplifierEnums.h"
 
 #include "SwapchainSimplifierInternal.h"
 

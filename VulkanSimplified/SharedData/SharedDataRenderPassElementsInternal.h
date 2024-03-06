@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-#include "../Include/SharedDataSimplifierEnums.h"
+#include "../Other/VulkanSimplifierListTemplate.h"
+#include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
 bool operator==(const VkAttachmentDescription& first, const VkAttachmentDescription& second);
 bool operator==(const VkAttachmentReference& first, const VkAttachmentReference& second);

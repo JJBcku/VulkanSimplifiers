@@ -1,7 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/DevicePipelineData.h"
+#include "../Include/Device/DevicePipelineData.h"
 
 #include "DevicePipelineDataInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
 
 namespace VulkanSimplified
 {

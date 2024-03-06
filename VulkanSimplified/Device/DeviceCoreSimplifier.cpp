@@ -1,10 +1,10 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceCoreSimplifier.h"
+#include "../Include/Device/DeviceCoreSimplifier.h"
 
 #include "DeviceCoreSimplifierInternal.h"
 
 #include "ShaderModulesSimplifierInternal.h"
-#include "../Include/ShaderModulesSimplifier.h"
+#include "../Include/Device/ShaderModulesSimplifier.h"
 
 namespace VulkanSimplified
 {

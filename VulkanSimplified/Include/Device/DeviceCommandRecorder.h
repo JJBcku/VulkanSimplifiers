@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Include/VulkanSimplifierListTemplate.h"
-
 #include "DeviceSimplifierSharedEnums.h"
 
 namespace VulkanSimplified
@@ -11,6 +9,9 @@ namespace VulkanSimplified
 	class AutoCleanupRenderPass;
 	class AutoCleanupSwapchainFramebuffer;
 	class AutoCleanupGraphicsPipeline;
+
+	template<class T>
+	class ListObjectID;
 
 	class DeviceCommandRecorder
 	{

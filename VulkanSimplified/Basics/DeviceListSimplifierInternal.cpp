@@ -1,7 +1,7 @@
 #include "../Other/pch.h"
 #include "DeviceListSimplifierInternal.h"
 
-#include "../Include/BasicsSimplifierSharedStructs.h"
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
 
 #include "VulkanCoreSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"

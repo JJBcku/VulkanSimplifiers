@@ -1,5 +1,5 @@
 #include "../Other/pch.h"
-#include "../Include/WindowSimplifier.h"
+#include "../Include/Basics/WindowSimplifier.h"
 
 #include "WindowSimplifierInternal.h"
 

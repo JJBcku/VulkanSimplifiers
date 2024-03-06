@@ -1,11 +1,13 @@
 #pragma once
-#include "VulkanSimplifierListTemplate.h"
 #include "DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
 	class DeviceMemorySimplifierInternal;
 	class AutoCleanupExclusiveDeviceMemory;
+
+	template<class T>
+	class ListObjectID;
 
 	class DeviceMemorySimplifier
 	{

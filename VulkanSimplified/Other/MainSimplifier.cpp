@@ -1,10 +1,12 @@
 #include "../Other/pch.h"
-#include "../Include/MainSimplifier.h"
+#include "../Include/Common/MainSimplifier.h"
+
+#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
 
 #include "MainSimplifierInternal.h"
-#include "../Include/BasicsSimplifier.h"
+#include "../Include/Basics/BasicsSimplifier.h"
 
-#include "../Include/SharedDataSimplifierCore.h"
+#include "../Include/SharedData/SharedDataSimplifierCore.h"
 
 namespace VulkanSimplified
 {

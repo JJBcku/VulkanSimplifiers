@@ -1,7 +1,9 @@
 #include "../Other/pch.h"
-#include "../Include/ShaderModulesSimplifier.h"
+#include "../Include/Device/ShaderModulesSimplifier.h"
 
 #include "ShaderModulesSimplifierInternal.h"
+
+#include "../Include/Common/ListObjectID.h"
 
 namespace VulkanSimplified
 {
