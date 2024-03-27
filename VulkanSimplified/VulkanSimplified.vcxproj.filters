@@ -177,7 +177,7 @@
     <ClInclude Include="Include\Device\DeviceMemorySimplifier.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
-    <ClInclude Include="Device\DeviceDataBufferSimplifier.h">
+    <ClInclude Include="Device\DeviceDataBufferSimplifierInternal.h">
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\Common\ListObjectID.h">
@@ -190,6 +190,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Common\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -323,7 +326,7 @@
     <ClCompile Include="Device\DeviceMemorySimplifier.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="Device\DeviceDataBufferSimplifier.cpp">
+    <ClCompile Include="Device\DeviceDataBufferSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Basics\SwapchainSimplifierEnums.cpp">
@@ -333,6 +336,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Other\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceDataBufferSimplifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

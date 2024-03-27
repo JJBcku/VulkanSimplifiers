@@ -32,6 +32,8 @@
 
 #include <Device/DeviceMemorySimplifier.h>
 
+#include <Device/DeviceDataBufferSimplifier.h>
+
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
 std::vector<unsigned char> ReadShaderCode(std::wstring name);
@@ -125,11 +127,15 @@ int main()
         auto vertexPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::VERTEX, "main");
         auto fragmentPipelineData = pipelineData.AddShaderPipelineData(VulkanSimplified::ShaderStageType::FRAGMENT, "main");
 
-        auto vertexBindingDescription = pipelineData.AddBindingDescription(0, 0, false);
-        auto vertexColorAttributeDescription = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT, 0);
-        auto vertexPositionAttributeDescription = pipelineData.AddAttributeDescription(1, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, sizeof(glm::vec4));
+        std::vector<VulkanSimplified::VertexAttributeFormats> vertexAttributes = { VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT };
+        std::vector<ListObjectID<VkVertexInputAttributeDescription>> vertexAttributeIDs = pipelineData.AddAttributeDescriptions(0, vertexAttributes);
 
-        auto testVertexInput = pipelineData.AddVertexInputList({ vertexBindingDescription }, { vertexColorAttributeDescription, vertexPositionAttributeDescription });
+        auto vertexBindingDescription = pipelineData.AddBindingDescription(0, vertexAttributes, false);
+
+        //auto vertexColorAttributeDescription = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT, 0);
+        //auto vertexPositionAttributeDescription = pipelineData.AddAttributeDescription(1, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, sizeof(glm::vec4));
+
+        auto testVertexInput = pipelineData.AddVertexInputList({ vertexBindingDescription }, vertexAttributeIDs);
 
         auto pipelineInputAssembly = pipelineData.AddPipelineInputAssembly(VulkanSimplified::TopologySetting::TRIANGLE);
 
@@ -233,13 +239,20 @@ int main()
         renderFinishedSemaphoresList.reserve(frameAmount);
         inFlightFencesList.reserve(frameAmount);
 
-        VulkanSimplified::SharedDeviceMemoryID vectorMemory = deviceMemory.AddSharedMemory(0x1000, true, false);
+        VulkanSimplified::SharedDeviceMemoryID vectorMemory = deviceMemory.AddSharedMemory(0x10000, true, false);
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
+
+        vectorInputBuffers.reserve(frameAmount);
+
+        auto dataBuffersSimplifier = deviceDataList.GetDeviceDataBufferSimplifier();
 
         for (uint32_t i = 0; i < frameAmount; ++i)
         {
             imageAvailableSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
             renderFinishedSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
             inFlightFencesList.push_back(deviceSynchronization.AddFence(true));
+
+            vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 8, false));
         }
 
         uint32_t imageAmount = 0;

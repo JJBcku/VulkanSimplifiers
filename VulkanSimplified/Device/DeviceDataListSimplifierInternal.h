@@ -7,6 +7,7 @@
 #include "DeviceCommandBufferSimplifierInternal.h"
 #include "DeviceSynchronizationSimplifierInternal.h"
 #include "DeviceMemorySimplifierInternal.h"
+#include "DeviceDataBufferSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
@@ -25,6 +26,7 @@ namespace VulkanSimplified
 		DeviceCommandBufferSimplifierInternal _commandBuffers;
 		DeviceSynchronizationSimplifierInternal _synchronizationData;
 		DeviceMemorySimplifierInternal _memoryData;
+		DeviceDataBufferSimplifierInternal _dataBuffers;
 
 	public:
 		DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo, const DeviceSettings& deviceSettings,
@@ -44,6 +46,7 @@ namespace VulkanSimplified
 		DeviceCommandBufferSimplifierInternal& GetDeviceCommandBufferSimplifier();
 		DeviceSynchronizationSimplifierInternal& GetDeviceSynchronizationSimplifier();
 		DeviceMemorySimplifierInternal& GetDeviceMemorySimplifier();
+		DeviceDataBufferSimplifierInternal& GetDeviceDataBufferSimplifier();
 
 		const DeviceCoreSimplifierInternal& GetDeviceCoreSimplifier() const;
 		const ShaderModulesSimplifierInternal& GetShaderModulesSimplifier() const;
@@ -52,6 +55,7 @@ namespace VulkanSimplified
 		const DeviceCommandBufferSimplifierInternal& GetDeviceCommandBufferSimplifier() const;
 		const DeviceSynchronizationSimplifierInternal& GetDeviceSynchronizationSimplifier() const;
 		const DeviceMemorySimplifierInternal& GetDeviceMemorySimplifier() const;
+		const DeviceDataBufferSimplifierInternal& GetDeviceDataBufferSimplifier() const;
 	};
 }
 

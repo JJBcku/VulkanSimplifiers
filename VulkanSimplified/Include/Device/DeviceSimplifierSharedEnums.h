@@ -34,7 +34,7 @@ namespace VulkanSimplified
 	enum class MemoryType : uint64_t
 	{
 		EXCLUSIVE = 1,
-		EXTERNAL = 2,
+		HOST = 2,
 		SHARED = 3,
 	};
 }

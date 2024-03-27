@@ -7,7 +7,6 @@ namespace VulkanSimplified
 	AutoCleanupMemory::AutoCleanupMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : _device(device), _mapping(nullptr), _deviceMemory(deviceMemory),
 		_memorySize(memorySize)
 	{
-		_usedMemory.reserve(0x10);
 	}
 
 	AutoCleanupMemory::~AutoCleanupMemory()
@@ -125,9 +124,9 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentExternalMemory>> DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory(uint64_t memorySize)
+	std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory>> DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory(uint64_t memorySize)
 	{
-		std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentExternalMemory>> ret;
+		std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory>> ret;
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -136,22 +135,22 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _externalCachedCoherentMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _externalCachedCoherentMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleCachedCoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedCoherentExternalMemory(_device, add, memorySize));
+			ret = _accessibleCachedCoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedCoherentHostMemory(_device, add, memorySize));
 		}
 
 		return ret;
 	}
 
-	std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentExternalMemory>> DeviceMemorySimplifierInternal::AddCachedIncoherentExternalMemory(uint64_t memorySize)
+	std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory>> DeviceMemorySimplifierInternal::AddCachedIncoherentExternalMemory(uint64_t memorySize)
 	{
-		std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentExternalMemory>> ret;
+		std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory>> ret;
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -160,14 +159,14 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _externalCachedIncoherentMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _externalCachedIncoherentMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleCachedIncoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedIncoherentExternalMemory(_device, add, memorySize));
+			ret = _accessibleCachedIncoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedIncoherentHostMemory(_device, add, memorySize));
 		}
 
 		return ret;
@@ -184,9 +183,9 @@ namespace VulkanSimplified
 		_usedheapMemory[heapID] += addedMemory;
 	}
 
-	std::optional<ListObjectID<AutoCleanupAccesibleUncachedExternalMemory>> DeviceMemorySimplifierInternal::AddUncachedExternalMemory(uint64_t memorySize)
+	std::optional<ListObjectID<AutoCleanupAccesibleUncachedHostMemory>> DeviceMemorySimplifierInternal::AddUncachedExternalMemory(uint64_t memorySize)
 	{
-		std::optional<ListObjectID<AutoCleanupAccesibleUncachedExternalMemory>> ret;
+		std::optional<ListObjectID<AutoCleanupAccesibleUncachedHostMemory>> ret;
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -195,14 +194,14 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _externalUncachedMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _externalUncachedMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleUncachedExternalMemories.AddObject(AutoCleanupAccesibleUncachedExternalMemory(_device, add, memorySize));
+			ret = _accessibleUncachedExternalMemories.AddObject(AutoCleanupAccesibleUncachedHostMemory(_device, add, memorySize));
 		}
 
 		return ret;
@@ -230,7 +229,7 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _sharedCachedCoherentMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _sharedCachedCoherentMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
@@ -247,7 +246,7 @@ namespace VulkanSimplified
 	{
 		uint32_t ret = _memoryProperties.memoryTypeCount;
 
-		for (size_t i = 0; i < _memoryProperties.memoryTypeCount; ++i)
+		for (uint32_t i = 0; i < _memoryProperties.memoryTypeCount; ++i)
 		{
 			auto& memory = _memoryProperties.memoryTypes[i];
 			if (memory.heapIndex != heapID)
@@ -277,7 +276,7 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _sharedCachedIncoherentMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _sharedCachedIncoherentMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
@@ -301,7 +300,7 @@ namespace VulkanSimplified
 
 		if (heap.has_value())
 		{
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _sharedUncachedMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _sharedUncachedMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
@@ -391,7 +390,7 @@ namespace VulkanSimplified
 		{
 			VkMemoryAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-			allocInfo.memoryTypeIndex = FindMemoryType(heap.value(), _deviceLocalMemoryProperties);
+			allocInfo.memoryTypeIndex = FindMemoryType(static_cast<uint32_t>(heap.value()), _deviceLocalMemoryProperties);
 			allocInfo.allocationSize = memorySize;
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
@@ -442,9 +441,9 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	ExternalAccessibleMemoryID DeviceMemorySimplifierInternal::AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent)
+	AccessibleHostMemoryID DeviceMemorySimplifierInternal::AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent)
 	{
-		ExternalAccessibleMemoryID ret;
+		AccessibleHostMemoryID ret;
 
 		auto cachedCoherent = AddCachedCoherentExternalMemory(memorySize);
 

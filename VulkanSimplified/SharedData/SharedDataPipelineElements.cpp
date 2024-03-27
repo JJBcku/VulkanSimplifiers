@@ -21,14 +21,19 @@ namespace VulkanSimplified
 		return _internal.AddShaderPipelineData(stage, mainFunctionName);
 	}
 
-	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElements::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)
+	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElements::AddBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex)
 	{
-		return _internal.AddBindingDescription(binding, stride, useInstanceIndex);
+		return _internal.AddBindingDescription(binding, attributes, useInstanceIndex);
 	}
 
 	ListObjectID<VkVertexInputAttributeDescription> SharedDataPipelineElements::AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset)
 	{
 		return _internal.AddAttributeDescription(location, binding, format, offset);
+	}
+
+	std::vector<ListObjectID<VkVertexInputAttributeDescription>> SharedDataPipelineElements::AddAttributeDescriptions(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes)
+	{
+		return _internal.AddAttributeDescriptions(binding, attributes);
 	}
 
 	ListObjectID<VertexInputList> SharedDataPipelineElements::AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes)

@@ -102,27 +102,72 @@ namespace VulkanSimplified
 		} _cachedIncoherentID;
 	};
 
-	class AutoCleanupAccesibleUncachedExternalMemory;
-	class AutoCleanupAccesibleCachedCoherentExternalMemory;
-	class AutoCleanupAccesibleCachedIncoherentExternalMemory;
+	class AutoCleanupAccesibleUncachedHostMemory;
+	class AutoCleanupAccesibleCachedCoherentHostMemory;
+	class AutoCleanupAccesibleCachedIncoherentHostMemory;
 
-	union ExternalAccessibleMemoryID
+	union AccessibleHostMemoryID
 	{
 		MemoryPropertiesIDType _type = MemoryPropertiesIDType::NONE;
 		struct
 		{
 			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleUncachedExternalMemory> _ID;
+			ListObjectID<AutoCleanupAccesibleUncachedHostMemory> _ID;
 		} _unchachedID;
 		struct
 		{
 			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleCachedCoherentExternalMemory> _ID;
+			ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> _ID;
 		} _cachedCoherentID;
 		struct
 		{
 			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleCachedIncoherentExternalMemory> _ID;
+			ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> _ID;
 		} _cachedIncoherentID;
+	};
+
+	class AutoCleanupExclusiveDeviceMemory;
+
+	union MemoryID
+	{
+		MemoryType _memoryType;
+		struct
+		{
+			MemoryType _memoryType;
+			SharedDeviceMemoryID _sharedID;
+		} _sharedID;
+		struct
+		{
+			MemoryType _memoryType;
+			AccessibleHostMemoryID _hostID;
+		} _hostID;
+		struct
+		{
+			MemoryType _memoryType;
+			ListObjectID<AutoCleanupExclusiveDeviceMemory> _exclusiveID;
+		} _exclusiveID;
+
+		MemoryID()
+		{
+			memset(&_memoryType, 0, sizeof(_memoryType));
+		}
+
+		MemoryID(SharedDeviceMemoryID sharedID)
+		{
+			_sharedID._memoryType = MemoryType::SHARED;
+			_sharedID._sharedID = sharedID;
+		}
+
+		MemoryID(AccessibleHostMemoryID hostID)
+		{
+			_hostID._memoryType = MemoryType::HOST;
+			_hostID._hostID = hostID;
+		}
+
+		MemoryID(ListObjectID<AutoCleanupExclusiveDeviceMemory> exclusiveID)
+		{
+			_exclusiveID._memoryType = MemoryType::EXCLUSIVE;
+			_exclusiveID._exclusiveID = exclusiveID;
+		}
 	};
 }

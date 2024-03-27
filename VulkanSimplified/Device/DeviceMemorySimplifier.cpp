@@ -25,7 +25,7 @@ namespace VulkanSimplified
 		return _internal.AddSharedMemory(memorySize, canBeUncached, canBeIncoherent);
 	}
 
-	ExternalAccessibleMemoryID DeviceMemorySimplifier::AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent)
+	AccessibleHostMemoryID DeviceMemorySimplifier::AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent)
 	{
 		return _internal.AddExternalAccessibleMemory(memorySize, canBeUncached, canBeIncoherent);
 	}

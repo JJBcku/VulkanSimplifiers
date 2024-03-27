@@ -1,5 +1,5 @@
 #include "../Other/pch.h"
-#include "../Include/DeviceSimplifierSharedStructs.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {

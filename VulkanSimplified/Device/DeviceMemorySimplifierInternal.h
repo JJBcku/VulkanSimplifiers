@@ -1,3 +1,4 @@
+#pragma once
 #include "../Other/VulkanSimplifierListTemplate.h"
 #include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
@@ -16,7 +17,7 @@ namespace VulkanSimplified
 		void* _mapping;
 		VkDeviceMemory _deviceMemory;
 		VkDeviceSize _memorySize;
-		std::vector<MemoryObject> _usedMemory;
+		ListTemplate<MemoryObject> _usedMemory;
 
 	public:
 		AutoCleanupMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
@@ -124,51 +125,51 @@ namespace VulkanSimplified
 		}
 	};
 
-	class AutoCleanupAccesibleCachedCoherentExternalMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleCachedCoherentHostMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedCoherentExternalMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
-		~AutoCleanupAccesibleCachedCoherentExternalMemory() {}
+		AutoCleanupAccesibleCachedCoherentHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		~AutoCleanupAccesibleCachedCoherentHostMemory() {}
 
-		AutoCleanupAccesibleCachedCoherentExternalMemory(const AutoCleanupAccesibleCachedCoherentExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedCoherentExternalMemory(AutoCleanupAccesibleCachedCoherentExternalMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleCachedCoherentHostMemory(const AutoCleanupAccesibleCachedCoherentHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleCachedCoherentHostMemory(AutoCleanupAccesibleCachedCoherentHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
 
-		AutoCleanupAccesibleCachedCoherentExternalMemory& operator=(const AutoCleanupAccesibleCachedCoherentExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedCoherentExternalMemory& operator=(AutoCleanupAccesibleCachedCoherentExternalMemory&& other) noexcept
+		AutoCleanupAccesibleCachedCoherentHostMemory& operator=(const AutoCleanupAccesibleCachedCoherentHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleCachedCoherentHostMemory& operator=(AutoCleanupAccesibleCachedCoherentHostMemory&& other) noexcept
 		{
 			*dynamic_cast<AutoCleanupMemory*>(this) = static_cast<AutoCleanupMemory>(std::move(other));
 			return *this;
 		}
 	};
 
-	class AutoCleanupAccesibleCachedIncoherentExternalMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleCachedIncoherentHostMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedIncoherentExternalMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
-		~AutoCleanupAccesibleCachedIncoherentExternalMemory() {}
+		AutoCleanupAccesibleCachedIncoherentHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		~AutoCleanupAccesibleCachedIncoherentHostMemory() {}
 
-		AutoCleanupAccesibleCachedIncoherentExternalMemory(const AutoCleanupAccesibleCachedIncoherentExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedIncoherentExternalMemory(AutoCleanupAccesibleCachedIncoherentExternalMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleCachedIncoherentHostMemory(const AutoCleanupAccesibleCachedIncoherentHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleCachedIncoherentHostMemory(AutoCleanupAccesibleCachedIncoherentHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
 
-		AutoCleanupAccesibleCachedIncoherentExternalMemory& operator=(const AutoCleanupAccesibleCachedIncoherentExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedIncoherentExternalMemory& operator=(AutoCleanupAccesibleCachedIncoherentExternalMemory&& other) noexcept
+		AutoCleanupAccesibleCachedIncoherentHostMemory& operator=(const AutoCleanupAccesibleCachedIncoherentHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleCachedIncoherentHostMemory& operator=(AutoCleanupAccesibleCachedIncoherentHostMemory&& other) noexcept
 		{
 			*dynamic_cast<AutoCleanupMemory*>(this) = static_cast<AutoCleanupMemory>(std::move(other));
 			return *this;
 		}
 	};
 
-	class AutoCleanupAccesibleUncachedExternalMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleUncachedHostMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupAccesibleUncachedExternalMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
-		~AutoCleanupAccesibleUncachedExternalMemory() {}
+		AutoCleanupAccesibleUncachedHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		~AutoCleanupAccesibleUncachedHostMemory() {}
 
-		AutoCleanupAccesibleUncachedExternalMemory(const AutoCleanupAccesibleUncachedExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleUncachedExternalMemory(AutoCleanupAccesibleUncachedExternalMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleUncachedHostMemory(const AutoCleanupAccesibleUncachedHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleUncachedHostMemory(AutoCleanupAccesibleUncachedHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
 
-		AutoCleanupAccesibleUncachedExternalMemory& operator=(const AutoCleanupAccesibleUncachedExternalMemory&) noexcept = delete;
-		AutoCleanupAccesibleUncachedExternalMemory& operator=(AutoCleanupAccesibleUncachedExternalMemory&& other) noexcept
+		AutoCleanupAccesibleUncachedHostMemory& operator=(const AutoCleanupAccesibleUncachedHostMemory&) noexcept = delete;
+		AutoCleanupAccesibleUncachedHostMemory& operator=(AutoCleanupAccesibleUncachedHostMemory&& other) noexcept
 		{
 			*dynamic_cast<AutoCleanupMemory*>(this) = static_cast<AutoCleanupMemory>(std::move(other));
 			return *this;
@@ -181,9 +182,9 @@ namespace VulkanSimplified
 		ListTemplate<AutoCleanupSharedCachedCoherentDeviceMemory> _sharedCachedCoherentDeviceMemories;
 		ListTemplate<AutoCleanupSharedCachedIncoherentDeviceMemory> _sharedCachedIncoherentDeviceMemories;
 		ListTemplate<AutoCleanupExclusiveDeviceMemory> _exclusiveDeviceMemories;
-		ListTemplate<AutoCleanupAccesibleCachedCoherentExternalMemory> _accessibleCachedCoherentExternalMemories;
-		ListTemplate<AutoCleanupAccesibleCachedIncoherentExternalMemory> _accessibleCachedIncoherentExternalMemories;
-		ListTemplate<AutoCleanupAccesibleUncachedExternalMemory> _accessibleUncachedExternalMemories;
+		ListTemplate<AutoCleanupAccesibleCachedCoherentHostMemory> _accessibleCachedCoherentExternalMemories;
+		ListTemplate<AutoCleanupAccesibleCachedIncoherentHostMemory> _accessibleCachedIncoherentExternalMemories;
+		ListTemplate<AutoCleanupAccesibleUncachedHostMemory> _accessibleUncachedExternalMemories;
 
 		VkPhysicalDevice _physicalDevice;
 		VkDevice _device;
@@ -222,9 +223,9 @@ namespace VulkanSimplified
 
 		uint32_t FindMemoryType(uint32_t heapID, VkMemoryPropertyFlags includeFlags);
 
-		std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentExternalMemory>> AddCachedCoherentExternalMemory(uint64_t memorySize);
-		std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentExternalMemory>> AddCachedIncoherentExternalMemory(uint64_t memorySize);
-		std::optional<ListObjectID<AutoCleanupAccesibleUncachedExternalMemory>> AddUncachedExternalMemory(uint64_t memorySize);
+		std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory>> AddCachedCoherentExternalMemory(uint64_t memorySize);
+		std::optional<ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory>> AddCachedIncoherentExternalMemory(uint64_t memorySize);
+		std::optional<ListObjectID<AutoCleanupAccesibleUncachedHostMemory>> AddUncachedExternalMemory(uint64_t memorySize);
 
 		std::optional<ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory>> AddCachedCoherentSharedMemory(uint64_t memorySize);
 		std::optional<ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory>> AddCachedIncoherentSharedMemory(uint64_t memorySize);
@@ -241,6 +242,6 @@ namespace VulkanSimplified
 
 		std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> AddDeviceLocalMemory(uint64_t memorySize);
 		SharedDeviceMemoryID AddSharedMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
-		ExternalAccessibleMemoryID AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
+		AccessibleHostMemoryID AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
 	};
 }

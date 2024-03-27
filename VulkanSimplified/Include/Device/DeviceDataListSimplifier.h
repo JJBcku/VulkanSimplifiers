@@ -11,6 +11,7 @@ namespace VulkanSimplified
     class DeviceCommandBufferSimplifier;
     class DeviceSynchronizationSimplifier;
     class DeviceMemorySimplifier;
+    class DeviceDataBufferSimplifier;
 
     class DeviceDataListSimplifier
     {
@@ -29,5 +30,6 @@ namespace VulkanSimplified
         DeviceCommandBufferSimplifier GetDeviceCommandBufferSimplifier();
         DeviceSynchronizationSimplifier GetDeviceSynchronizationSimplifier();
         DeviceMemorySimplifier GetDeviceMemorySimplifier();
+        DeviceDataBufferSimplifier GetDeviceDataBufferSimplifier();
     };
 }

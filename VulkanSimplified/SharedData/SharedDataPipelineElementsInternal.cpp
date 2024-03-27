@@ -1,7 +1,7 @@
 #include "../Other/pch.h"
 #include "SharedDataPipelineElementsInternal.h"
 
-//#include "../Device/ShaderModulesSimplifierInternal.h"
+#include "../Include/Common/Utils.h"
 
 namespace VulkanSimplified
 {
@@ -26,11 +26,11 @@ namespace VulkanSimplified
 		return _shaderPipelineData.AddUniqueObject(ShaderStageCreationData(stage, mainFunctionName));
 	}
 
-	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddBindingDescription(uint32_t binding, uint32_t stride, bool useInstanceIndex)
+	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex)
 	{
 		VkVertexInputBindingDescription add{};
 		add.binding = binding;
-		add.stride = stride;
+		add.stride = static_cast<uint32_t>(Utils::GetShaderInputPaddedSize(attributes));
 		add.inputRate = useInstanceIndex ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX;
 
 		return _vertexInputBindingDescriptions.AddUniqueObject(add);
@@ -63,6 +63,19 @@ namespace VulkanSimplified
 		}
 
 		return _vertexInputAttributeDescriptions.AddUniqueObject(add);
+	}
+
+	std::vector<ListObjectID<VkVertexInputAttributeDescription>> SharedDataPipelineElementsInternal::AddAttributeDescriptions(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes)
+	{
+		std::vector<ListObjectID<VkVertexInputAttributeDescription>> ret;
+		auto input = Utils::CreateAttachmentDescriptors(attributes, binding);
+
+		for (size_t i = 0; i < attributes.size(); ++i)
+		{
+			ret.push_back(_vertexInputAttributeDescriptions.AddUniqueObject(input[i]));
+		}
+
+		return ret;
 	}
 
 	ListObjectID<VertexInputList> SharedDataPipelineElementsInternal::AddVertexInputList(const std::vector<ListObjectID<VkVertexInputBindingDescription>>& bindings, const std::vector<ListObjectID<VkVertexInputAttributeDescription>>& attributes)
