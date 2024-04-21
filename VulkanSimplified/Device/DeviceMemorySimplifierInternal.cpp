@@ -4,8 +4,76 @@
 namespace VulkanSimplified
 {
 
-	AutoCleanupMemory::AutoCleanupMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : _device(device), _mapping(nullptr), _deviceMemory(deviceMemory),
-		_memorySize(memorySize)
+	std::optional<std::pair<VkDeviceSize, size_t>> AutoCleanupMemory::GetMemoryOffset(VkMemoryRequirements suballocationRequirements)
+	{
+		std::optional<std::pair<VkDeviceSize, size_t>> ret;
+
+		if (suballocationRequirements.size > _memorySize)
+			throw std::runtime_error("AutoCleanupMemory::GetSubmemoryBeggining Error: Program tried to suballocate more memory than is available in entire allocation!");
+
+		size_t listSize = _usedMemory.GetListSize();
+
+		if (listSize == 0)
+		{
+			ret = { 0, 0 };
+		}
+		else
+		{
+			size_t allocPos = _usedMemory.GetFirstUndeleted();
+			VkDeviceSize previousObjectsEnd = 0;
+
+			while (allocPos != listSize)
+			{
+				auto& currentObj = _usedMemory.GetConstObjectFromPosition(allocPos);
+
+				if (currentObj._memoryOffset > previousObjectsEnd)
+				{
+					VkDeviceSize gapSize = currentObj._memoryOffset - previousObjectsEnd;
+
+					if (gapSize >= suballocationRequirements.size)
+					{
+						ret = { previousObjectsEnd, allocPos };
+						break;
+					}
+				}
+
+				allocPos = _usedMemory.GetNextUndeleted(allocPos);
+				previousObjectsEnd = currentObj._memoryOffset + currentObj._objectSize;
+
+				VkDeviceSize aligmentGap = previousObjectsEnd % suballocationRequirements.alignment;
+
+				if (aligmentGap != 0)
+					previousObjectsEnd += suballocationRequirements.alignment - aligmentGap;
+			}
+
+			if (allocPos == listSize)
+			{
+				auto& lastPos = _usedMemory.GetConstObjectFromPosition(allocPos - 1);
+
+				VkDeviceSize lastObjectsEnd = lastPos._memoryOffset + lastPos._objectSize;
+
+				VkDeviceSize aligmentGap = lastObjectsEnd % suballocationRequirements.alignment;
+
+				if (aligmentGap != 0)
+					lastObjectsEnd += suballocationRequirements.alignment - aligmentGap;
+
+				if (lastObjectsEnd <= _memorySize)
+				{
+					VkDeviceSize memoryLeft = _memorySize - lastObjectsEnd;
+
+					if (memoryLeft >= suballocationRequirements.size)
+					{
+						ret = { lastObjectsEnd, allocPos };
+					}
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	AutoCleanupMemory::AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : _device(device), _mapping(nullptr),
+		_memoryIndex(memoryIndex), _deviceMemory(deviceMemory), _memorySize(memorySize)
 	{
 	}
 
@@ -18,11 +86,12 @@ namespace VulkanSimplified
 		}
 	}
 
-	AutoCleanupMemory::AutoCleanupMemory(AutoCleanupMemory&& other) noexcept : _device(other._device), _mapping(other._mapping), _deviceMemory(other._deviceMemory),
-		_memorySize(other._memorySize), _usedMemory(std::move(other._usedMemory))
+	AutoCleanupMemory::AutoCleanupMemory(AutoCleanupMemory&& other) noexcept : _device(other._device), _mapping(other._mapping), _memoryIndex(other._memoryIndex),
+		_deviceMemory(other._deviceMemory), _memorySize(other._memorySize), _usedMemory(std::move(other._usedMemory))
 	{
 		other._device = VK_NULL_HANDLE;
 		other._mapping = nullptr;
+		other._memoryIndex = std::numeric_limits<uint64_t>::max();
 		other._deviceMemory = VK_NULL_HANDLE;
 		other._memorySize = 0;
 	}
@@ -31,16 +100,39 @@ namespace VulkanSimplified
 	{
 		_device = other._device;
 		_mapping = other._mapping;
+		_memoryIndex = other._memoryIndex;
 		_deviceMemory = other._deviceMemory;
 		_memorySize = other._memorySize;
 		_usedMemory = std::move(other._usedMemory);
 
 		other._device = VK_NULL_HANDLE;
 		other._mapping = nullptr;
+		other._memoryIndex = std::numeric_limits<uint64_t>::max();
 		other._deviceMemory = VK_NULL_HANDLE;
 		other._memorySize = 0;
 
 		return *this;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> AutoCleanupMemory::SuballocateMemory(VkMemoryRequirements suballocationRequirements, size_t add)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto position = GetMemoryOffset(suballocationRequirements);
+
+		if (position.has_value())
+		{
+			ret = _usedMemory.AddObjectBeforePosition({ position.value().first, suballocationRequirements.size }, position.value().second, add);
+		}
+
+		return ret;
+	}
+
+	void AutoCleanupMemory::BindBuffer(ListObjectID<MemoryObject> bufferSuballocation, VkBuffer buffer)
+	{
+		auto& subMemory = _usedMemory.GetConstObject(bufferSuballocation);
+
+		vkBindBufferMemory(_device, buffer, _deviceMemory, subMemory._memoryOffset);
 	}
 
 	bool DeviceMemorySimplifierInternal::IsHeapInTheArray(uint32_t heapID, const std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array) const
@@ -142,7 +234,7 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleCachedCoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedCoherentHostMemory(_device, add, memorySize));
+			ret = _accessibleCachedCoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedCoherentHostMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -166,7 +258,7 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleCachedIncoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedIncoherentHostMemory(_device, add, memorySize));
+			ret = _accessibleCachedIncoherentExternalMemories.AddObject(AutoCleanupAccesibleCachedIncoherentHostMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -201,7 +293,7 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _accessibleUncachedExternalMemories.AddObject(AutoCleanupAccesibleUncachedHostMemory(_device, add, memorySize));
+			ret = _accessibleUncachedExternalMemories.AddObject(AutoCleanupAccesibleUncachedHostMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -236,7 +328,7 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _sharedCachedCoherentDeviceMemories.AddObject(AutoCleanupSharedCachedCoherentDeviceMemory(_device, add, memorySize));
+			ret = _sharedCachedCoherentDeviceMemories.AddObject(AutoCleanupSharedCachedCoherentDeviceMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -283,7 +375,7 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _sharedCachedIncoherentDeviceMemories.AddObject(AutoCleanupSharedCachedIncoherentDeviceMemory(_device, add, memorySize));
+			ret = _sharedCachedIncoherentDeviceMemories.AddObject(AutoCleanupSharedCachedIncoherentDeviceMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -307,8 +399,87 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) != VK_SUCCESS)
 				throw std::runtime_error("DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory Error: Program failed to allocate the memory!");
 
-			ret = _sharedUncachedDeviceMemories.AddObject(AutoCleanupSharedUncachedDeviceMemory(_device, add, memorySize));
+			ret = _sharedUncachedDeviceMemories.AddObject(AutoCleanupSharedUncachedDeviceMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::BindBufferToMemory(AutoCleanupMemory& memory, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret = memory.SuballocateMemory(memReq, addOnReserve);
+
+		if (ret.has_value())
+		{
+			memory.BindBuffer(ret.value(), buffer);
+		}
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _sharedCachedCoherentDeviceMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _sharedCachedIncoherentDeviceMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _sharedUncachedDeviceMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToSharedMemory(SharedDeviceMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		switch (memoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			ret = TryToBindBufferToSharedUncachedMemory(memoryID._unchachedID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			ret = TryToBindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			ret = TryToBindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::TryToBindBufferToSharedMemory Error: Program was given an erroneous memory settings value!");
+		}
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToExclusiveMemory(ListObjectID<AutoCleanupExclusiveDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _exclusiveDeviceMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
 
 		return ret;
 	}
@@ -395,7 +566,7 @@ namespace VulkanSimplified
 
 			VkDeviceMemory add = VK_NULL_HANDLE;
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) == VK_SUCCESS)
-				ret = _exclusiveDeviceMemories.AddObject(AutoCleanupExclusiveDeviceMemory(_device, add, memorySize));
+				ret = _exclusiveDeviceMemories.AddObject(AutoCleanupExclusiveDeviceMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
 
 		return ret;
@@ -481,9 +652,283 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	AutoCleanupMappedMemory::AutoCleanupMappedMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize)
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		switch (memoryID._memoryType)
+		{
+		case MemoryType::EXCLUSIVE:
+			ret = BindBufferToExclusiveMemory(memoryID._exclusiveID._exclusiveID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryType::HOST:
+			ret = BindBufferToHostMemory(memoryID._hostID._hostID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryType::SHARED:
+			ret = BindBufferToSharedMemory(memoryID._sharedID._sharedID, buffer, memReq, addOnReserve);
+			break;
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBuffer Error: Program was given an erroneous memory ID type value!");
+		}
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		switch (memoryID._memoryType)
+		{
+		case MemoryType::EXCLUSIVE:
+			ret = TryToBindBufferToExclusiveMemory(memoryID._exclusiveID._exclusiveID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryType::HOST:
+			ret = TryToBindBufferToHostMemory(memoryID._hostID._hostID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryType::SHARED:
+			ret = TryToBindBufferToSharedMemory(memoryID._sharedID._sharedID, buffer, memReq, addOnReserve);
+			break;
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::TryToBindBuffer Error: Program was given an erroneous memory ID type value!");
+		}
+
+		return ret;
+	}
+
+	AutoCleanupMappedMemory::AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupMemory(device, memoryIndex, deviceMemory, memorySize)
 	{
 		vkMapMemory(_device, _deviceMemory, 0, memorySize, 0, &_mapping);
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _accessibleCachedCoherentExternalMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToHostCachedCoherentMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _accessibleCachedIncoherentExternalMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToHostCachedIncoherentMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _accessibleUncachedExternalMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToHostUncachedMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToHostMemory(AccessibleHostMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements req, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		switch (memoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			ret = BindBufferToHostUncachedMemory(memoryID._unchachedID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			ret = BindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			ret = BindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToHostMemory Error: Program was given an erroneous memory settings value!");
+		}
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _sharedCachedCoherentDeviceMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToSharedCachedCoherentMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _sharedCachedIncoherentDeviceMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToSharedCachedIncoherentMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _sharedUncachedDeviceMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToSharedUncachedMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToSharedMemory(SharedDeviceMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		switch (memoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			ret = BindBufferToSharedUncachedMemory(memoryID._unchachedID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			ret = BindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			ret = BindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, memReq, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToSharedMemory Error: Program was given an erroneous memory settings value!");
+		}
+
+		return ret;
+	}
+
+	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToExclusiveMemory(ListObjectID<AutoCleanupExclusiveDeviceMemory> memoryID, VkBuffer buffer,
+		VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		ListObjectID<MemoryObject> ret;
+
+		auto& memory = _exclusiveDeviceMemories.GetObject(memoryID);
+
+		auto bindingPoint = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		if (bindingPoint.has_value())
+		{
+			ret = bindingPoint.value();
+		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBufferToExclusiveMemory Error: Program failed to suballocate required memory!");
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _accessibleCachedCoherentExternalMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _accessibleCachedIncoherentExternalMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		auto& memory = _accessibleUncachedExternalMemories.GetObject(memoryID);
+
+		ret = BindBufferToMemory(memory, buffer, memReq, addOnReserve);
+
+		return ret;
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceMemorySimplifierInternal::TryToBindBufferToHostMemory(AccessibleHostMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements req, size_t addOnReserve)
+	{
+		std::optional<ListObjectID<MemoryObject>> ret;
+
+		switch (memoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			ret = TryToBindBufferToHostUncachedMemory(memoryID._unchachedID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			ret = TryToBindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			ret = TryToBindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, req, addOnReserve);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::TryToBindBufferToHostMemory Error: Program was given an erroneous memory settings value!");
+		}
+
+		return ret;
 	}
 
 }

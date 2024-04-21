@@ -69,6 +69,8 @@ namespace VulkanSimplified
 
 		_module = other._module;
 		other._module = VK_NULL_HANDLE;
+
+		_ppadding = nullptr;
 	}
 
 	ShaderContainer& ShaderContainer::operator=(ShaderContainer&& other) noexcept
@@ -81,6 +83,8 @@ namespace VulkanSimplified
 
 		_module = other._module;
 		other._module = VK_NULL_HANDLE;
+
+		_ppadding = nullptr;
 
 		return *this;
 	}

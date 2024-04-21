@@ -1,13 +1,14 @@
 #pragma once
 #include "../Other/VulkanSimplifierListTemplate.h"
+#include "../Other/SortedListTemplate.h"
 #include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
 	struct MemoryObject
 	{
-		VkDeviceSize _memoryBeggining = std::numeric_limits<VkDeviceSize>::max();
-		VkDeviceSize _usedSize = 0;
+		VkDeviceSize _memoryOffset = std::numeric_limits<VkDeviceSize>::max();
+		VkDeviceSize _objectSize = 0;
 	};
 
 	class AutoCleanupMemory
@@ -15,12 +16,15 @@ namespace VulkanSimplified
 	protected:
 		VkDevice _device;
 		void* _mapping;
+		uint64_t _memoryIndex;
 		VkDeviceMemory _deviceMemory;
 		VkDeviceSize _memorySize;
-		ListTemplate<MemoryObject> _usedMemory;
+		SortedListTemplate<MemoryObject> _usedMemory;
+
+		std::optional<std::pair<VkDeviceSize, size_t>> GetMemoryOffset(VkMemoryRequirements suballocationRequirements);
 
 	public:
-		AutoCleanupMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
+		AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
 		~AutoCleanupMemory();
 
 		AutoCleanupMemory(const AutoCleanupMemory&) noexcept = delete;
@@ -28,12 +32,16 @@ namespace VulkanSimplified
 
 		AutoCleanupMemory& operator=(const AutoCleanupMemory&) noexcept = delete;
 		AutoCleanupMemory& operator=(AutoCleanupMemory&& other) noexcept;
+
+		std::optional<ListObjectID<MemoryObject>> SuballocateMemory(VkMemoryRequirements suballocationRequirements, size_t add);
+
+		void BindBuffer(ListObjectID<MemoryObject> bufferSuballocation, VkBuffer buffer);
 	};
 
 	class AutoCleanupMappedMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupMappedMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
+		AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
 		~AutoCleanupMappedMemory() {}
 
 		AutoCleanupMappedMemory(const AutoCleanupMappedMemory&) noexcept = delete;
@@ -52,7 +60,8 @@ namespace VulkanSimplified
 	class AutoCleanupSharedUncachedDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedUncachedDeviceMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMappedMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupSharedUncachedDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedUncachedDeviceMemory() {}
 
 		AutoCleanupSharedUncachedDeviceMemory(const AutoCleanupSharedUncachedDeviceMemory&) noexcept = delete;
@@ -71,7 +80,8 @@ namespace VulkanSimplified
 	class AutoCleanupSharedCachedCoherentDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedCachedCoherentDeviceMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMappedMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupSharedCachedCoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedCachedCoherentDeviceMemory() {}
 
 		AutoCleanupSharedCachedCoherentDeviceMemory(const AutoCleanupSharedCachedCoherentDeviceMemory&) noexcept = delete;
@@ -90,7 +100,8 @@ namespace VulkanSimplified
 	class AutoCleanupSharedCachedIncoherentDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedCachedIncoherentDeviceMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMappedMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupSharedCachedIncoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedCachedIncoherentDeviceMemory() {}
 
 		AutoCleanupSharedCachedIncoherentDeviceMemory(const AutoCleanupSharedCachedIncoherentDeviceMemory&) noexcept = delete;
@@ -109,7 +120,8 @@ namespace VulkanSimplified
 	class AutoCleanupExclusiveDeviceMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupExclusiveDeviceMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupExclusiveDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupExclusiveDeviceMemory() {}
 
 		AutoCleanupExclusiveDeviceMemory(const AutoCleanupExclusiveDeviceMemory&) noexcept = delete;
@@ -125,14 +137,15 @@ namespace VulkanSimplified
 		}
 	};
 
-	class AutoCleanupAccesibleCachedCoherentHostMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleCachedCoherentHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedCoherentHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupAccesibleCachedCoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleCachedCoherentHostMemory() {}
 
 		AutoCleanupAccesibleCachedCoherentHostMemory(const AutoCleanupAccesibleCachedCoherentHostMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedCoherentHostMemory(AutoCleanupAccesibleCachedCoherentHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleCachedCoherentHostMemory(AutoCleanupAccesibleCachedCoherentHostMemory&& other) noexcept : AutoCleanupMappedMemory(std::move(other)) {}
 
 		AutoCleanupAccesibleCachedCoherentHostMemory& operator=(const AutoCleanupAccesibleCachedCoherentHostMemory&) noexcept = delete;
 		AutoCleanupAccesibleCachedCoherentHostMemory& operator=(AutoCleanupAccesibleCachedCoherentHostMemory&& other) noexcept
@@ -142,14 +155,15 @@ namespace VulkanSimplified
 		}
 	};
 
-	class AutoCleanupAccesibleCachedIncoherentHostMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleCachedIncoherentHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedIncoherentHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupAccesibleCachedIncoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleCachedIncoherentHostMemory() {}
 
 		AutoCleanupAccesibleCachedIncoherentHostMemory(const AutoCleanupAccesibleCachedIncoherentHostMemory&) noexcept = delete;
-		AutoCleanupAccesibleCachedIncoherentHostMemory(AutoCleanupAccesibleCachedIncoherentHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleCachedIncoherentHostMemory(AutoCleanupAccesibleCachedIncoherentHostMemory&& other) noexcept : AutoCleanupMappedMemory(std::move(other)) {}
 
 		AutoCleanupAccesibleCachedIncoherentHostMemory& operator=(const AutoCleanupAccesibleCachedIncoherentHostMemory&) noexcept = delete;
 		AutoCleanupAccesibleCachedIncoherentHostMemory& operator=(AutoCleanupAccesibleCachedIncoherentHostMemory&& other) noexcept
@@ -159,14 +173,15 @@ namespace VulkanSimplified
 		}
 	};
 
-	class AutoCleanupAccesibleUncachedHostMemory : public AutoCleanupMemory
+	class AutoCleanupAccesibleUncachedHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleUncachedHostMemory(VkDevice device, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : AutoCleanupMemory(device, deviceMemory, memorySize) {}
+		AutoCleanupAccesibleUncachedHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleUncachedHostMemory() {}
 
 		AutoCleanupAccesibleUncachedHostMemory(const AutoCleanupAccesibleUncachedHostMemory&) noexcept = delete;
-		AutoCleanupAccesibleUncachedHostMemory(AutoCleanupAccesibleUncachedHostMemory&& other) noexcept : AutoCleanupMemory(std::move(other)) {}
+		AutoCleanupAccesibleUncachedHostMemory(AutoCleanupAccesibleUncachedHostMemory&& other) noexcept : AutoCleanupMappedMemory(std::move(other)) {}
 
 		AutoCleanupAccesibleUncachedHostMemory& operator=(const AutoCleanupAccesibleUncachedHostMemory&) noexcept = delete;
 		AutoCleanupAccesibleUncachedHostMemory& operator=(AutoCleanupAccesibleUncachedHostMemory&& other) noexcept
@@ -231,6 +246,44 @@ namespace VulkanSimplified
 		std::optional<ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory>> AddCachedIncoherentSharedMemory(uint64_t memorySize);
 		std::optional<ListObjectID<AutoCleanupSharedUncachedDeviceMemory>> AddUncachedSharedMemory(uint64_t memorySize);
 
+		std::optional<ListObjectID<MemoryObject>> BindBufferToMemory(AutoCleanupMemory& memory, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+
+		ListObjectID<MemoryObject> BindBufferToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq,
+			size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToHostMemory(AccessibleHostMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements req, size_t addOnReserve);
+
+		ListObjectID<MemoryObject> BindBufferToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		ListObjectID<MemoryObject> BindBufferToSharedMemory(SharedDeviceMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+
+		ListObjectID<MemoryObject> BindBufferToExclusiveMemory(ListObjectID<AutoCleanupExclusiveDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq,
+			size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToHostMemory(AccessibleHostMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements req, size_t addOnReserve);
+
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, VkBuffer buffer,
+			VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToSharedMemory(SharedDeviceMemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+
+		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToExclusiveMemory(ListObjectID<AutoCleanupExclusiveDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+
 	public:
 		DeviceMemorySimplifierInternal(VkPhysicalDevice physicalDevice, VkDevice device);
 
@@ -243,5 +296,8 @@ namespace VulkanSimplified
 		std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> AddDeviceLocalMemory(uint64_t memorySize);
 		SharedDeviceMemoryID AddSharedMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
 		AccessibleHostMemoryID AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
+
+		ListObjectID<MemoryObject> BindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 	};
 }

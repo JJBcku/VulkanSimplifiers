@@ -226,6 +226,7 @@
     <ClInclude Include="Include\Common\ListObjectID.h" />
     <ClInclude Include="Include\SharedData\SharedDataPipelineElements.h" />
     <ClInclude Include="Include\Common\MainSimplifier.h" />
+    <ClInclude Include="Other\ListObjectTemplate.h" />
     <ClInclude Include="Other\MainSimplifierInternal.h" />
     <ClInclude Include="Include\SharedData\SharedDataPipelineLayoutElements.h" />
     <ClInclude Include="Include\SharedData\SharedDataRenderPassElements.h" />
@@ -251,6 +252,8 @@
     <ClInclude Include="Other\VulkanSimplifierListTemplate.h" />
     <ClInclude Include="Basics\WindowSimplifierInternal.h" />
     <ClInclude Include="Include\Basics\WindowSimplifier.h" />
+    <ClInclude Include="Other\SortedListObjectTemplate.h" />
+    <ClInclude Include="Other\SortedListTemplate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp" />
@@ -281,6 +284,7 @@
     <ClCompile Include="Device\ShaderModulesSimplifier.cpp" />
     <ClCompile Include="Device\ShaderModulesSimplifierInternal.cpp" />
     <ClCompile Include="Device\DeviceSimplifierSharedStructs.cpp" />
+    <ClCompile Include="Other\ListObjectTemplate.cpp" />
     <ClCompile Include="Other\MainSimplifier.cpp" />
     <ClCompile Include="Other\MainSimplifierInternal.cpp" />
     <ClCompile Include="Other\Utils.cpp" />
@@ -306,6 +310,8 @@
     <ClCompile Include="Other\VulkanSimplifierListTemplate.cpp" />
     <ClCompile Include="Basics\WindowSimplifierInternal.cpp" />
     <ClCompile Include="Basics\WindowSimplifier.cpp" />
+    <ClCompile Include="Other\SortedListObjectTemplate.cpp" />
+    <ClCompile Include="Other\SortedListTemplate.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

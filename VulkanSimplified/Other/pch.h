@@ -18,6 +18,7 @@
 #include <functional>
 #include <optional>
 #include <limits>
+#include <iterator>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>

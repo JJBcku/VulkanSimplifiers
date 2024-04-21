@@ -195,6 +195,15 @@
     <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Other\ListObjectTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\SortedListTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\SortedListObjectTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp">
@@ -339,6 +348,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Device\DeviceDataBufferSimplifier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\ListObjectTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\SortedListTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\SortedListObjectTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
