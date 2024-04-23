@@ -9,6 +9,9 @@ namespace VulkanSimplified
 	{
 		VkDeviceSize _memoryOffset = std::numeric_limits<VkDeviceSize>::max();
 		VkDeviceSize _objectSize = 0;
+
+		std::strong_ordering operator<=>(const MemoryObject&) const noexcept = default;
+		bool operator==(const MemoryObject&) const noexcept = default;
 	};
 
 	class AutoCleanupMemory
