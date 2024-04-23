@@ -241,8 +241,10 @@ int main()
 
         VulkanSimplified::SharedDeviceMemoryID vectorMemory = deviceMemory.AddSharedMemory(0x10000, true, false);
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
+        std::vector<ListObjectID<VulkanSimplified::MemoryObject>> vectorInputBufferSuballocations;
 
         vectorInputBuffers.reserve(frameAmount);
+        vectorInputBufferSuballocations.reserve(frameAmount);
 
         auto dataBuffersSimplifier = deviceDataList.GetDeviceDataBufferSimplifier();
 
@@ -253,6 +255,9 @@ int main()
             inFlightFencesList.push_back(deviceSynchronization.AddFence(true));
 
             vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 8, false));
+
+            vectorInputBufferSuballocations.push_back(dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0));
+            deviceMemory.WriteToMemoryObject(vectorMemory, vectorInputBufferSuballocations.back(), 0, reinterpret_cast<char>(_vertexes.data()), static_cast<VkDeviceSize>(_vertexes.size()) * sizeof(_vertexes[0]));
         }
 
         uint32_t imageAmount = 0;

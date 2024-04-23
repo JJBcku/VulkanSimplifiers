@@ -9,6 +9,9 @@ namespace VulkanSimplified
 
 	class AutoCleanupShaderInputBuffer;
 
+	union MemoryID;
+	struct MemoryObject;
+
 	enum class VertexAttributeFormats : uint64_t;
 
 	class DeviceDataBufferSimplifier
@@ -22,5 +25,8 @@ namespace VulkanSimplified
 		DeviceDataBufferSimplifier& operator=(const DeviceDataBufferSimplifier&) noexcept = delete;
 
 		ListObjectID<AutoCleanupShaderInputBuffer> AddShaderInputBuffer(const std::vector<VertexAttributeFormats>& vertexAttributes, uint32_t maxVertexAmount, bool enableTransferTo);
+
+		ListObjectID<MemoryObject> BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
+		std::optional<ListObjectID<MemoryObject>> TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
 	};
 }

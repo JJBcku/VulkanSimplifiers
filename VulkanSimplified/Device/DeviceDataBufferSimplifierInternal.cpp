@@ -1,5 +1,6 @@
 #include "../Other/pch.h"
 #include "DeviceDataBufferSimplifierInternal.h"
+#include "DeviceMemorySimplifierInternal.h"
 
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
@@ -45,7 +46,18 @@ namespace VulkanSimplified
 		return *this;
 	}
 
-	DeviceDataBufferSimplifierInternal::DeviceDataBufferSimplifierInternal(VkDevice device, size_t reserve) : _device(device), _ppadding(nullptr), _shaderInputs(reserve)
+	VkBuffer AutoCleanupShaderInputBuffer::GetBuffer() const
+	{
+		return _dataBuffer;
+	}
+
+	VkMemoryRequirements AutoCleanupShaderInputBuffer::GetRequirements() const
+	{
+		return _memReq;
+	}
+
+	DeviceDataBufferSimplifierInternal::DeviceDataBufferSimplifierInternal(VkDevice device, DeviceMemorySimplifierInternal& memorySimplifier, size_t reserve) : _device(device),
+		_memorySimplifier(memorySimplifier), _shaderInputs(reserve)
 	{
 	}
 
@@ -72,6 +84,20 @@ namespace VulkanSimplified
 			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddShaderInputBuffer Error: Program failed to create a buffer!");
 
 		return _shaderInputs.AddObject(AutoCleanupShaderInputBuffer(_device, add));
+	}
+
+	ListObjectID<MemoryObject> DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& shaderInput = _shaderInputs.GetConstObject(_shaderInputBuffer);
+
+		return _memorySimplifier.BindBuffer(memoryID, shaderInput.GetBuffer(), shaderInput.GetRequirements(), addOnReserve);
+	}
+
+	std::optional<ListObjectID<MemoryObject>> DeviceDataBufferSimplifierInternal::TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& shaderInput = _shaderInputs.GetConstObject(_shaderInputBuffer);
+
+		return _memorySimplifier.TryToBindBuffer(memoryID, shaderInput.GetBuffer(), shaderInput.GetRequirements(), addOnReserve);
 	}
 
 }

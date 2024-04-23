@@ -30,4 +30,14 @@ namespace VulkanSimplified
 		return _internal.AddExternalAccessibleMemory(memorySize, canBeUncached, canBeIncoherent);
 	}
 
+	void DeviceMemorySimplifier::WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		_internal.WriteToMemoryObject(sharedMemoryID, objectID, offset, data, dataSize, flushOnWrite);
+	}
+
+	void DeviceMemorySimplifier::WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		_internal.WriteToMemoryObject(hostMemoryID, objectID, offset, data, dataSize, flushOnWrite);
+	}
+
 }

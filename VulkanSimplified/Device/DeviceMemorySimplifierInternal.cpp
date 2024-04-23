@@ -132,7 +132,8 @@ namespace VulkanSimplified
 	{
 		auto& subMemory = _usedMemory.GetConstObject(bufferSuballocation);
 
-		vkBindBufferMemory(_device, buffer, _deviceMemory, subMemory._memoryOffset);
+		if (vkBindBufferMemory(_device, buffer, _deviceMemory, subMemory._memoryOffset) != VK_SUCCESS)
+			throw std::runtime_error("AutoCleanupMemory::BindBuffer Error: Program failed to bind buffer to the suballocated memory!");
 	}
 
 	bool DeviceMemorySimplifierInternal::IsHeapInTheArray(uint32_t heapID, const std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array) const
@@ -484,6 +485,60 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	void DeviceMemorySimplifierInternal::WriteToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	{
+		auto& memory = _sharedCachedCoherentDeviceMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		auto& memory = _sharedCachedIncoherentDeviceMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+
+		if (flushOnWrite)
+			memory.FlushMemory({ objectID });
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToSharedSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	{
+		auto& memory = _sharedUncachedDeviceMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	{
+		auto& memory = _accessibleCachedCoherentExternalMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		auto& memory = _accessibleCachedIncoherentExternalMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+
+		if (flushOnWrite)
+			memory.FlushMemory({ objectID });
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
+		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	{
+		auto& memory = _accessibleUncachedExternalMemories.GetObject(memoryID);
+
+		memory.WriteToMemoryObject(objectID, offset, data, dataSize);
+	}
+
 	DeviceMemorySimplifierInternal::DeviceMemorySimplifierInternal(VkPhysicalDevice physicalDevice, VkDevice device) : _physicalDevice(physicalDevice), _device(device),
 		_memoryProperties()
 	{
@@ -696,10 +751,104 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
+		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		switch (sharedMemoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			WriteToSharedSharedUncachedMemory(sharedMemoryID._unchachedID._ID, objectID, offset, data, dataSize);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			WriteToSharedCachedIncoherentMemory(sharedMemoryID._cachedIncoherentID._ID, objectID, offset, data, dataSize, flushOnWrite);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			WriteToSharedCachedCoherentMemory(sharedMemoryID._cachedCoherentID._ID, objectID, offset, data, dataSize);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::WriteToMemoryObject Error: Program was given an erroneous shared memory id!");
+		}
+	}
+
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
+		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		switch (hostMemoryID._type)
+		{
+		case MemoryPropertiesIDType::UNCACHED:
+			WriteToHostUncachedMemory(hostMemoryID._unchachedID._ID, objectID, offset, data, dataSize);
+			break;
+		case MemoryPropertiesIDType::CACHED_INCOHERENT:
+			WriteToHostCachedIncoherentMemory(hostMemoryID._cachedIncoherentID._ID, objectID, offset, data, dataSize, flushOnWrite);
+			break;
+		case MemoryPropertiesIDType::CACHED_COHERENT:
+			WriteToHostCachedCoherentMemory(hostMemoryID._cachedCoherentID._ID, objectID, offset, data, dataSize);
+			break;
+		case MemoryPropertiesIDType::NONE:
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::WriteToMemoryObject Error: Program was given an erroneous host memory id!");
+		}
+	}
+
 	AutoCleanupMappedMemory::AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
 		AutoCleanupMemory(device, memoryIndex, deviceMemory, memorySize)
 	{
 		vkMapMemory(_device, _deviceMemory, 0, memorySize, 0, &_mapping);
+	}
+
+	void AutoCleanupMappedMemory::WriteToMemoryObject(ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	{
+		if (dataSize > _memorySize)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory a data stream bigger than the entire memory!");
+
+		if (offset >= _memorySize)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory at a position past the memory's end!");
+
+		auto& object = _usedMemory.GetConstObject(objectID);
+
+		if (dataSize > object._objectSize)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory object a data stream bigger than the object entire memory!");
+
+		if (offset >= object._objectSize)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory object at position past the objects end!");
+
+		VkDeviceSize sizeLeft = object._objectSize - offset;
+
+		if (dataSize > sizeLeft)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory object a data stream bigger than the object memory after offset!");
+
+		VkDeviceSize totaloffset = object._memoryOffset + offset;
+
+		if (totaloffset < offset)
+			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Total offset overflowed!");
+
+		memcpy(static_cast<char*>(_mapping) + totaloffset, &data, static_cast<size_t>(dataSize));
+	}
+
+	void AutoCleanupMappedMemory::FlushMemory(const std::vector<ListObjectID<MemoryObject>>& objectIDs)
+	{
+		if (objectIDs.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("AutoCleanupMappedMemory::FlushMemory Error: Object IDs vector overflow!");
+
+		std::vector<VkMappedMemoryRange> _memoryRanges;
+		_memoryRanges.reserve(objectIDs.size());
+
+		for (auto& objectID : objectIDs)
+		{
+			auto& object = _usedMemory.GetConstObject(objectID);
+
+			VkMappedMemoryRange add{};
+			add.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+			add.memory = _deviceMemory;
+			add.offset = object._memoryOffset;
+			add.size = object._objectSize;
+
+			_memoryRanges.push_back(add);
+		}
+
+		if (vkFlushMappedMemoryRanges(_device, static_cast<uint32_t>(_memoryRanges.size()), _memoryRanges.data()) != VK_SUCCESS)
+			throw std::runtime_error("AutoCleanupMappedMemory::FlushMemory Error: Program failed to flush the memory ranges!");
 	}
 
 	ListObjectID<MemoryObject> DeviceMemorySimplifierInternal::BindBufferToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve)
