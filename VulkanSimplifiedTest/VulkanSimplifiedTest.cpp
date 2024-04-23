@@ -257,7 +257,7 @@ int main()
             vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 8, false));
 
             vectorInputBufferSuballocations.push_back(dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0));
-            deviceMemory.WriteToMemoryObject(vectorMemory, vectorInputBufferSuballocations.back(), 0, reinterpret_cast<char>(_vertexes.data()), static_cast<VkDeviceSize>(_vertexes.size()) * sizeof(_vertexes[0]));
+            deviceMemory.WriteToMemoryObject(vectorMemory, vectorInputBufferSuballocations.back(), 0, *reinterpret_cast<char*>(_vertexes.data()), static_cast<VkDeviceSize>(_vertexes.size()) * sizeof(_vertexes[0]));
         }
 
         uint32_t imageAmount = 0;
@@ -334,6 +334,7 @@ int main()
             commandRecorderList[currentImage].BeginRenderPass(renderPass, swapchainFramebuffers, currentImage, 0, 0, swapchainWidth, swapchainHeight, { colorClearValue }, false);
             
             commandRecorderList[currentImage].BindGraphicsPipeline(pipelineList[pipelineID]);
+            commandRecorderList[currentImage].BindVertexInput({ {vectorInputBuffers[currentSynchro], 0} }, 0);
             commandRecorderList[currentImage].Draw(3, 1, 0, 0);
 
             commandRecorderList[currentImage].EndRenderPass();

@@ -100,4 +100,11 @@ namespace VulkanSimplified
 		return _memorySimplifier.TryToBindBuffer(memoryID, shaderInput.GetBuffer(), shaderInput.GetRequirements(), addOnReserve);
 	}
 
+	VkBuffer DeviceDataBufferSimplifierInternal::GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const
+	{
+		auto& buffer = _shaderInputs.GetConstObject(bufferID);
+
+		return buffer.GetBuffer();
+	}
+
 }

@@ -12,17 +12,24 @@ namespace VulkanSimplified
 	class AutoCleanupSwapchainFramebuffer;
 	class AutoCleanupGraphicsPipeline;
 
+	class AutoCleanupShaderInputBuffer;
+
+	class DeviceDataBufferSimplifierInternal;
+
 	class DeviceCommandRecorderInternal
 	{
 		const DeviceImageSimplifierInternal& _imagesData;
 		const DevicePipelineDataInternal& _pipelineData;
 		const SharedDataPipelineElementsInternal& _sharedPipelineData;
+		const DeviceDataBufferSimplifierInternal& _dataBuffersList;
+
+		void* _ppadding;
 
 		VkCommandBuffer _commandBuffer;
 
 	public:
-		DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData,
-			const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData);
+		DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData, const DevicePipelineDataInternal& pipelineData,
+			const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& _dataBuffersList);
 		~DeviceCommandRecorderInternal();
 
 		DeviceCommandRecorderInternal& operator=(const DeviceCommandRecorderInternal&) noexcept = delete;
@@ -34,6 +41,7 @@ namespace VulkanSimplified
 		void BeginRecordingPrimaryBuffer(PrimaryBufferRecordingSettings settings);
 		void EndCommandBuffer();
 
+		void BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding);
 		void BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID);
 
 		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset);

@@ -31,6 +31,11 @@ namespace VulkanSimplified
 		_internal.EndCommandBuffer();
 	}
 
+	void DeviceCommandRecorder::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding)
+	{
+		_internal.BindVertexInput(vertexInputs, firstBinding);
+	}
+
 	void DeviceCommandRecorder::BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID)
 	{
 		_internal.BindGraphicsPipeline(graphicsPipelineID);

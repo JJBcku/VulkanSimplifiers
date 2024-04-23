@@ -5,12 +5,15 @@
 #include "DevicePipelineDataInternal.h"
 #include "../SharedData/SharedDataPipelineElementsInternal.h"
 
+#include "DeviceDataBufferSimplifierInternal.h"
+
 namespace VulkanSimplified
 {
 
 	DeviceCommandRecorderInternal::DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData,
-		const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData) : _imagesData(imagesData), _pipelineData(pipelineData),
-		_sharedPipelineData(sharedPipelineData), _commandBuffer(commandBuffer)
+		const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& dataBuffersList) :
+		_imagesData(imagesData), _pipelineData(pipelineData), _sharedPipelineData(sharedPipelineData), _dataBuffersList(dataBuffersList), _ppadding(nullptr),
+		_commandBuffer(commandBuffer)
 	{
 	}
 
@@ -60,6 +63,26 @@ namespace VulkanSimplified
 	{
 		if (vkEndCommandBuffer(_commandBuffer) != VK_SUCCESS)
 			throw std::runtime_error("DeviceCommandRecorderInternal::EndCommandBuffer Error: Program failed to end a command buffer");
+	}
+
+	void DeviceCommandRecorderInternal::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding)
+	{
+		if (vertexInputs.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::BindVertexInput Error: vertex input buffers overflow!");
+
+		std::vector<VkBuffer> buffers;
+		std::vector<VkDeviceSize> offsets;
+
+		buffers.reserve(vertexInputs.size());
+		offsets.reserve(vertexInputs.size());
+
+		for (auto& vertexInput : vertexInputs)
+		{
+			buffers.push_back(_dataBuffersList.GetShaderInputBuffer(vertexInput.first));
+			offsets.push_back(vertexInput.second);
+		}
+
+		vkCmdBindVertexBuffers(_commandBuffer, firstBinding, static_cast<uint32_t>(vertexInputs.size()), buffers.data(), offsets.data());
 	}
 
 	void DeviceCommandRecorderInternal::BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID)
