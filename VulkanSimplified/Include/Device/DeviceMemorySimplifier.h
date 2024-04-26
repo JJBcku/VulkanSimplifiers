@@ -1,7 +1,7 @@
 #pragma once
 #include "DeviceSimplifierSharedStructs.h"
 
-typedef uint64_t VkDeviceSize;
+typedef uint64_t uint64_t;
 
 namespace VulkanSimplified
 {
@@ -26,9 +26,21 @@ namespace VulkanSimplified
 
 		DeviceMemorySimplifier& operator=(const DeviceMemorySimplifier&) noexcept = delete;
 
-		std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> AddDeviceLocalMemory(uint64_t memorySize);
+		ListObjectID<AutoCleanupExclusiveDeviceMemory> AddDeviceLocalMemory(uint64_t memorySize);
 		SharedDeviceMemoryID AddSharedMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
 		AccessibleHostMemoryID AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
+
+		bool IsThereExclusiveDeviceMemory() const;
+		bool IsThereSharedDeviceMemory() const;
+		bool IsThereHostDeviceAccessibleMemory() const;
+
+		bool IsThereHostDeviceUncachedAccessibleMemory() const;
+		bool IsThereHostDeviceCachedCoherentAccessibleMemory() const;
+		bool IsThereHostDeviceCachedIncoherentAccessibleMemory() const;
+
+		bool IsThereSharedUncachedMemory() const;
+		bool IsThereSharedCachedCoherentMemory() const;
+		bool IsThereSharedCachedIncoherentMemory() const;
 	};
 }
 

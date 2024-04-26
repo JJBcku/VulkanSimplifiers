@@ -109,9 +109,25 @@ namespace VulkanSimplified
 			createInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 
 		if (vkCreateBuffer(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
-			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddShaderInputBuffer Error: Program failed to create a buffer!");
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddShaderInputBuffer Error: Program failed to create the buffer!");
 
 		return _shaderInputs.AddObject(AutoCleanupShaderInputBuffer(_device, add));
+	}
+
+	ListObjectID<AutoCleanupStagingBuffer> DeviceDataBufferSimplifierInternal::AddStagingBuffer(uint64_t bufferSize)
+	{
+		VkBuffer add = VK_NULL_HANDLE;
+
+		VkBufferCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		createInfo.size = bufferSize;
+
+		if (vkCreateBuffer(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddStagingBuffer Error: Program failed to create the buffer!");
+
+		return _stagingBuffers.AddObject(AutoCleanupStagingBuffer(_device, add));
 	}
 
 	void DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
@@ -128,6 +144,20 @@ namespace VulkanSimplified
 		return shaderInput.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
 	}
 
+	void DeviceDataBufferSimplifierInternal::BindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve)
+	{
+		auto& stagingBuffer = _stagingBuffers.GetObject(_stagingBufferID);
+
+		stagingBuffer.BindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifierInternal::TryToBindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve)
+	{
+		auto& stagingBuffer = _stagingBuffers.GetObject(_stagingBufferID);
+
+		return stagingBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
 	VkBuffer DeviceDataBufferSimplifierInternal::GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const
 	{
 		auto& buffer = _shaderInputs.GetConstObject(bufferID);
@@ -135,7 +165,14 @@ namespace VulkanSimplified
 		return buffer.GetBuffer();
 	}
 
-	void DeviceDataBufferSimplifierInternal::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	VkBuffer DeviceDataBufferSimplifierInternal::GetStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID) const
+	{
+		auto& buffer = _stagingBuffers.GetConstObject(bufferID);
+
+		return buffer.GetBuffer();
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		auto& buffer = _shaderInputs.GetConstObject(bufferID);
 
@@ -150,6 +187,23 @@ namespace VulkanSimplified
 		}
 		else
 			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToShaderInputBuffer Error: Program tried to write data to an unbound buffer!");
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
+	{
+		auto& buffer = _stagingBuffers.GetConstObject(bufferID);
+
+		auto binding = buffer.GetBuffersBindingID();
+
+		if (binding.has_value())
+		{
+			auto& memory = binding.value().first;
+			auto& suballocation = binding.value().second;
+
+			_memorySimplifier.WriteToMemoryObject(memory, suballocation, offset, data, dataSize, flushOnWrite);
+		}
+		else
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToStagingBuffer Error: Program tried to write data to an unbound buffer!");
 	}
 
 }

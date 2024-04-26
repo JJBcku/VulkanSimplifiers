@@ -22,6 +22,11 @@ namespace VulkanSimplified
 		return _internal.AddShaderInputBuffer(vertexAttributes, maxVertexAmount, enableTransferTo);
 	}
 
+	ListObjectID<AutoCleanupStagingBuffer> DeviceDataBufferSimplifier::AddStagingBuffer(uint64_t bufferSize)
+	{
+		return _internal.AddStagingBuffer(bufferSize);
+	}
+
 	void DeviceDataBufferSimplifier::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
 		_internal.BindShaderInputBuffer(_shaderInputBuffer, memoryID, addOnReserve);
@@ -32,9 +37,24 @@ namespace VulkanSimplified
 		return _internal.TryToBindShaderInputBuffer(_shaderInputBuffer, memoryID, addOnReserve);
 	}
 
-	void DeviceDataBufferSimplifier::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	void DeviceDataBufferSimplifier::BindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve)
+	{
+		_internal.BindStagingBuffer(_stagingBufferID, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifier::TryToBindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve)
+	{
+		return _internal.TryToBindStagingBuffer(_stagingBufferID, memoryID, addOnReserve);
+	}
+
+	void DeviceDataBufferSimplifier::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		_internal.WriteToShaderInputBuffer(bufferID, offset, data, dataSize, flushOnWrite);
+	}
+
+	void DeviceDataBufferSimplifier::WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
+	{
+		_internal.WriteToStagingBuffer(bufferID, offset, data, dataSize, flushOnWrite);
 	}
 
 }

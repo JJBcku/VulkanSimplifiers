@@ -15,7 +15,7 @@ namespace VulkanSimplified
 	{
 	}
 
-	std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> DeviceMemorySimplifier::AddDeviceLocalMemory(uint64_t memorySize)
+	ListObjectID<AutoCleanupExclusiveDeviceMemory> DeviceMemorySimplifier::AddDeviceLocalMemory(uint64_t memorySize)
 	{
 		return _internal.AddDeviceLocalMemory(memorySize);
 	}
@@ -28,6 +28,51 @@ namespace VulkanSimplified
 	AccessibleHostMemoryID DeviceMemorySimplifier::AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent)
 	{
 		return _internal.AddExternalAccessibleMemory(memorySize, canBeUncached, canBeIncoherent);
+	}
+
+	bool DeviceMemorySimplifier::IsThereExclusiveDeviceMemory() const
+	{
+		return _internal.IsThereExclusiveDeviceMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereSharedDeviceMemory() const
+	{
+		return _internal.IsThereSharedDeviceMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereHostDeviceAccessibleMemory() const
+	{
+		return _internal.IsThereHostDeviceAccessibleMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereHostDeviceUncachedAccessibleMemory() const
+	{
+		return _internal.IsThereHostDeviceUncachedAccessibleMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereHostDeviceCachedCoherentAccessibleMemory() const
+	{
+		return _internal.IsThereHostDeviceCachedCoherentAccessibleMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereHostDeviceCachedIncoherentAccessibleMemory() const
+	{
+		return _internal.IsThereHostDeviceCachedIncoherentAccessibleMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereSharedUncachedMemory() const
+	{
+		return _internal.IsThereSharedUncachedMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereSharedCachedCoherentMemory() const
+	{
+		return _internal.IsThereSharedCachedCoherentMemory();
+	}
+
+	bool DeviceMemorySimplifier::IsThereSharedCachedIncoherentMemory() const
+	{
+		return _internal.IsThereSharedCachedIncoherentMemory();
 	}
 
 }

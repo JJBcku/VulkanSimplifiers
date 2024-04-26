@@ -5,6 +5,8 @@
 
 #include "../Include/Common/ListObjectID.h"
 
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
+
 namespace VulkanSimplified
 {
 
@@ -31,7 +33,7 @@ namespace VulkanSimplified
 		_internal.EndCommandBuffer();
 	}
 
-	void DeviceCommandRecorder::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding)
+	void DeviceCommandRecorder::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, uint64_t>>& vertexInputs, uint32_t firstBinding)
 	{
 		_internal.BindVertexInput(vertexInputs, firstBinding);
 	}
@@ -55,6 +57,12 @@ namespace VulkanSimplified
 	void DeviceCommandRecorder::EndRenderPass()
 	{
 		_internal.EndRenderPass();
+	}
+
+	void DeviceCommandRecorder::CopyFromStagingBufferToShaderInputBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupShaderInputBuffer> shaderInputBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		_internal.CopyFromStagingBufferToShaderInputBuffer(stagingBufferID, shaderInputBufferID, copyOrders);
 	}
 
 }

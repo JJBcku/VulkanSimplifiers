@@ -65,13 +65,13 @@ namespace VulkanSimplified
 			throw std::runtime_error("DeviceCommandRecorderInternal::EndCommandBuffer Error: Program failed to end a command buffer");
 	}
 
-	void DeviceCommandRecorderInternal::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding)
+	void DeviceCommandRecorderInternal::BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, uint64_t>>& vertexInputs, uint32_t firstBinding)
 	{
 		if (vertexInputs.size() > std::numeric_limits<uint32_t>::max())
 			throw std::runtime_error("DeviceCommandRecorderInternal::BindVertexInput Error: vertex input buffers overflow!");
 
 		std::vector<VkBuffer> buffers;
-		std::vector<VkDeviceSize> offsets;
+		std::vector<uint64_t> offsets;
 
 		buffers.reserve(vertexInputs.size());
 		offsets.reserve(vertexInputs.size());
@@ -122,6 +122,31 @@ namespace VulkanSimplified
 	void DeviceCommandRecorderInternal::EndRenderPass()
 	{
 		vkCmdEndRenderPass(_commandBuffer);
+	}
+
+	void DeviceCommandRecorderInternal::CopyFromStagingBufferToShaderInputBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupShaderInputBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::CopyFromStagingBuffer Error: copy orders vector overflow!");
+
+		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
+		auto destinationBuffer = _dataBuffersList.GetShaderInputBuffer(destinationBufferID);
+
+		std::vector<VkBufferCopy> copyList;
+		copyList.reserve(copyOrders.size());
+
+		for (auto& order : copyOrders)
+		{
+			VkBufferCopy add{};
+			add.srcOffset = order.sourceOffset;
+			add.dstOffset = order.destinationOffset;
+			add.size = order.dataSize;
+
+			copyList.push_back(add);
+		}
+
+		vkCmdCopyBuffer(_commandBuffer, stagingBuffer, destinationBuffer, static_cast<uint32_t>(copyList.size()), copyList.data());
 	}
 
 }

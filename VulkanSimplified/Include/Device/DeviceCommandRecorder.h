@@ -1,8 +1,6 @@
 #pragma once
 
-#include "DeviceSimplifierSharedEnums.h"
-
-typedef uint64_t VkDeviceSize;
+union VkClearValue;
 
 namespace VulkanSimplified
 {
@@ -13,9 +11,14 @@ namespace VulkanSimplified
 	class AutoCleanupGraphicsPipeline;
 
 	class AutoCleanupShaderInputBuffer;
+	class AutoCleanupStagingBuffer;
 
 	template<class T>
 	class ListObjectID;
+
+	struct BufferCopyOrder;
+
+	enum class PrimaryBufferRecordingSettings : uint64_t;
 
 	class DeviceCommandRecorder
 	{
@@ -32,7 +35,7 @@ namespace VulkanSimplified
 		void BeginRecordingPrimaryBuffer(PrimaryBufferRecordingSettings settings);
 		void EndCommandBuffer();
 
-		void BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, VkDeviceSize>>& vertexInputs, uint32_t firstBinding);
+		void BindVertexInput(const std::vector<std::pair<ListObjectID<AutoCleanupShaderInputBuffer>, uint64_t>>& vertexInputs, uint32_t firstBinding);
 		void BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID);
 
 		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset);
@@ -40,6 +43,9 @@ namespace VulkanSimplified
 		void BeginRenderPass(ListObjectID<AutoCleanupRenderPass> renderPassID, ListObjectID<AutoCleanupSwapchainFramebuffer> framebuffer, uint32_t frameID, uint32_t beginX,
 			uint32_t beginY, uint32_t extendWidth, uint32_t extendHeight, const std::vector<ListObjectID<VkClearValue>>& clearValuesIDList, bool usingSecondaryBuffers);
 		void EndRenderPass();
+
+		void CopyFromStagingBufferToShaderInputBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupShaderInputBuffer> shaderInputBufferID,
+			const std::vector<BufferCopyOrder>& copyOrders);
 	};
 }
 

@@ -128,10 +128,10 @@ namespace VulkanSimplified
 			if (submitObject._waitSemaphores.size() > std::numeric_limits<uint32_t>::max())
 				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: wait semaphores list overflow!");
 
-			if (submitObject._commandBuffer.empty())
+			if (submitObject._commandBuffers.empty())
 				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: Program tried to submit zero command buffers to queue!");
 
-			if (submitObject._commandBuffer.size() > std::numeric_limits<uint32_t>::max())
+			if (submitObject._commandBuffers.size() > std::numeric_limits<uint32_t>::max())
 				throw std::runtime_error("DeviceCommandBufferSimplifierInternal::SubmitToQueue Error: command buffer list overflow!");
 
 			if (submitObject._signalSemaphores.size() > std::numeric_limits<uint32_t>::max())
@@ -159,7 +159,7 @@ namespace VulkanSimplified
 			}
 
 			{
-				auto& commandData = submitObject._commandBuffer;
+				auto& commandData = submitObject._commandBuffers;
 
 				commandBuffers[i].reserve(commandData.size());
 				for (size_t j = 0; j < commandData.size(); ++j)

@@ -7,8 +7,8 @@ namespace VulkanSimplified
 {
 	struct MemoryObject
 	{
-		VkDeviceSize _memoryOffset = std::numeric_limits<VkDeviceSize>::max();
-		VkDeviceSize _objectSize = 0;
+		uint64_t _memoryOffset = std::numeric_limits<uint64_t>::max();
+		uint64_t _objectSize = 0;
 
 		std::strong_ordering operator<=>(const MemoryObject&) const noexcept = default;
 		bool operator==(const MemoryObject&) const noexcept = default;
@@ -21,13 +21,13 @@ namespace VulkanSimplified
 		void* _mapping;
 		uint64_t _memoryIndex;
 		VkDeviceMemory _deviceMemory;
-		VkDeviceSize _memorySize;
+		uint64_t _memorySize;
 		SortedListTemplate<MemoryObject> _usedMemory;
 
-		std::optional<std::pair<VkDeviceSize, size_t>> GetMemoryOffset(VkMemoryRequirements suballocationRequirements);
+		std::optional<std::pair<uint64_t, size_t>> GetMemoryOffset(VkMemoryRequirements suballocationRequirements);
 
 	public:
-		AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
+		AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize);
 		~AutoCleanupMemory();
 
 		AutoCleanupMemory(const AutoCleanupMemory&) noexcept = delete;
@@ -44,7 +44,7 @@ namespace VulkanSimplified
 	class AutoCleanupMappedMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize);
+		AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize);
 		~AutoCleanupMappedMemory() {}
 
 		AutoCleanupMappedMemory(const AutoCleanupMappedMemory&) noexcept = delete;
@@ -59,14 +59,14 @@ namespace VulkanSimplified
 			return *this;
 		}
 
-		void WriteToMemoryObject(ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize);
+		void WriteToMemoryObject(ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize);
 		void FlushMemory(const std::vector<ListObjectID<MemoryObject>>& objectIDs);
 	};
 
 	class AutoCleanupSharedUncachedDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedUncachedDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupSharedUncachedDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedUncachedDeviceMemory() {}
 
@@ -86,7 +86,7 @@ namespace VulkanSimplified
 	class AutoCleanupSharedCachedCoherentDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedCachedCoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupSharedCachedCoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedCachedCoherentDeviceMemory() {}
 
@@ -106,7 +106,7 @@ namespace VulkanSimplified
 	class AutoCleanupSharedCachedIncoherentDeviceMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupSharedCachedIncoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupSharedCachedIncoherentDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupSharedCachedIncoherentDeviceMemory() {}
 
@@ -126,7 +126,7 @@ namespace VulkanSimplified
 	class AutoCleanupExclusiveDeviceMemory : public AutoCleanupMemory
 	{
 	public:
-		AutoCleanupExclusiveDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupExclusiveDeviceMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupExclusiveDeviceMemory() {}
 
@@ -146,7 +146,7 @@ namespace VulkanSimplified
 	class AutoCleanupAccesibleCachedCoherentHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedCoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupAccesibleCachedCoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleCachedCoherentHostMemory() {}
 
@@ -164,7 +164,7 @@ namespace VulkanSimplified
 	class AutoCleanupAccesibleCachedIncoherentHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleCachedIncoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupAccesibleCachedIncoherentHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleCachedIncoherentHostMemory() {}
 
@@ -182,7 +182,7 @@ namespace VulkanSimplified
 	class AutoCleanupAccesibleUncachedHostMemory : public AutoCleanupMappedMemory
 	{
 	public:
-		AutoCleanupAccesibleUncachedHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+		AutoCleanupAccesibleUncachedHostMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 			AutoCleanupMappedMemory(device, memoryIndex, deviceMemory, memorySize) {}
 		~AutoCleanupAccesibleUncachedHostMemory() {}
 
@@ -211,7 +211,7 @@ namespace VulkanSimplified
 		VkDevice _device;
 
 		VkPhysicalDeviceMemoryProperties _memoryProperties;
-		VkDeviceSize _usedheapMemory[VK_MAX_MEMORY_HEAPS];
+		uint64_t _usedheapMemory[VK_MAX_MEMORY_HEAPS];
 
 		std::array<uint32_t, VK_MAX_MEMORY_HEAPS> _sharedUnchachedDeviceHeaps;
 		std::array<uint32_t, VK_MAX_MEMORY_HEAPS> _sharedCachedCoherentDeviceHeaps;
@@ -238,6 +238,7 @@ namespace VulkanSimplified
 		void AddHeapToArray(uint32_t heapID, std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array);
 
 		std::optional<size_t> PickHeapToAddMemoryTo(uint64_t neededSize, const std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array) const;
+		bool IsArrayEmpty(const std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array) const;
 
 		void IncreaseUsedHeapMemory(uint64_t addedMemory, uint32_t heapID);
 		void DecreaseUsedHeapMemory(uint64_t substractedMemory, uint32_t heapID);
@@ -290,22 +291,22 @@ namespace VulkanSimplified
 
 		std::optional<ListObjectID<MemoryObject>> TryToBindBufferToExclusiveMemory(ListObjectID<AutoCleanupExclusiveDeviceMemory> memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 
-		void WriteToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize);
-		void WriteToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize, bool flushOnWrite);
-		void WriteToSharedSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize);
+		void WriteToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize);
+		void WriteToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize, bool flushOnWrite);
+		void WriteToSharedSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize);
 
-		void WriteToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize);
-		void WriteToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize, bool flushOnWrite);
-		void WriteToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-			const char& data, VkDeviceSize dataSize);
+		void WriteToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize);
+		void WriteToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize, bool flushOnWrite);
+		void WriteToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+			const char& data, uint64_t dataSize);
 
-		void WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
-		void WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
+		void WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
+		void WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 
 	public:
 		DeviceMemorySimplifierInternal(VkPhysicalDevice physicalDevice, VkDevice device);
@@ -316,13 +317,25 @@ namespace VulkanSimplified
 		DeviceMemorySimplifierInternal& operator=(const DeviceMemorySimplifierInternal&) noexcept = delete;
 		DeviceMemorySimplifierInternal& operator=(DeviceMemorySimplifierInternal&&) noexcept = delete;
 
-		std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> AddDeviceLocalMemory(uint64_t memorySize);
+		ListObjectID<AutoCleanupExclusiveDeviceMemory> AddDeviceLocalMemory(uint64_t memorySize);
 		SharedDeviceMemoryID AddSharedMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
 		AccessibleHostMemoryID AddExternalAccessibleMemory(uint64_t memorySize, bool canBeUncached, bool canBeIncoherent);
 
 		ListObjectID<MemoryObject> BindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 		std::optional<ListObjectID<MemoryObject>> TryToBindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 
-		void WriteToMemoryObject(MemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
+		void WriteToMemoryObject(MemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
+
+		bool IsThereExclusiveDeviceMemory() const;
+		bool IsThereSharedDeviceMemory() const;
+		bool IsThereHostDeviceAccessibleMemory() const;
+
+		bool IsThereHostDeviceUncachedAccessibleMemory() const;
+		bool IsThereHostDeviceCachedCoherentAccessibleMemory() const;
+		bool IsThereHostDeviceCachedIncoherentAccessibleMemory() const;
+
+		bool IsThereSharedUncachedMemory() const;
+		bool IsThereSharedCachedCoherentMemory() const;
+		bool IsThereSharedCachedIncoherentMemory() const;
 	};
 }

@@ -74,7 +74,7 @@ namespace VulkanSimplified
 	struct QueueSubmitObject
 	{
 		std::vector<std::pair<PipelineStage, ListObjectID<AutoCleanupSemaphore>>> _waitSemaphores;
-		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> _commandBuffer;
+		std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> _commandBuffers;
 		std::vector<ListObjectID<AutoCleanupSemaphore>> _signalSemaphores;
 	};
 
@@ -169,5 +169,12 @@ namespace VulkanSimplified
 			_exclusiveID.memoryType = MemoryType::EXCLUSIVE;
 			_exclusiveID.ID = exclusiveID;
 		}
+	};
+
+	struct BufferCopyOrder
+	{
+		uint64_t sourceOffset = 0;
+		uint64_t destinationOffset = 0;
+		uint64_t dataSize = 0;
 	};
 }

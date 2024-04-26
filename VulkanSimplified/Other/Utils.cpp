@@ -30,9 +30,9 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkDeviceSize Utils::GetShaderInputPadding(VkDeviceSize currentSize, VertexAttributeFormats attribute)
+	uint64_t Utils::GetShaderInputPadding(uint64_t currentSize, VertexAttributeFormats attribute)
 	{
-		VkDeviceSize ret = 0;
+		uint64_t ret = 0;
 
 		switch (attribute)
 		{
@@ -53,23 +53,23 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkDeviceSize Utils::GetShaderInputSize(VertexAttributeFormats attribute)
+	uint64_t Utils::GetShaderInputSize(VertexAttributeFormats attribute)
 	{
-		VkDeviceSize ret = 0;
+		uint64_t ret = 0;
 
 		switch (attribute)
 		{
 		case VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT:
-			ret = static_cast<VkDeviceSize>(sizeof(float)) << 1;
+			ret = static_cast<uint64_t>(sizeof(float)) << 1;
 			break;
 		case VulkanSimplified::VertexAttributeFormats::VEC2_DOUBLE:
-			ret = static_cast<VkDeviceSize>(sizeof(double)) << 1;
+			ret = static_cast<uint64_t>(sizeof(double)) << 1;
 			break;
 		case VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT:
-			ret = static_cast<VkDeviceSize>(sizeof(float)) << 2;
+			ret = static_cast<uint64_t>(sizeof(float)) << 2;
 			break;
 		case VulkanSimplified::VertexAttributeFormats::VEC4_DOUBLE:
-			ret = static_cast<VkDeviceSize>(sizeof(double)) << 2;
+			ret = static_cast<uint64_t>(sizeof(double)) << 2;
 			break;
 		default:
 			throw std::runtime_error("Utils::GetShaderInputSize Error: Program was given an erroneous input attribute format!");
@@ -99,9 +99,9 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	VkDeviceSize Utils::GetShaderInputPaddedSize(const std::vector<VertexAttributeFormats>& attributes)
+	uint64_t Utils::GetShaderInputPaddedSize(const std::vector<VertexAttributeFormats>& attributes)
 	{
-		VkDeviceSize ret = 0;
+		uint64_t ret = 0;
 
 		if (!attributes.empty())
 		{
@@ -112,16 +112,16 @@ namespace VulkanSimplified
 				switch (attributes[i])
 				{
 				case VertexAttributeFormats::VEC2_FLOAT:
-					ret += static_cast<VkDeviceSize>(sizeof(float)) << 1;
+					ret += static_cast<uint64_t>(sizeof(float)) << 1;
 					break;
 				case VertexAttributeFormats::VEC2_DOUBLE:
-					ret += static_cast<VkDeviceSize>(sizeof(double)) << 1;
+					ret += static_cast<uint64_t>(sizeof(double)) << 1;
 					break;
 				case VertexAttributeFormats::VEC4_FLOAT:
-					ret += static_cast<VkDeviceSize>(sizeof(float)) << 2;
+					ret += static_cast<uint64_t>(sizeof(float)) << 2;
 					break;
 				case VertexAttributeFormats::VEC4_DOUBLE:
-					ret += static_cast<VkDeviceSize>(sizeof(double)) << 2;
+					ret += static_cast<uint64_t>(sizeof(double)) << 2;
 					break;
 				default:
 					throw std::runtime_error("Utils::GetShaderInputPaddedSize Error: Program was given an erroneous value of the attributes type!");
@@ -138,7 +138,7 @@ namespace VulkanSimplified
 	{
 		std::vector<VkVertexInputAttributeDescription> ret(attributes.size());
 
-		VkDeviceSize totalSize = 0;
+		uint64_t totalSize = 0;
 		uint32_t location = 0;
 
 		for (size_t i = 0; i < attributes.size(); ++i)

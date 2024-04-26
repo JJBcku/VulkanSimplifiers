@@ -4,9 +4,9 @@
 namespace VulkanSimplified
 {
 
-	std::optional<std::pair<VkDeviceSize, size_t>> AutoCleanupMemory::GetMemoryOffset(VkMemoryRequirements suballocationRequirements)
+	std::optional<std::pair<uint64_t, size_t>> AutoCleanupMemory::GetMemoryOffset(VkMemoryRequirements suballocationRequirements)
 	{
-		std::optional<std::pair<VkDeviceSize, size_t>> ret;
+		std::optional<std::pair<uint64_t, size_t>> ret;
 
 		if (suballocationRequirements.size > _memorySize)
 			throw std::runtime_error("AutoCleanupMemory::GetSubmemoryBeggining Error: Program tried to suballocate more memory than is available in entire allocation!");
@@ -20,7 +20,7 @@ namespace VulkanSimplified
 		else
 		{
 			size_t allocPos = _usedMemory.GetFirstUndeleted();
-			VkDeviceSize previousObjectsEnd = 0;
+			uint64_t previousObjectsEnd = 0;
 
 			while (allocPos != listSize)
 			{
@@ -28,7 +28,7 @@ namespace VulkanSimplified
 
 				if (currentObj._memoryOffset > previousObjectsEnd)
 				{
-					VkDeviceSize gapSize = currentObj._memoryOffset - previousObjectsEnd;
+					uint64_t gapSize = currentObj._memoryOffset - previousObjectsEnd;
 
 					if (gapSize >= suballocationRequirements.size)
 					{
@@ -40,7 +40,7 @@ namespace VulkanSimplified
 				allocPos = _usedMemory.GetNextUndeleted(allocPos);
 				previousObjectsEnd = currentObj._memoryOffset + currentObj._objectSize;
 
-				VkDeviceSize aligmentGap = previousObjectsEnd % suballocationRequirements.alignment;
+				uint64_t aligmentGap = previousObjectsEnd % suballocationRequirements.alignment;
 
 				if (aligmentGap != 0)
 					previousObjectsEnd += suballocationRequirements.alignment - aligmentGap;
@@ -50,16 +50,16 @@ namespace VulkanSimplified
 			{
 				auto& lastPos = _usedMemory.GetConstObjectFromPosition(allocPos - 1);
 
-				VkDeviceSize lastObjectsEnd = lastPos._memoryOffset + lastPos._objectSize;
+				uint64_t lastObjectsEnd = lastPos._memoryOffset + lastPos._objectSize;
 
-				VkDeviceSize aligmentGap = lastObjectsEnd % suballocationRequirements.alignment;
+				uint64_t aligmentGap = lastObjectsEnd % suballocationRequirements.alignment;
 
 				if (aligmentGap != 0)
 					lastObjectsEnd += suballocationRequirements.alignment - aligmentGap;
 
 				if (lastObjectsEnd <= _memorySize)
 				{
-					VkDeviceSize memoryLeft = _memorySize - lastObjectsEnd;
+					uint64_t memoryLeft = _memorySize - lastObjectsEnd;
 
 					if (memoryLeft >= suballocationRequirements.size)
 					{
@@ -72,7 +72,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	AutoCleanupMemory::AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) : _device(device), _mapping(nullptr),
+	AutoCleanupMemory::AutoCleanupMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) : _device(device), _mapping(nullptr),
 		_memoryIndex(memoryIndex), _deviceMemory(deviceMemory), _memorySize(memorySize)
 	{
 	}
@@ -81,7 +81,7 @@ namespace VulkanSimplified
 	{
 		if (_deviceMemory != VK_NULL_HANDLE)
 		{
-			vkUnmapMemory(_device, _deviceMemory);
+			//vkUnmapMemory(_device, _deviceMemory);
 			vkFreeMemory(_device, _deviceMemory, nullptr);
 		}
 	}
@@ -199,11 +199,11 @@ namespace VulkanSimplified
 		if (neededSize == 0)
 			throw std::runtime_error("DeviceMemorySimplifierInternal::PickHeapToAddMemoryTo Error: Program was given zero as the needed memory size!");
 
-		std::pair<uint32_t, VkDeviceSize> bestHeap = { std::numeric_limits<uint32_t>::max(), neededSize - 1};
+		std::pair<uint32_t, uint64_t> bestHeap = { std::numeric_limits<uint32_t>::max(), neededSize - 1};
 
 		for (size_t i = 0; i < GetArrayUsedSize(array); ++i)
 		{
-			std::pair<uint32_t, VkDeviceSize> currentHeap;
+			std::pair<uint32_t, uint64_t> currentHeap;
 			currentHeap.first = array[i];
 			currentHeap.second = _memoryProperties.memoryHeaps[array[i]].size - _usedheapMemory[array[i]];
 
@@ -215,6 +215,11 @@ namespace VulkanSimplified
 		}
 
 		return ret;
+	}
+
+	bool DeviceMemorySimplifierInternal::IsArrayEmpty(const std::array<uint32_t, VK_MAX_MEMORY_HEAPS>& array) const
+	{
+		return array[0] >= VK_MAX_MEMORY_HEAPS;
 	}
 
 	std::optional<ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory>> DeviceMemorySimplifierInternal::AddCachedCoherentExternalMemory(uint64_t memorySize)
@@ -486,7 +491,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToSharedCachedCoherentMemory(ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+		uint64_t offset, const char& data, uint64_t dataSize)
 	{
 		auto& memory = _sharedCachedCoherentDeviceMemories.GetObject(memoryID);
 
@@ -494,7 +499,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToSharedCachedIncoherentMemory(ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+		uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		auto& memory = _sharedCachedIncoherentDeviceMemories.GetObject(memoryID);
 
@@ -505,7 +510,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToSharedSharedUncachedMemory(ListObjectID<AutoCleanupSharedUncachedDeviceMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+		uint64_t offset, const char& data, uint64_t dataSize)
 	{
 		auto& memory = _sharedUncachedDeviceMemories.GetObject(memoryID);
 
@@ -513,7 +518,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToHostCachedCoherentMemory(ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+		uint64_t offset, const char& data, uint64_t dataSize)
 	{
 		auto& memory = _accessibleCachedCoherentExternalMemories.GetObject(memoryID);
 
@@ -521,7 +526,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToHostCachedIncoherentMemory(ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+		uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		auto& memory = _accessibleCachedIncoherentExternalMemories.GetObject(memoryID);
 
@@ -532,7 +537,7 @@ namespace VulkanSimplified
 	}
 
 	void DeviceMemorySimplifierInternal::WriteToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, ListObjectID<MemoryObject> objectID,
-		VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+		uint64_t offset, const char& data, uint64_t dataSize)
 	{
 		auto& memory = _accessibleUncachedExternalMemories.GetObject(memoryID);
 
@@ -606,9 +611,9 @@ namespace VulkanSimplified
 		}
 	}
 
-	std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> DeviceMemorySimplifierInternal::AddDeviceLocalMemory(uint64_t memorySize)
+	ListObjectID<AutoCleanupExclusiveDeviceMemory> DeviceMemorySimplifierInternal::AddDeviceLocalMemory(uint64_t memorySize)
 	{
-		std::optional<ListObjectID<AutoCleanupExclusiveDeviceMemory>> ret;
+		ListObjectID<AutoCleanupExclusiveDeviceMemory> ret;
 
 		auto heap = PickHeapToAddMemoryTo(memorySize, _exclusiveDeviceHeaps);
 
@@ -623,6 +628,8 @@ namespace VulkanSimplified
 			if (vkAllocateMemory(_device, &allocInfo, nullptr, &add) == VK_SUCCESS)
 				ret = _exclusiveDeviceMemories.AddObject(AutoCleanupExclusiveDeviceMemory(_device, allocInfo.memoryTypeIndex, add, memorySize));
 		}
+		else
+			throw std::runtime_error("DeviceMemorySimplifierInternal::AddDeviceLocalMemory Error: Program failed to find an appriopriate memory heap!");
 
 		return ret;
 	}
@@ -751,7 +758,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	void DeviceMemorySimplifierInternal::WriteToMemoryObject(MemoryID memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(MemoryID memoryID, ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		switch (memoryID.memoryType)
 		{
@@ -768,8 +775,8 @@ namespace VulkanSimplified
 		}
 	}
 
-	void DeviceMemorySimplifierInternal::WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+		const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		switch (sharedMemoryID.type)
 		{
@@ -788,8 +795,8 @@ namespace VulkanSimplified
 		}
 	}
 
-	void DeviceMemorySimplifierInternal::WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
-		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, uint64_t offset,
+		const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		switch (hostMemoryID.type)
 		{
@@ -808,13 +815,13 @@ namespace VulkanSimplified
 		}
 	}
 
-	AutoCleanupMappedMemory::AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, VkDeviceSize memorySize) :
+	AutoCleanupMappedMemory::AutoCleanupMappedMemory(VkDevice device, uint64_t memoryIndex, VkDeviceMemory deviceMemory, uint64_t memorySize) :
 		AutoCleanupMemory(device, memoryIndex, deviceMemory, memorySize)
 	{
 		vkMapMemory(_device, _deviceMemory, 0, memorySize, 0, &_mapping);
 	}
 
-	void AutoCleanupMappedMemory::WriteToMemoryObject(ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize)
+	void AutoCleanupMappedMemory::WriteToMemoryObject(ListObjectID<MemoryObject> objectID, uint64_t offset, const char& data, uint64_t dataSize)
 	{
 		if (dataSize > _memorySize)
 			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory a data stream bigger than the entire memory!");
@@ -830,12 +837,12 @@ namespace VulkanSimplified
 		if (offset >= object._objectSize)
 			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory object at position past the objects end!");
 
-		VkDeviceSize sizeLeft = object._objectSize - offset;
+		uint64_t sizeLeft = object._objectSize - offset;
 
 		if (dataSize > sizeLeft)
 			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Program tried to write to memory object a data stream bigger than the object memory after offset!");
 
-		VkDeviceSize totaloffset = object._memoryOffset + offset;
+		uint64_t totaloffset = object._memoryOffset + offset;
 
 		if (totaloffset < offset)
 			throw std::runtime_error("AutoCleanupMappedMemory::WriteToMemoryObject Error: Total offset overflowed!");
@@ -1095,6 +1102,51 @@ namespace VulkanSimplified
 		}
 
 		return ret;
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereExclusiveDeviceMemory() const
+	{
+		return !IsArrayEmpty(_exclusiveDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereSharedDeviceMemory() const
+	{
+		return IsThereSharedCachedCoherentMemory() || IsThereSharedCachedIncoherentMemory() || IsThereSharedUncachedMemory();
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereHostDeviceAccessibleMemory() const
+	{
+		return IsThereHostDeviceCachedCoherentAccessibleMemory() || IsThereHostDeviceCachedIncoherentAccessibleMemory() || IsThereHostDeviceUncachedAccessibleMemory();
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereHostDeviceUncachedAccessibleMemory() const
+	{
+		return !IsArrayEmpty(_accessibleUncachedDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereHostDeviceCachedCoherentAccessibleMemory() const
+	{
+		return !IsArrayEmpty(_accessibleCachedCoherentDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereHostDeviceCachedIncoherentAccessibleMemory() const
+	{
+		return !IsArrayEmpty(_accessibleCachedIncoherentDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereSharedUncachedMemory() const
+	{
+		return !IsArrayEmpty(_sharedUnchachedDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereSharedCachedCoherentMemory() const
+	{
+		return !IsArrayEmpty(_sharedCachedCoherentDeviceHeaps);
+	}
+
+	bool DeviceMemorySimplifierInternal::IsThereSharedCachedIncoherentMemory() const
+	{
+		return !IsArrayEmpty(_sharedCachedIncoherentDeviceHeaps);
 	}
 
 }
