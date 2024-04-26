@@ -181,28 +181,28 @@
       <Filter>Header Files\Devices</Filter>
     </ClInclude>
     <ClInclude Include="Include\Common\ListObjectID.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Basics\SwapchainSimplifierEnums.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Basics\SwapchainSimplifierStructs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Common\Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Other\ListObjectTemplate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Other\SortedListTemplate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Other\SortedListObjectTemplate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\SortedListTemplate.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Basics\SwapchainSimplifierEnums.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Basics\SwapchainSimplifierStructs.h">
+      <Filter>Header Files\Basics</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\Utils.h">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h">
+      <Filter>Header Files\Devices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -338,26 +338,26 @@
     <ClCompile Include="Device\DeviceDataBufferSimplifierInternal.cpp">
       <Filter>Source Files\Devices</Filter>
     </ClCompile>
-    <ClCompile Include="Basics\SwapchainSimplifierEnums.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Basics\SwapchainSimplifierStructs.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Device\DeviceDataBufferSimplifier.cpp">
+      <Filter>Source Files\Devices</Filter>
     </ClCompile>
     <ClCompile Include="Other\Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Device\DeviceDataBufferSimplifier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Other\ListObjectTemplate.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Other\SortedListTemplate.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="Other\SortedListObjectTemplate.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\ListObjectTemplate.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Basics\SwapchainSimplifierStructs.cpp">
+      <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="Basics\SwapchainSimplifierEnums.cpp">
+      <Filter>Source Files\Basics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
