@@ -84,21 +84,21 @@ namespace VulkanSimplified
 
 	union SharedDeviceMemoryID
 	{
-		MemoryPropertiesIDType _type = MemoryPropertiesIDType::NONE;
+		MemoryPropertiesIDType type = MemoryPropertiesIDType::NONE;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupSharedUncachedDeviceMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupSharedUncachedDeviceMemory> ID;
 		} _unchachedID;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupSharedCachedCoherentDeviceMemory> ID;
 		} _cachedCoherentID;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupSharedCachedIncoherentDeviceMemory> ID;
 		} _cachedIncoherentID;
 	};
 
@@ -108,21 +108,21 @@ namespace VulkanSimplified
 
 	union AccessibleHostMemoryID
 	{
-		MemoryPropertiesIDType _type = MemoryPropertiesIDType::NONE;
+		MemoryPropertiesIDType type = MemoryPropertiesIDType::NONE;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleUncachedHostMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupAccesibleUncachedHostMemory> ID;
 		} _unchachedID;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupAccesibleCachedCoherentHostMemory> ID;
 		} _cachedCoherentID;
 		struct
 		{
-			MemoryPropertiesIDType _type;
-			ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> _ID;
+			MemoryPropertiesIDType type;
+			ListObjectID<AutoCleanupAccesibleCachedIncoherentHostMemory> ID;
 		} _cachedIncoherentID;
 	};
 
@@ -130,44 +130,44 @@ namespace VulkanSimplified
 
 	union MemoryID
 	{
-		MemoryType _memoryType;
+		MemoryType memoryType;
 		struct
 		{
-			MemoryType _memoryType;
-			SharedDeviceMemoryID _sharedID;
+			MemoryType memoryType;
+			SharedDeviceMemoryID ID;
 		} _sharedID;
 		struct
 		{
-			MemoryType _memoryType;
-			AccessibleHostMemoryID _hostID;
+			MemoryType memoryType;
+			AccessibleHostMemoryID ID;
 		} _hostID;
 		struct
 		{
-			MemoryType _memoryType;
-			ListObjectID<AutoCleanupExclusiveDeviceMemory> _exclusiveID;
+			MemoryType memoryType;
+			ListObjectID<AutoCleanupExclusiveDeviceMemory> ID;
 		} _exclusiveID;
 
 		MemoryID()
 		{
-			memset(&_memoryType, 0, sizeof(_memoryType));
+			memset(&memoryType, 0, sizeof(memoryType));
 		}
 
 		MemoryID(SharedDeviceMemoryID sharedID)
 		{
-			_sharedID._memoryType = MemoryType::SHARED;
-			_sharedID._sharedID = sharedID;
+			_sharedID.memoryType = MemoryType::SHARED;
+			_sharedID.ID = sharedID;
 		}
 
 		MemoryID(AccessibleHostMemoryID hostID)
 		{
-			_hostID._memoryType = MemoryType::HOST;
-			_hostID._hostID = hostID;
+			_hostID.memoryType = MemoryType::HOST;
+			_hostID.ID = hostID;
 		}
 
 		MemoryID(ListObjectID<AutoCleanupExclusiveDeviceMemory> exclusiveID)
 		{
-			_exclusiveID._memoryType = MemoryType::EXCLUSIVE;
-			_exclusiveID._exclusiveID = exclusiveID;
+			_exclusiveID.memoryType = MemoryType::EXCLUSIVE;
+			_exclusiveID.ID = exclusiveID;
 		}
 	};
 }

@@ -9,28 +9,27 @@
 namespace VulkanSimplified
 {
 
-	AutoCleanupShaderInputBuffer::AutoCleanupShaderInputBuffer(VkDevice device, VkBuffer dataBuffer) : _device(device), _ppadding(nullptr),
-		_dataBuffer(dataBuffer)
+	AutoCleanupDataBuffer::AutoCleanupDataBuffer(VkDevice device, VkBuffer dataBuffer) : _device(device), _ppadding(nullptr), _dataBuffer(dataBuffer)
 	{
 		vkGetBufferMemoryRequirements(device, dataBuffer, &_memReq);
 	}
 
-	AutoCleanupShaderInputBuffer::~AutoCleanupShaderInputBuffer()
+	AutoCleanupDataBuffer::~AutoCleanupDataBuffer()
 	{
 		if (_dataBuffer != VK_NULL_HANDLE)
 			vkDestroyBuffer(_device, _dataBuffer, nullptr);
 	}
 
-	AutoCleanupShaderInputBuffer::AutoCleanupShaderInputBuffer(AutoCleanupShaderInputBuffer&& other) noexcept : _device(other._device), _ppadding(nullptr),
+	AutoCleanupDataBuffer::AutoCleanupDataBuffer(AutoCleanupDataBuffer&& other) noexcept : _device(other._device), _ppadding(nullptr),
 		_dataBuffer(other._dataBuffer), _memReq(other._memReq), _boundID(other._boundID)
 	{
 		other._device = VK_NULL_HANDLE;
 		other._dataBuffer = VK_NULL_HANDLE;
 		other._memReq = VkMemoryRequirements();
-		other._boundID = std::optional<std::pair<MemoryID, MemoryObject>>();
+		other._boundID.reset();
 	}
 
-	AutoCleanupShaderInputBuffer& AutoCleanupShaderInputBuffer::operator=(AutoCleanupShaderInputBuffer&& other) noexcept
+	AutoCleanupDataBuffer& AutoCleanupDataBuffer::operator=(AutoCleanupDataBuffer&& other) noexcept
 	{
 		_device = other._device;
 		_ppadding = nullptr;
@@ -41,19 +40,48 @@ namespace VulkanSimplified
 		other._device = VK_NULL_HANDLE;
 		other._dataBuffer = VK_NULL_HANDLE;
 		other._memReq = VkMemoryRequirements();
-		other._boundID = std::optional<std::pair<MemoryID, MemoryObject>>();
+		other._boundID.reset();
 
 		return *this;
 	}
 
-	VkBuffer AutoCleanupShaderInputBuffer::GetBuffer() const
+	VkBuffer AutoCleanupDataBuffer::GetBuffer() const
 	{
 		return _dataBuffer;
 	}
 
-	VkMemoryRequirements AutoCleanupShaderInputBuffer::GetRequirements() const
+	VkMemoryRequirements AutoCleanupDataBuffer::GetRequirements() const
 	{
 		return _memReq;
+	}
+
+	std::optional<std::pair<MemoryID, ListObjectID<MemoryObject>>> AutoCleanupDataBuffer::GetBuffersBindingID() const
+	{
+		return _boundID;
+	}
+
+	bool AutoCleanupDataBuffer::IsBufferBound() const
+	{
+		return _boundID.has_value();
+	}
+
+	void AutoCleanupDataBuffer::BindBuffer(DeviceMemorySimplifierInternal& memoryData, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto suballocationID = memoryData.BindBuffer(memoryID, _dataBuffer, _memReq, addOnReserve);
+
+		_boundID = { memoryID, suballocationID };
+	}
+
+	bool AutoCleanupDataBuffer::TryToBindBuffer(DeviceMemorySimplifierInternal& memoryData, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto suballocationID = memoryData.TryToBindBuffer(memoryID, _dataBuffer, _memReq, addOnReserve);
+
+		if (suballocationID.has_value())
+		{
+			_boundID = { memoryID, suballocationID.value() };
+		}
+
+		return suballocationID.has_value();
 	}
 
 	DeviceDataBufferSimplifierInternal::DeviceDataBufferSimplifierInternal(VkDevice device, DeviceMemorySimplifierInternal& memorySimplifier, size_t reserve) : _device(device),
@@ -86,18 +114,18 @@ namespace VulkanSimplified
 		return _shaderInputs.AddObject(AutoCleanupShaderInputBuffer(_device, add));
 	}
 
-	ListObjectID<MemoryObject> DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
+	void DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
-		auto& shaderInput = _shaderInputs.GetConstObject(_shaderInputBuffer);
+		auto& shaderInput = _shaderInputs.GetObject(_shaderInputBuffer);
 
-		return _memorySimplifier.BindBuffer(memoryID, shaderInput.GetBuffer(), shaderInput.GetRequirements(), addOnReserve);
+		shaderInput.BindBuffer(_memorySimplifier, memoryID, addOnReserve);
 	}
 
-	std::optional<ListObjectID<MemoryObject>> DeviceDataBufferSimplifierInternal::TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
+	bool DeviceDataBufferSimplifierInternal::TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
-		auto& shaderInput = _shaderInputs.GetConstObject(_shaderInputBuffer);
+		auto& shaderInput = _shaderInputs.GetObject(_shaderInputBuffer);
 
-		return _memorySimplifier.TryToBindBuffer(memoryID, shaderInput.GetBuffer(), shaderInput.GetRequirements(), addOnReserve);
+		return shaderInput.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
 	}
 
 	VkBuffer DeviceDataBufferSimplifierInternal::GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const
@@ -105,6 +133,23 @@ namespace VulkanSimplified
 		auto& buffer = _shaderInputs.GetConstObject(bufferID);
 
 		return buffer.GetBuffer();
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		auto& buffer = _shaderInputs.GetConstObject(bufferID);
+
+		auto binding = buffer.GetBuffersBindingID();
+
+		if (binding.has_value())
+		{
+			auto& memory = binding.value().first;
+			auto& suballocation = binding.value().second;
+			
+			_memorySimplifier.WriteToMemoryObject(memory, suballocation, offset, data, dataSize, flushOnWrite);
+		}
+		else
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToShaderInputBuffer Error: Program tried to write data to an unbound buffer!");
 	}
 
 }

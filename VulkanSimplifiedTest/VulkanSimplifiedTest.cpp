@@ -210,11 +210,15 @@ int main()
         auto commandBufferList = deviceDataList.GetDeviceCommandBufferSimplifier();
 
         auto commandPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::GRAPHICS, true, true);
+        auto transferPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::TRANSFER, true, true);
 
         uint32_t frameAmount = swapchain.GetSwapchainImagesAmount();
 
         std::vector<ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
         std::vector<VulkanSimplified::DeviceCommandRecorder> commandRecorderList;
+
+        auto transferCommandRecorderID = commandBufferList.AddPrimaryCommandBuffer(transferPool);
+        auto transferCommandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(transferCommandRecorderID);
 
         commandBufferIDList.reserve(frameAmount);
         commandRecorderList.reserve(frameAmount);
@@ -241,10 +245,8 @@ int main()
 
         VulkanSimplified::SharedDeviceMemoryID vectorMemory = deviceMemory.AddSharedMemory(0x10000, true, false);
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
-        std::vector<ListObjectID<VulkanSimplified::MemoryObject>> vectorInputBufferSuballocations;
 
         vectorInputBuffers.reserve(frameAmount);
-        vectorInputBufferSuballocations.reserve(frameAmount);
 
         auto dataBuffersSimplifier = deviceDataList.GetDeviceDataBufferSimplifier();
 
@@ -256,8 +258,8 @@ int main()
 
             vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 8, false));
 
-            vectorInputBufferSuballocations.push_back(dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0));
-            deviceMemory.WriteToMemoryObject(vectorMemory, vectorInputBufferSuballocations.back(), 0, *reinterpret_cast<char*>(_vertexes.data()), static_cast<VkDeviceSize>(_vertexes.size()) * sizeof(_vertexes[0]));
+            dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0);
+            dataBuffersSimplifier.WriteToShaderInputBuffer(vectorInputBuffers.back(), 0, *reinterpret_cast<char*>(_vertexes.data()), static_cast<VkDeviceSize>(_vertexes.size()) * sizeof(_vertexes[0]));
         }
 
         uint32_t imageAmount = 0;

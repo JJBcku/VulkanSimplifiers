@@ -2,32 +2,59 @@
 #include "../Other/VulkanSimplifierListTemplate.h"
 #include "../Include/Device/DeviceSimplifierSharedStructs.h"
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
-#include "DeviceMemorySimplifierInternal.h"
 
 namespace VulkanSimplified
 {
 	enum class VertexAttributeFormats : uint64_t;
 
-	class AutoCleanupShaderInputBuffer
+	struct MemoryObject;
+	class DeviceMemorySimplifierInternal;
+
+	class AutoCleanupDataBuffer
 	{
+	protected:
 		VkDevice _device;
 		void* _ppadding;
 		VkBuffer _dataBuffer;
 		VkMemoryRequirements _memReq;
-		std::optional<std::pair<MemoryID, MemoryObject>> _boundID;
+		std::optional<std::pair<MemoryID, ListObjectID<MemoryObject>>> _boundID;
 
 	public:
-		AutoCleanupShaderInputBuffer(VkDevice device, VkBuffer dataBuffer);
-		~AutoCleanupShaderInputBuffer();
+		AutoCleanupDataBuffer(VkDevice device, VkBuffer dataBuffer);
+		~AutoCleanupDataBuffer();
 
-		AutoCleanupShaderInputBuffer(const AutoCleanupShaderInputBuffer&) noexcept = delete;
-		AutoCleanupShaderInputBuffer(AutoCleanupShaderInputBuffer&& other) noexcept;
+		AutoCleanupDataBuffer(const AutoCleanupDataBuffer&) noexcept = delete;
+		AutoCleanupDataBuffer(AutoCleanupDataBuffer&& other) noexcept;
 
-		AutoCleanupShaderInputBuffer& operator=(const AutoCleanupShaderInputBuffer&) noexcept = delete;
-		AutoCleanupShaderInputBuffer& operator=(AutoCleanupShaderInputBuffer&& other) noexcept;
+		AutoCleanupDataBuffer& operator=(const AutoCleanupDataBuffer&) noexcept = delete;
+		AutoCleanupDataBuffer& operator=(AutoCleanupDataBuffer&& other) noexcept;
 
 		VkBuffer GetBuffer() const;
 		VkMemoryRequirements GetRequirements() const;
+
+		std::optional<std::pair<MemoryID, ListObjectID<MemoryObject>>> GetBuffersBindingID() const;
+		bool IsBufferBound() const;
+
+		void BindBuffer(DeviceMemorySimplifierInternal& memoryData, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindBuffer(DeviceMemorySimplifierInternal& memoryData, MemoryID memoryID, size_t addOnReserve);
+	};
+
+	class AutoCleanupShaderInputBuffer : public AutoCleanupDataBuffer
+	{
+	public:
+		AutoCleanupShaderInputBuffer(VkDevice device, VkBuffer dataBuffer) : AutoCleanupDataBuffer(device, dataBuffer) {}
+		~AutoCleanupShaderInputBuffer() {}
+
+		AutoCleanupShaderInputBuffer(const AutoCleanupShaderInputBuffer&) noexcept = delete;
+		AutoCleanupShaderInputBuffer(AutoCleanupShaderInputBuffer&& other) noexcept : AutoCleanupDataBuffer(std::move(other)) {}
+
+		AutoCleanupShaderInputBuffer& operator=(const AutoCleanupShaderInputBuffer& other) noexcept = delete;
+		AutoCleanupShaderInputBuffer& operator=(AutoCleanupShaderInputBuffer&& other) noexcept
+		{
+			*static_cast<AutoCleanupDataBuffer*>(this) = std::move(*static_cast<AutoCleanupDataBuffer*>(&other));
+
+			return *this;
+		}
 	};
 
 	class DeviceMemorySimplifierInternal;
@@ -49,9 +76,11 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupShaderInputBuffer> AddShaderInputBuffer(const std::vector<VertexAttributeFormats>& vertexAttributes, uint32_t maxVertexAmount, bool enableTransferTo);
 
-		ListObjectID<MemoryObject> BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
-		std::optional<ListObjectID<MemoryObject>> TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
+		void BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
 
 		VkBuffer GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const;
+
+		void WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
 	};
 }

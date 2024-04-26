@@ -455,16 +455,16 @@ namespace VulkanSimplified
 	{
 		std::optional<ListObjectID<MemoryObject>> ret;
 
-		switch (memoryID._type)
+		switch (memoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			ret = TryToBindBufferToSharedUncachedMemory(memoryID._unchachedID._ID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToSharedUncachedMemory(memoryID._unchachedID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			ret = TryToBindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			ret = TryToBindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:
@@ -635,8 +635,8 @@ namespace VulkanSimplified
 
 		if (cachedCoherent.has_value())
 		{
-			ret._cachedCoherentID._type = MemoryPropertiesIDType::CACHED_COHERENT;
-			ret._cachedCoherentID._ID = cachedCoherent.value();
+			ret._cachedCoherentID.type = MemoryPropertiesIDType::CACHED_COHERENT;
+			ret._cachedCoherentID.ID = cachedCoherent.value();
 		}
 		else
 		{
@@ -646,8 +646,8 @@ namespace VulkanSimplified
 
 				if (uncached.has_value())
 				{
-					ret._unchachedID._type = MemoryPropertiesIDType::UNCACHED;
-					ret._unchachedID._ID = uncached.value();
+					ret._unchachedID.type = MemoryPropertiesIDType::UNCACHED;
+					ret._unchachedID.ID = uncached.value();
 					return ret;
 				}
 			}
@@ -658,8 +658,8 @@ namespace VulkanSimplified
 
 				if (incoherent.has_value())
 				{
-					ret._cachedIncoherentID._type = MemoryPropertiesIDType::CACHED_INCOHERENT;
-					ret._cachedIncoherentID._ID = incoherent.value();
+					ret._cachedIncoherentID.type = MemoryPropertiesIDType::CACHED_INCOHERENT;
+					ret._cachedIncoherentID.ID = incoherent.value();
 				}
 			}
 		}
@@ -675,8 +675,8 @@ namespace VulkanSimplified
 
 		if (cachedCoherent.has_value())
 		{
-			ret._cachedCoherentID._type = MemoryPropertiesIDType::CACHED_COHERENT;
-			ret._cachedCoherentID._ID = cachedCoherent.value();
+			ret._cachedCoherentID.type = MemoryPropertiesIDType::CACHED_COHERENT;
+			ret._cachedCoherentID.ID = cachedCoherent.value();
 		}
 		else
 		{
@@ -686,8 +686,8 @@ namespace VulkanSimplified
 
 				if (uncached.has_value())
 				{
-					ret._unchachedID._type = MemoryPropertiesIDType::UNCACHED;
-					ret._unchachedID._ID = uncached.value();
+					ret._unchachedID.type = MemoryPropertiesIDType::UNCACHED;
+					ret._unchachedID.ID = uncached.value();
 					return ret;
 				}
 			}
@@ -698,8 +698,8 @@ namespace VulkanSimplified
 
 				if (incoherent.has_value())
 				{
-					ret._cachedIncoherentID._type = MemoryPropertiesIDType::CACHED_INCOHERENT;
-					ret._cachedIncoherentID._ID = incoherent.value();
+					ret._cachedIncoherentID.type = MemoryPropertiesIDType::CACHED_INCOHERENT;
+					ret._cachedIncoherentID.ID = incoherent.value();
 				}
 			}
 		}
@@ -711,16 +711,16 @@ namespace VulkanSimplified
 	{
 		ListObjectID<MemoryObject> ret;
 
-		switch (memoryID._memoryType)
+		switch (memoryID.memoryType)
 		{
 		case MemoryType::EXCLUSIVE:
-			ret = BindBufferToExclusiveMemory(memoryID._exclusiveID._exclusiveID, buffer, memReq, addOnReserve);
+			ret = BindBufferToExclusiveMemory(memoryID._exclusiveID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryType::HOST:
-			ret = BindBufferToHostMemory(memoryID._hostID._hostID, buffer, memReq, addOnReserve);
+			ret = BindBufferToHostMemory(memoryID._hostID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryType::SHARED:
-			ret = BindBufferToSharedMemory(memoryID._sharedID._sharedID, buffer, memReq, addOnReserve);
+			ret = BindBufferToSharedMemory(memoryID._sharedID.ID, buffer, memReq, addOnReserve);
 			break;
 		default:
 			throw std::runtime_error("DeviceMemorySimplifierInternal::BindBuffer Error: Program was given an erroneous memory ID type value!");
@@ -733,16 +733,16 @@ namespace VulkanSimplified
 	{
 		std::optional<ListObjectID<MemoryObject>> ret;
 
-		switch (memoryID._memoryType)
+		switch (memoryID.memoryType)
 		{
 		case MemoryType::EXCLUSIVE:
-			ret = TryToBindBufferToExclusiveMemory(memoryID._exclusiveID._exclusiveID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToExclusiveMemory(memoryID._exclusiveID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryType::HOST:
-			ret = TryToBindBufferToHostMemory(memoryID._hostID._hostID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToHostMemory(memoryID._hostID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryType::SHARED:
-			ret = TryToBindBufferToSharedMemory(memoryID._sharedID._sharedID, buffer, memReq, addOnReserve);
+			ret = TryToBindBufferToSharedMemory(memoryID._sharedID.ID, buffer, memReq, addOnReserve);
 			break;
 		default:
 			throw std::runtime_error("DeviceMemorySimplifierInternal::TryToBindBuffer Error: Program was given an erroneous memory ID type value!");
@@ -751,19 +751,36 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	void DeviceMemorySimplifierInternal::WriteToMemoryObject(MemoryID memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite)
+	{
+		switch (memoryID.memoryType)
+		{
+		case MemoryType::EXCLUSIVE:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::WriteToMemoryObject Error: Program tried to write data to the gpu's exclusive access memory!");
+		case MemoryType::HOST:
+			WriteToMemoryObject(memoryID._hostID.ID, objectID, offset, data, dataSize, flushOnWrite);
+			break;
+		case MemoryType::SHARED:
+			WriteToMemoryObject(memoryID._sharedID.ID, objectID, offset, data, dataSize, flushOnWrite);
+			break;
+		default:
+			throw std::runtime_error("DeviceMemorySimplifierInternal::WriteToMemoryObject Error: Program was given an erroneous memory ID type value!");
+		}
+	}
+
 	void DeviceMemorySimplifierInternal::WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
 		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
 	{
-		switch (sharedMemoryID._type)
+		switch (sharedMemoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			WriteToSharedSharedUncachedMemory(sharedMemoryID._unchachedID._ID, objectID, offset, data, dataSize);
+			WriteToSharedSharedUncachedMemory(sharedMemoryID._unchachedID.ID, objectID, offset, data, dataSize);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			WriteToSharedCachedIncoherentMemory(sharedMemoryID._cachedIncoherentID._ID, objectID, offset, data, dataSize, flushOnWrite);
+			WriteToSharedCachedIncoherentMemory(sharedMemoryID._cachedIncoherentID.ID, objectID, offset, data, dataSize, flushOnWrite);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			WriteToSharedCachedCoherentMemory(sharedMemoryID._cachedCoherentID._ID, objectID, offset, data, dataSize);
+			WriteToSharedCachedCoherentMemory(sharedMemoryID._cachedCoherentID.ID, objectID, offset, data, dataSize);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:
@@ -774,16 +791,16 @@ namespace VulkanSimplified
 	void DeviceMemorySimplifierInternal::WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
 		const char& data, VkDeviceSize dataSize, bool flushOnWrite)
 	{
-		switch (hostMemoryID._type)
+		switch (hostMemoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			WriteToHostUncachedMemory(hostMemoryID._unchachedID._ID, objectID, offset, data, dataSize);
+			WriteToHostUncachedMemory(hostMemoryID._unchachedID.ID, objectID, offset, data, dataSize);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			WriteToHostCachedIncoherentMemory(hostMemoryID._cachedIncoherentID._ID, objectID, offset, data, dataSize, flushOnWrite);
+			WriteToHostCachedIncoherentMemory(hostMemoryID._cachedIncoherentID.ID, objectID, offset, data, dataSize, flushOnWrite);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			WriteToHostCachedCoherentMemory(hostMemoryID._cachedCoherentID._ID, objectID, offset, data, dataSize);
+			WriteToHostCachedCoherentMemory(hostMemoryID._cachedCoherentID.ID, objectID, offset, data, dataSize);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:
@@ -909,16 +926,16 @@ namespace VulkanSimplified
 	{
 		ListObjectID<MemoryObject> ret;
 
-		switch (memoryID._type)
+		switch (memoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			ret = BindBufferToHostUncachedMemory(memoryID._unchachedID._ID, buffer, req, addOnReserve);
+			ret = BindBufferToHostUncachedMemory(memoryID._unchachedID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			ret = BindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, req, addOnReserve);
+			ret = BindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			ret = BindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, req, addOnReserve);
+			ret = BindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:
@@ -986,16 +1003,16 @@ namespace VulkanSimplified
 	{
 		ListObjectID<MemoryObject> ret;
 
-		switch (memoryID._type)
+		switch (memoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			ret = BindBufferToSharedUncachedMemory(memoryID._unchachedID._ID, buffer, memReq, addOnReserve);
+			ret = BindBufferToSharedUncachedMemory(memoryID._unchachedID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			ret = BindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, memReq, addOnReserve);
+			ret = BindBufferToSharedCachedIncoherentMemory(memoryID._cachedIncoherentID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			ret = BindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, memReq, addOnReserve);
+			ret = BindBufferToSharedCachedCoherentMemory(memoryID._cachedCoherentID.ID, buffer, memReq, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:
@@ -1061,16 +1078,16 @@ namespace VulkanSimplified
 	{
 		std::optional<ListObjectID<MemoryObject>> ret;
 
-		switch (memoryID._type)
+		switch (memoryID.type)
 		{
 		case MemoryPropertiesIDType::UNCACHED:
-			ret = TryToBindBufferToHostUncachedMemory(memoryID._unchachedID._ID, buffer, req, addOnReserve);
+			ret = TryToBindBufferToHostUncachedMemory(memoryID._unchachedID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_INCOHERENT:
-			ret = TryToBindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID._ID, buffer, req, addOnReserve);
+			ret = TryToBindBufferToHostCachedIncoherentMemory(memoryID._cachedIncoherentID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::CACHED_COHERENT:
-			ret = TryToBindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID._ID, buffer, req, addOnReserve);
+			ret = TryToBindBufferToHostCachedCoherentMemory(memoryID._cachedCoherentID.ID, buffer, req, addOnReserve);
 			break;
 		case MemoryPropertiesIDType::NONE:
 		default:

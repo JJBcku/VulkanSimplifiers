@@ -304,6 +304,9 @@ namespace VulkanSimplified
 		void WriteToHostUncachedMemory(ListObjectID<AutoCleanupAccesibleUncachedHostMemory> memoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset,
 			const char& data, VkDeviceSize dataSize);
 
+		void WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
+		void WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
+
 	public:
 		DeviceMemorySimplifierInternal(VkPhysicalDevice physicalDevice, VkDevice device);
 
@@ -320,7 +323,6 @@ namespace VulkanSimplified
 		ListObjectID<MemoryObject> BindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 		std::optional<ListObjectID<MemoryObject>> TryToBindBuffer(MemoryID memoryID, VkBuffer buffer, VkMemoryRequirements memReq, size_t addOnReserve);
 
-		void WriteToMemoryObject(SharedDeviceMemoryID sharedMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
-		void WriteToMemoryObject(AccessibleHostMemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
+		void WriteToMemoryObject(MemoryID hostMemoryID, ListObjectID<MemoryObject> objectID, VkDeviceSize offset, const char& data, VkDeviceSize dataSize, bool flushOnWrite);
 	};
 }
