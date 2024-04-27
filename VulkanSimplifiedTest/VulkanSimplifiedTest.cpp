@@ -45,10 +45,13 @@ struct Vertex
 };
 
 std::vector<Vertex> _vertexes = {
-    {{ 1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, -0.5f}},
-    {{ 0.0f, 1.0f, 0.0f, 1.0f}, {0.5f, 0.5f}},
-    {{ 0.0f, 0.0f, 1.0f, 1.0f}, {-0.5f, 0.5f}}
+    {{ 1.0f, 0.0f, 0.0f, 1.0f}, {-0.5f, -0.5f}},
+    {{ 0.0f, 1.0f, 0.0f, 1.0f}, {0.5f, -0.5f}},
+    {{ 0.0f, 0.0f, 1.0f, 1.0f}, {0.5f, 0.5f}},
+    {{ 1.0f, 1.0f, 1.0f, 1.0f}, {-0.5f, 0.5f}}
 };
+
+std::vector<uint16_t> _index = { 0, 1, 2, 2, 3, 0};
 
 int main()
 {
@@ -253,6 +256,7 @@ int main()
         auto dataBuffersSimplifier = deviceDataList.GetDeviceDataBufferSimplifier();
 
         uint64_t vertexDataSize = static_cast<uint64_t>(_vertexes.size()) * sizeof(_vertexes[0]);
+        uint64_t indexDataSize = static_cast<uint64_t>(_index.size()) * sizeof(_index[0]);
 
         if (deviceMemory.IsThereExclusiveDeviceMemory() && deviceMemory.IsThereHostDeviceAccessibleMemory())
         {
@@ -262,6 +266,7 @@ int main()
             stagingBuffer = dataBuffersSimplifier.AddStagingBuffer(0x10000);
             dataBuffersSimplifier.BindStagingBuffer(stagingBuffer, stagingMemory._hostID.ID, 0);
             dataBuffersSimplifier.WriteToStagingBuffer(stagingBuffer, 0, *reinterpret_cast<char*>(_vertexes.data()), vertexDataSize, true);
+            dataBuffersSimplifier.WriteToStagingBuffer(stagingBuffer, vertexDataSize, *reinterpret_cast<char*>(_index.data()), indexDataSize, true);
         }
         else if (deviceMemory.IsThereSharedDeviceMemory())
         {
@@ -277,6 +282,7 @@ int main()
         }
 
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupSmallIndexBuffer>> indexInputBuffers;
 
         vectorInputBuffers.reserve(frameAmount);
 
@@ -292,17 +298,21 @@ int main()
             renderFinishedSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
             inFlightFencesList.push_back(deviceSynchronization.AddFence(true));
 
-            vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 8, stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST));
+            vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 4, stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST));
+            indexInputBuffers.push_back(dataBuffersSimplifier.AddSmallIndexBuffer(8, stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST));
 
             dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0);
+            dataBuffersSimplifier.BindSmallIndexBuffer(indexInputBuffers.back(), vectorMemory, 0);
             
             if (stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST)
             {
                 transferCommandRecorder.CopyFromStagingBufferToShaderInputBuffer(stagingBuffer, vectorInputBuffers.back(), { {0, 0, vertexDataSize} });
+                transferCommandRecorder.CopyFromStagingBufferToSmallIndexBuffer(stagingBuffer, indexInputBuffers.back(), { {vertexDataSize, 0, indexDataSize} });
             }
             else
             {
-                dataBuffersSimplifier.WriteToShaderInputBuffer(vectorInputBuffers.back(), 0, *reinterpret_cast<char*>(_vertexes.data()), vertexDataSize);
+                dataBuffersSimplifier.WriteToShaderInputBuffer(vectorInputBuffers.back(), 0, *reinterpret_cast<char*>(_vertexes.data()), vertexDataSize, true);
+                dataBuffersSimplifier.WriteToSmallIndexBuffer(indexInputBuffers.back(), 0, *_index.data(), _index.size(), true);
             }
         }
 
@@ -393,7 +403,8 @@ int main()
             
             commandRecorderList[currentImage].BindGraphicsPipeline(pipelineList[pipelineID]);
             commandRecorderList[currentImage].BindVertexInput({ {vectorInputBuffers[currentSynchro], 0} }, 0);
-            commandRecorderList[currentImage].Draw(3, 1, 0, 0);
+            commandRecorderList[currentImage].BindSmallIndexInput(indexInputBuffers[currentSynchro], 0);
+            commandRecorderList[currentImage].DrawIndexed(static_cast<uint32_t>(_index.size()), 1, 0, 0, 0);
 
             commandRecorderList[currentImage].EndRenderPass();
 

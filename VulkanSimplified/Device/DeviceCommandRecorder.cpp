@@ -38,6 +38,16 @@ namespace VulkanSimplified
 		_internal.BindVertexInput(vertexInputs, firstBinding);
 	}
 
+	void DeviceCommandRecorder::BindSmallIndexInput(ListObjectID<AutoCleanupSmallIndexBuffer> indexInputs, uint64_t indicesSkipped)
+	{
+		_internal.BindSmallIndexInput(indexInputs, indicesSkipped);
+	}
+
+	void DeviceCommandRecorder::BindBigIndexInput(ListObjectID<AutoCleanupBigIndexBuffer> indexInputs, uint64_t indicesSkipped)
+	{
+		_internal.BindBigIndexInput(indexInputs, indicesSkipped);
+	}
+
 	void DeviceCommandRecorder::BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID)
 	{
 		_internal.BindGraphicsPipeline(graphicsPipelineID);
@@ -46,6 +56,11 @@ namespace VulkanSimplified
 	void DeviceCommandRecorder::Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset)
 	{
 		_internal.Draw(vertexCount, instanceCount, vertexOffset, instanceOffset);
+	}
+
+	void DeviceCommandRecorder::DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t instanceOffset)
+	{
+		_internal.DrawIndexed(indexCount, instanceCount, firstIndex, vertexOffset, instanceOffset);
 	}
 
 	void DeviceCommandRecorder::BeginRenderPass(ListObjectID<AutoCleanupRenderPass> renderPassID, ListObjectID<AutoCleanupSwapchainFramebuffer> framebuffer, uint32_t frameID,
@@ -63,6 +78,18 @@ namespace VulkanSimplified
 		ListObjectID<AutoCleanupShaderInputBuffer> shaderInputBufferID, const std::vector<BufferCopyOrder>& copyOrders)
 	{
 		_internal.CopyFromStagingBufferToShaderInputBuffer(stagingBufferID, shaderInputBufferID, copyOrders);
+	}
+
+	void DeviceCommandRecorder::CopyFromStagingBufferToSmallIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupSmallIndexBuffer> indexBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		_internal.CopyFromStagingBufferToSmallIndexBuffer(stagingBufferID, indexBufferID, copyOrders);
+	}
+
+	void DeviceCommandRecorder::CopyFromStagingBufferToBigIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		_internal.CopyFromStagingBufferToBigIndexBuffer(stagingBufferID, indexBufferID, copyOrders);
 	}
 
 }

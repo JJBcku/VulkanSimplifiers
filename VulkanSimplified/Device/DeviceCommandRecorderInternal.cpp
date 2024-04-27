@@ -10,6 +10,24 @@
 namespace VulkanSimplified
 {
 
+	void DeviceCommandRecorderInternal::CopyFromBufferToBuffer(VkBuffer sourceBuffer, VkBuffer destinationBuffer, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		std::vector<VkBufferCopy> copyList;
+		copyList.reserve(copyOrders.size());
+
+		for (auto& order : copyOrders)
+		{
+			VkBufferCopy add{};
+			add.srcOffset = order.sourceOffset;
+			add.dstOffset = order.destinationOffset;
+			add.size = order.dataSize;
+
+			copyList.push_back(add);
+		}
+
+		vkCmdCopyBuffer(_commandBuffer, sourceBuffer, destinationBuffer, static_cast<uint32_t>(copyList.size()), copyList.data());
+	}
+
 	DeviceCommandRecorderInternal::DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData,
 		const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& dataBuffersList) :
 		_imagesData(imagesData), _pipelineData(pipelineData), _sharedPipelineData(sharedPipelineData), _dataBuffersList(dataBuffersList), _ppadding(nullptr),
@@ -85,6 +103,24 @@ namespace VulkanSimplified
 		vkCmdBindVertexBuffers(_commandBuffer, firstBinding, static_cast<uint32_t>(vertexInputs.size()), buffers.data(), offsets.data());
 	}
 
+	void DeviceCommandRecorderInternal::BindSmallIndexInput(ListObjectID<AutoCleanupSmallIndexBuffer> indexInputs, uint64_t indicesSkipped)
+	{
+		auto buffer = _dataBuffersList.GetSmallIndexBuffer(indexInputs);
+
+		VkDeviceSize offset = indicesSkipped * sizeof(uint16_t);
+
+		vkCmdBindIndexBuffer(_commandBuffer, buffer, offset, VK_INDEX_TYPE_UINT16);
+	}
+
+	void DeviceCommandRecorderInternal::BindBigIndexInput(ListObjectID<AutoCleanupBigIndexBuffer> indexInputs, uint64_t indicesSkipped)
+	{
+		auto buffer = _dataBuffersList.GetBigIndexBuffer(indexInputs);
+
+		VkDeviceSize offset = indicesSkipped * sizeof(uint32_t);
+
+		vkCmdBindIndexBuffer(_commandBuffer, buffer, offset, VK_INDEX_TYPE_UINT32);
+	}
+
 	void DeviceCommandRecorderInternal::BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID)
 	{
 		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineData.GetGraphicsPipeline(graphicsPipelineID));
@@ -93,6 +129,11 @@ namespace VulkanSimplified
 	void DeviceCommandRecorderInternal::Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset)
 	{
 		vkCmdDraw(_commandBuffer, vertexCount, instanceCount, vertexOffset, instanceOffset);
+	}
+
+	void DeviceCommandRecorderInternal::DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t instanceOffset)
+	{
+		vkCmdDrawIndexed(_commandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, instanceOffset);
 	}
 
 	void DeviceCommandRecorderInternal::BeginRenderPass(ListObjectID<AutoCleanupRenderPass> renderPassID, ListObjectID<AutoCleanupSwapchainFramebuffer> framebuffer, uint32_t frameID,
@@ -133,20 +174,30 @@ namespace VulkanSimplified
 		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
 		auto destinationBuffer = _dataBuffersList.GetShaderInputBuffer(destinationBufferID);
 
-		std::vector<VkBufferCopy> copyList;
-		copyList.reserve(copyOrders.size());
+		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
+	}
 
-		for (auto& order : copyOrders)
-		{
-			VkBufferCopy add{};
-			add.srcOffset = order.sourceOffset;
-			add.dstOffset = order.destinationOffset;
-			add.size = order.dataSize;
+	void DeviceCommandRecorderInternal::CopyFromStagingBufferToSmallIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupSmallIndexBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::CopyFromStagingBufferToSmallIndexBuffer Error: copy orders vector overflow!");
 
-			copyList.push_back(add);
-		}
+		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
+		auto destinationBuffer = _dataBuffersList.GetSmallIndexBuffer(destinationBufferID);
 
-		vkCmdCopyBuffer(_commandBuffer, stagingBuffer, destinationBuffer, static_cast<uint32_t>(copyList.size()), copyList.data());
+		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
+	}
+
+	void DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupBigIndexBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer Error: copy orders vector overflow!");
+
+		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
+		auto destinationBuffer = _dataBuffersList.GetBigIndexBuffer(destinationBufferID);
+
+		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
 	}
 
 }

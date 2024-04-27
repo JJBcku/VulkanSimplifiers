@@ -75,6 +75,42 @@ namespace VulkanSimplified
 		}
 	};
 
+	class AutoCleanupSmallIndexBuffer : public AutoCleanupDataBuffer
+	{
+	public:
+		AutoCleanupSmallIndexBuffer(VkDevice device, VkBuffer dataBuffer) : AutoCleanupDataBuffer(device, dataBuffer) {}
+		~AutoCleanupSmallIndexBuffer() {}
+
+		AutoCleanupSmallIndexBuffer(const AutoCleanupSmallIndexBuffer&) noexcept = delete;
+		AutoCleanupSmallIndexBuffer(AutoCleanupSmallIndexBuffer&& other) noexcept : AutoCleanupDataBuffer(std::move(other)) {}
+
+		AutoCleanupSmallIndexBuffer& operator=(const AutoCleanupSmallIndexBuffer&) noexcept = delete;
+		AutoCleanupSmallIndexBuffer& operator=(AutoCleanupSmallIndexBuffer&& other) noexcept
+		{
+			*static_cast<AutoCleanupDataBuffer*>(this) = std::move(*static_cast<AutoCleanupDataBuffer*>(&other));
+
+			return *this;
+		}
+	};
+
+	class AutoCleanupBigIndexBuffer : public AutoCleanupDataBuffer
+	{
+	public:
+		AutoCleanupBigIndexBuffer(VkDevice device, VkBuffer dataBuffer) : AutoCleanupDataBuffer(device, dataBuffer) {}
+		~AutoCleanupBigIndexBuffer() {}
+
+		AutoCleanupBigIndexBuffer(const AutoCleanupBigIndexBuffer&) noexcept = delete;
+		AutoCleanupBigIndexBuffer(AutoCleanupBigIndexBuffer&& other) noexcept : AutoCleanupDataBuffer(std::move(other)) {}
+
+		AutoCleanupBigIndexBuffer& operator=(const AutoCleanupBigIndexBuffer&) noexcept = delete;
+		AutoCleanupBigIndexBuffer& operator=(AutoCleanupBigIndexBuffer&& other) noexcept
+		{
+			*static_cast<AutoCleanupDataBuffer*>(this) = std::move(*static_cast<AutoCleanupDataBuffer*>(&other));
+
+			return *this;
+		}
+	};
+
 	union AccessibleHostMemoryID;
 
 	class DeviceDataBufferSimplifierInternal
@@ -84,6 +120,8 @@ namespace VulkanSimplified
 
 		ListTemplate<AutoCleanupShaderInputBuffer> _shaderInputs;
 		ListTemplate<AutoCleanupStagingBuffer> _stagingBuffers;
+		ListTemplate<AutoCleanupSmallIndexBuffer> _smallIndexBuffers;
+		ListTemplate<AutoCleanupBigIndexBuffer> _bigIndexBuffers;
 
 	public:
 		DeviceDataBufferSimplifierInternal(VkDevice device, DeviceMemorySimplifierInternal& memorySimplifier, size_t reserve = 0x10);
@@ -95,6 +133,8 @@ namespace VulkanSimplified
 
 		ListObjectID<AutoCleanupShaderInputBuffer> AddShaderInputBuffer(const std::vector<VertexAttributeFormats>& vertexAttributes, uint32_t maxVertexAmount, bool enableTransferTo);
 		ListObjectID<AutoCleanupStagingBuffer> AddStagingBuffer(uint64_t bufferSize);
+		ListObjectID<AutoCleanupSmallIndexBuffer> AddSmallIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
+		ListObjectID<AutoCleanupBigIndexBuffer> AddBigIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
 
 		void BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
 		bool TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
@@ -102,10 +142,21 @@ namespace VulkanSimplified
 		void BindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve);
 		bool TryToBindStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> _stagingBufferID, AccessibleHostMemoryID memoryID, size_t addOnReserve);
 
+		void BindSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
+
+		void BindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
+
 		VkBuffer GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const;
 		VkBuffer GetStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID) const;
+		VkBuffer GetSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID) const;
+		VkBuffer GetBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID) const;
 
 		void WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 		void WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
+
+		void WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices, uint64_t indicesAmount, bool flushOnWrite);
+		void WriteToBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID, uint64_t indicesSkipped, const uint32_t& indices, uint64_t indicesAmount, bool flushOnWrite);
 	};
 }

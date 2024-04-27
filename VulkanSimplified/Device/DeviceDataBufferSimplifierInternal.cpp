@@ -130,6 +130,46 @@ namespace VulkanSimplified
 		return _stagingBuffers.AddObject(AutoCleanupStagingBuffer(_device, add));
 	}
 
+	ListObjectID<AutoCleanupSmallIndexBuffer> DeviceDataBufferSimplifierInternal::AddSmallIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo)
+	{
+		VkBuffer add = VK_NULL_HANDLE;
+
+		VkBufferCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+
+		if (enableTransferTo)
+			createInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+
+		createInfo.size = maxIndicesAmount * sizeof(uint16_t);
+
+		if (vkCreateBuffer(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddSmallIndexBuffer Error: Program failed to create the buffer!");
+
+		return _smallIndexBuffers.AddObject(AutoCleanupSmallIndexBuffer(_device, add));
+	}
+
+	ListObjectID<AutoCleanupBigIndexBuffer> DeviceDataBufferSimplifierInternal::AddBigIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo)
+	{
+		VkBuffer add = VK_NULL_HANDLE;
+
+		VkBufferCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.usage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+
+		if (enableTransferTo)
+			createInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+
+		createInfo.size = maxIndicesAmount * sizeof(uint32_t);
+
+		if (vkCreateBuffer(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddSmallIndexBuffer Error: Program failed to create the buffer!");
+
+		return _bigIndexBuffers.AddObject(AutoCleanupBigIndexBuffer(_device, add));
+	}
+
 	void DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
 		auto& shaderInput = _shaderInputs.GetObject(_shaderInputBuffer);
@@ -158,6 +198,34 @@ namespace VulkanSimplified
 		return stagingBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
 	}
 
+	void DeviceDataBufferSimplifierInternal::BindSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& indexBuffer = _smallIndexBuffers.GetObject(indexBufferID);
+
+		indexBuffer.BindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifierInternal::TryToBindSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& indexBuffer = _smallIndexBuffers.GetObject(indexBufferID);
+
+		return indexBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
+	void DeviceDataBufferSimplifierInternal::BindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& indexBuffer = _bigIndexBuffers.GetObject(indexBufferID);
+
+		indexBuffer.BindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifierInternal::TryToBindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& indexBuffer = _bigIndexBuffers.GetObject(indexBufferID);
+
+		return indexBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
 	VkBuffer DeviceDataBufferSimplifierInternal::GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const
 	{
 		auto& buffer = _shaderInputs.GetConstObject(bufferID);
@@ -168,6 +236,20 @@ namespace VulkanSimplified
 	VkBuffer DeviceDataBufferSimplifierInternal::GetStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID) const
 	{
 		auto& buffer = _stagingBuffers.GetConstObject(bufferID);
+
+		return buffer.GetBuffer();
+	}
+
+	VkBuffer DeviceDataBufferSimplifierInternal::GetSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID) const
+	{
+		auto& buffer = _smallIndexBuffers.GetConstObject(bufferID);
+
+		return buffer.GetBuffer();
+	}
+
+	VkBuffer DeviceDataBufferSimplifierInternal::GetBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID) const
+	{
+		auto& buffer = _bigIndexBuffers.GetConstObject(bufferID);
 
 		return buffer.GetBuffer();
 	}
@@ -204,6 +286,47 @@ namespace VulkanSimplified
 		}
 		else
 			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToStagingBuffer Error: Program tried to write data to an unbound buffer!");
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices,
+		uint64_t indicesAmount, bool flushOnWrite)
+	{
+		auto& buffer = _smallIndexBuffers.GetConstObject(bufferID);
+
+		auto binding = buffer.GetBuffersBindingID();
+
+		if (binding.has_value())
+		{
+			auto& memory = binding.value().first;
+			auto& suballocation = binding.value().second;
+
+			uint64_t offset = indicesSkipped * sizeof(uint16_t);
+			uint64_t dataSize = indicesAmount * sizeof(uint16_t);
+
+			_memorySimplifier.WriteToMemoryObject(memory, suballocation, offset, *reinterpret_cast<const char*>(&indices), dataSize, flushOnWrite);
+		}
+		else
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToSmallIndexBuffer Error: Program tried to write data to an unbound buffer!");
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID, uint64_t indicesSkipped, const uint32_t& indices, uint64_t indicesAmount, bool flushOnWrite)
+	{
+		auto& buffer = _bigIndexBuffers.GetConstObject(bufferID);
+
+		auto binding = buffer.GetBuffersBindingID();
+
+		if (binding.has_value())
+		{
+			auto& memory = binding.value().first;
+			auto& suballocation = binding.value().second;
+
+			uint64_t offset = indicesSkipped * sizeof(uint32_t);
+			uint64_t dataSize = indicesAmount * sizeof(uint32_t);
+
+			_memorySimplifier.WriteToMemoryObject(memory, suballocation, offset, *reinterpret_cast<const char*>(&indices), dataSize, flushOnWrite);
+		}
+		else
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToSmallIndexBuffer Error: Program tried to write data to an unbound buffer!");
 	}
 
 }
