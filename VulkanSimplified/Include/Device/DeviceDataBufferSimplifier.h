@@ -11,6 +11,7 @@ namespace VulkanSimplified
 	class AutoCleanupStagingBuffer;
 	class AutoCleanupSmallIndexBuffer;
 	class AutoCleanupBigIndexBuffer;
+	class AutoCleanupDescriptorSetsBuffer;
 
 	union MemoryID;
 	union AccessibleHostMemoryID;
@@ -31,6 +32,8 @@ namespace VulkanSimplified
 		ListObjectID<AutoCleanupStagingBuffer> AddStagingBuffer(uint64_t bufferSize);
 		ListObjectID<AutoCleanupSmallIndexBuffer> AddSmallIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
 		ListObjectID<AutoCleanupBigIndexBuffer> AddBigIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
+		ListObjectID<AutoCleanupDescriptorSetsBuffer> AddDescriptorSetsBuffer(uint64_t descriptorSetSize, uint64_t descriptorSetAligment,
+			uint64_t descriptorSetsAmount, bool enableTransferTo);
 
 		void BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
 		bool TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
@@ -44,8 +47,12 @@ namespace VulkanSimplified
 		void BindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
 		bool TryToBindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
 
+		void BindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve);
+
 		void WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 		void WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
+		void WriteToDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 
 		void WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices, uint64_t indicesAmount, bool flushOnWrite);
 		void WriteToBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID, uint64_t indicesSkipped, const uint32_t& indices, uint64_t indicesAmount, bool flushOnWrite);

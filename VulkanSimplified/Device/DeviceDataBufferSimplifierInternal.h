@@ -111,6 +111,24 @@ namespace VulkanSimplified
 		}
 	};
 
+	class AutoCleanupDescriptorSetsBuffer : public AutoCleanupDataBuffer
+	{
+	public:
+		AutoCleanupDescriptorSetsBuffer(VkDevice device, VkBuffer dataBuffer) : AutoCleanupDataBuffer(device, dataBuffer) {}
+		~AutoCleanupDescriptorSetsBuffer() {}
+
+		AutoCleanupDescriptorSetsBuffer(const AutoCleanupDescriptorSetsBuffer&) noexcept = delete;
+		AutoCleanupDescriptorSetsBuffer(AutoCleanupDescriptorSetsBuffer&& other) noexcept : AutoCleanupDataBuffer(std::move(other)) {}
+
+		AutoCleanupDescriptorSetsBuffer& operator=(const AutoCleanupDescriptorSetsBuffer&) noexcept = delete;
+		AutoCleanupDescriptorSetsBuffer& operator=(AutoCleanupDescriptorSetsBuffer&& other) noexcept
+		{
+			*static_cast<AutoCleanupDataBuffer*>(this) = std::move(*static_cast<AutoCleanupDataBuffer*>(&other));
+
+			return *this;
+		}
+	};
+
 	union AccessibleHostMemoryID;
 
 	class DeviceDataBufferSimplifierInternal
@@ -122,6 +140,7 @@ namespace VulkanSimplified
 		ListTemplate<AutoCleanupStagingBuffer> _stagingBuffers;
 		ListTemplate<AutoCleanupSmallIndexBuffer> _smallIndexBuffers;
 		ListTemplate<AutoCleanupBigIndexBuffer> _bigIndexBuffers;
+		ListTemplate<AutoCleanupDescriptorSetsBuffer> _descriptorSetsBuffers;
 
 	public:
 		DeviceDataBufferSimplifierInternal(VkDevice device, DeviceMemorySimplifierInternal& memorySimplifier, size_t reserve = 0x10);
@@ -135,6 +154,8 @@ namespace VulkanSimplified
 		ListObjectID<AutoCleanupStagingBuffer> AddStagingBuffer(uint64_t bufferSize);
 		ListObjectID<AutoCleanupSmallIndexBuffer> AddSmallIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
 		ListObjectID<AutoCleanupBigIndexBuffer> AddBigIndexBuffer(uint64_t maxIndicesAmount, bool enableTransferTo);
+		ListObjectID<AutoCleanupDescriptorSetsBuffer> AddDescriptorSetsBuffer(uint64_t descriptorSetSize, uint64_t descriptorSetAligment,
+			uint64_t descriptorSetsAmount, bool enableTransferTo);
 
 		void BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
 		bool TryToBindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve);
@@ -148,13 +169,18 @@ namespace VulkanSimplified
 		void BindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
 		bool TryToBindBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> indexBufferID, MemoryID memoryID, size_t addOnReserve);
 
+		void BindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve);
+		bool TryToBindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve);
+
 		VkBuffer GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const;
 		VkBuffer GetStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID) const;
 		VkBuffer GetSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID) const;
 		VkBuffer GetBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID) const;
+		VkBuffer GetDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID) const;
 
 		void WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 		void WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
+		void WriteToDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite);
 
 		void WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices, uint64_t indicesAmount, bool flushOnWrite);
 		void WriteToBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID, uint64_t indicesSkipped, const uint32_t& indices, uint64_t indicesAmount, bool flushOnWrite);

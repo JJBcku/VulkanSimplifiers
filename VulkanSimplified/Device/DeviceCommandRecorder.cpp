@@ -92,4 +92,10 @@ namespace VulkanSimplified
 		_internal.CopyFromStagingBufferToBigIndexBuffer(stagingBufferID, indexBufferID, copyOrders);
 	}
 
+	void DeviceCommandRecorder::CopyFromStagingBufferToDescriptorSetBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		_internal.CopyFromStagingBufferToDescriptorSetBuffer(stagingBufferID, descriptorSetBufferID, copyOrders);
+	}
+
 }

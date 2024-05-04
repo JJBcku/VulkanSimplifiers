@@ -37,6 +37,12 @@ namespace VulkanSimplified
 		return _internal.AddBigIndexBuffer(maxIndicesAmount, enableTransferTo);
 	}
 
+	ListObjectID<AutoCleanupDescriptorSetsBuffer> DeviceDataBufferSimplifier::AddDescriptorSetsBuffer(uint64_t descriptorSetSize, uint64_t descriptorSetAligment,
+		uint64_t descriptorSetsAmount, bool enableTransferTo)
+	{
+		return _internal.AddDescriptorSetsBuffer(descriptorSetSize, descriptorSetAligment, descriptorSetsAmount, enableTransferTo);
+	}
+
 	void DeviceDataBufferSimplifier::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
 		_internal.BindShaderInputBuffer(_shaderInputBuffer, memoryID, addOnReserve);
@@ -77,6 +83,16 @@ namespace VulkanSimplified
 		return _internal.TryToBindBigIndexBuffer(indexBufferID, memoryID, addOnReserve);
 	}
 
+	void DeviceDataBufferSimplifier::BindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		_internal.BindDescriptorSetsBuffer(descriptorSetsBufferID, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifier::TryToBindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		return _internal.TryToBindDescriptorSetsBuffer(descriptorSetsBufferID, memoryID, addOnReserve);
+	}
+
 	void DeviceDataBufferSimplifier::WriteToShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		_internal.WriteToShaderInputBuffer(bufferID, offset, data, dataSize, flushOnWrite);
@@ -85,6 +101,12 @@ namespace VulkanSimplified
 	void DeviceDataBufferSimplifier::WriteToStagingBuffer(ListObjectID<AutoCleanupStagingBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
 	{
 		_internal.WriteToStagingBuffer(bufferID, offset, data, dataSize, flushOnWrite);
+	}
+
+	void DeviceDataBufferSimplifier::WriteToDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize,
+		bool flushOnWrite)
+	{
+		_internal.WriteToDescriptorSetsBuffer(bufferID, offset, data, dataSize, flushOnWrite);
 	}
 
 	void DeviceDataBufferSimplifier::WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices,

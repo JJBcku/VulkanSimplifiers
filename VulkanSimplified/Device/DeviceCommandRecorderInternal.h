@@ -17,6 +17,7 @@ namespace VulkanSimplified
 	class AutoCleanupStagingBuffer;
 	class AutoCleanupSmallIndexBuffer;
 	class AutoCleanupBigIndexBuffer;
+	class AutoCleanupDescriptorSetsBuffer;
 
 	class DeviceDataBufferSimplifierInternal;
 
@@ -65,6 +66,9 @@ namespace VulkanSimplified
 		void CopyFromStagingBufferToSmallIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupSmallIndexBuffer> destinationBufferID,
 			const std::vector<BufferCopyOrder>& copyOrders);
 		void CopyFromStagingBufferToBigIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupBigIndexBuffer> destinationBufferID,
+			const std::vector<BufferCopyOrder>& copyOrders);
+
+		void CopyFromStagingBufferToDescriptorSetBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupDescriptorSetsBuffer> destinationBufferID,
 			const std::vector<BufferCopyOrder>& copyOrders);
 	};
 }

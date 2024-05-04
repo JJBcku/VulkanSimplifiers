@@ -53,6 +53,30 @@ std::vector<Vertex> _vertexes = {
 
 std::vector<uint16_t> _index = { 0, 1, 2, 2, 3, 0};
 
+struct UniformBufferObject
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+};
+
+static UniformBufferObject UpdateUniformBuffer(float width, float height)
+{
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    UniformBufferObject ubo;
+
+    ubo.model = glm::rotate(ubo.model, time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.projection = glm::perspective(glm::radians(45.0f), width / height, 0.1f, 10.0f);
+    ubo.projection[1][1] *= -1.0f;
+
+    return ubo;
+}
+
 int main()
 {
     using VulkanSimplified::WindowCreationData;
@@ -133,7 +157,7 @@ int main()
         std::vector<VulkanSimplified::VertexAttributeFormats> vertexAttributes = { VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT };
         std::vector<ListObjectID<VkVertexInputAttributeDescription>> vertexAttributeIDs = pipelineData.AddAttributeDescriptions(0, vertexAttributes);
 
-        auto vertexBindingDescription = pipelineData.AddBindingDescription(0, vertexAttributes, false);
+        auto vertexBindingDescription = pipelineData.AddVertexInputBindingDescription(0, vertexAttributes, false);
 
         //auto vertexColorAttributeDescription = pipelineData.AddAttributeDescription(0, 0, VulkanSimplified::VertexAttributeFormats::VEC4_FLOAT, 0);
         //auto vertexPositionAttributeDescription = pipelineData.AddAttributeDescription(1, 0, VulkanSimplified::VertexAttributeFormats::VEC2_FLOAT, sizeof(glm::vec4));
@@ -163,12 +187,12 @@ int main()
         auto pipelineLayoutData = sharedData.GetSharedDataPipelineLayoutElements();
 
         auto pipelineLayoutTestPushConstantRange = pipelineLayoutData.AddPushConstantRange(VulkanSimplified::VERTEX, 0, 32);
-        auto pipelineSetLayoutBinding = pipelineLayoutData.AddDescriptorSetLayoutBinding(0, VulkanSimplified::PipelineLayoutDescriptorType::SAMPLER, 1, VulkanSimplified::VERTEX);
+        auto pipelineSetLayoutBinding = pipelineLayoutData.AddDescriptorSetLayoutBinding(0, VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER, 1, VulkanSimplified::VERTEX);
 
         auto devicePipelineData = deviceDataList.GetDevicePipelineData();
 
         auto deviceDescriptorSetLayout = devicePipelineData.AddDescriptorSetLayout({ {pipelineSetLayoutBinding} });
-        auto devicePipelineLayout = devicePipelineData.AddPipelineLayout({}, {});
+        auto devicePipelineLayout = devicePipelineData.AddPipelineLayout({deviceDescriptorSetLayout}, {});
 
         auto renderPassData = sharedData.GetSharedDataRenderPassElements();
 
@@ -220,16 +244,22 @@ int main()
         std::vector<ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
         std::vector<VulkanSimplified::DeviceCommandRecorder> commandRecorderList;
 
-        auto transferCommandRecorderID = commandBufferList.AddPrimaryCommandBuffer(transferPool);
-        auto transferCommandRecorder = commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(transferCommandRecorderID);
+        std::vector<ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> transferCommandRecorderIDs;
+        std::vector<VulkanSimplified::DeviceCommandRecorder> transferCommandRecorders;
 
         commandBufferIDList.reserve(frameAmount);
         commandRecorderList.reserve(frameAmount);
+
+        transferCommandRecorderIDs.reserve(frameAmount);
+        transferCommandRecorders.reserve(frameAmount);
 
         for (uint32_t i = 0; i < frameAmount; ++i)
         {
             commandBufferIDList.push_back(commandBufferList.AddPrimaryCommandBuffer(commandPool));
             commandRecorderList.push_back(commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(commandBufferIDList[i]));
+
+            transferCommandRecorderIDs.push_back(commandBufferList.AddPrimaryCommandBuffer(transferPool));
+            transferCommandRecorders.push_back(commandBufferList.GetPrimaryDeviceCommandBuffersRecorder(transferCommandRecorderIDs[i]));
         }
 
         auto colorClearValue = pipelineData.AddClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
@@ -239,10 +269,12 @@ int main()
         auto deviceMemory = deviceDataList.GetDeviceMemorySimplifier();
 
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> imageAvailableSemaphoresList;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> transferFinishedSemaphoresList;
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupSemaphore>> renderFinishedSemaphoresList;
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupFence>> inFlightFencesList;
 
         imageAvailableSemaphoresList.reserve(frameAmount);
+        transferFinishedSemaphoresList.reserve(frameAmount);
         renderFinishedSemaphoresList.reserve(frameAmount);
         inFlightFencesList.reserve(frameAmount);
 
@@ -250,6 +282,7 @@ int main()
 
         VulkanSimplified::MemoryID vectorMemory;
         VulkanSimplified::MemoryID stagingMemory;
+        VulkanSimplified::MemoryID descriptorMemory;
 
         ListObjectID<VulkanSimplified::AutoCleanupStagingBuffer> stagingBuffer;
 
@@ -281,33 +314,55 @@ int main()
             throw std::runtime_error("Program failed to find an appriopriate memory type for the vector data memory!");
         }
 
+        if (deviceMemory.IsThereSharedDeviceMemory() && false)
+        {
+            descriptorMemory = deviceMemory.AddSharedMemory(0x10000, true, true);
+        }
+        else if (deviceMemory.IsThereExclusiveDeviceMemory())
+        {
+            descriptorMemory = deviceMemory.AddDeviceLocalMemory(0x10000);
+        }
+        else if (deviceMemory.IsThereHostDeviceAccessibleMemory())
+        {
+            descriptorMemory = deviceMemory.AddExternalAccessibleMemory(0x10000, true, true);
+        }
+        else
+        {
+            throw std::runtime_error("Program failed to find an appriopriate memory type for the descriptor memory!");
+        }
+
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupSmallIndexBuffer>> indexInputBuffers;
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupDescriptorSetsBuffer>> descriptorSetBuffers;
 
         vectorInputBuffers.reserve(frameAmount);
 
         if (stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST)
         {
-            transferCommandRecorder.ResetCommandBuffer(false);
-            transferCommandRecorder.BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
+            transferCommandRecorders[0].ResetCommandBuffer(false);
+            transferCommandRecorders[0].BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
         }
 
         for (uint32_t i = 0; i < frameAmount; ++i)
         {
             imageAvailableSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
+            transferFinishedSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
             renderFinishedSemaphoresList.push_back(deviceSynchronization.AddSemaphore());
             inFlightFencesList.push_back(deviceSynchronization.AddFence(true));
 
             vectorInputBuffers.push_back(dataBuffersSimplifier.AddShaderInputBuffer(vertexAttributes, 4, stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST));
             indexInputBuffers.push_back(dataBuffersSimplifier.AddSmallIndexBuffer(8, stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST));
+            descriptorSetBuffers.push_back(dataBuffersSimplifier.AddDescriptorSetsBuffer(sizeof(UniformBufferObject), 0x10, 1,
+                descriptorMemory.memoryType == VulkanSimplified::MemoryType::EXCLUSIVE));
 
             dataBuffersSimplifier.BindShaderInputBuffer(vectorInputBuffers.back(), vectorMemory, 0);
             dataBuffersSimplifier.BindSmallIndexBuffer(indexInputBuffers.back(), vectorMemory, 0);
+            dataBuffersSimplifier.BindDescriptorSetsBuffer(descriptorSetBuffers.back(), descriptorMemory, 0);
             
             if (stagingMemory.memoryType == VulkanSimplified::MemoryType::HOST)
             {
-                transferCommandRecorder.CopyFromStagingBufferToShaderInputBuffer(stagingBuffer, vectorInputBuffers.back(), { {0, 0, vertexDataSize} });
-                transferCommandRecorder.CopyFromStagingBufferToSmallIndexBuffer(stagingBuffer, indexInputBuffers.back(), { {vertexDataSize, 0, indexDataSize} });
+                transferCommandRecorders[0].CopyFromStagingBufferToShaderInputBuffer(stagingBuffer, vectorInputBuffers.back(), { {0, 0, vertexDataSize} });
+                transferCommandRecorders[0].CopyFromStagingBufferToSmallIndexBuffer(stagingBuffer, indexInputBuffers.back(), { {vertexDataSize, 0, indexDataSize} });
             }
             else
             {
@@ -320,9 +375,9 @@ int main()
         {
             VulkanSimplified::QueueSubmitObject transferSubmit;
 
-            transferCommandRecorder.EndCommandBuffer();
+            transferCommandRecorders[0].EndCommandBuffer();
 
-            transferSubmit._commandBuffers = { transferCommandRecorderID };
+            transferSubmit._commandBuffers = { transferCommandRecorderIDs[0]};
             commandBufferList.SubmitToQueue(VulkanSimplified::QueueFamilyType::TRANSFER, { transferSubmit }, { transferFence });
             deviceSynchronization.WaitForFences({ transferFence }, std::numeric_limits<uint64_t>::max(), true);
             deviceSynchronization.ResetFences({ transferFence });
@@ -391,9 +446,39 @@ int main()
                 redoSwapchain = false;
             }
 
+            auto ubo = UpdateUniformBuffer(static_cast<float>(swapchainWidth), static_cast<float>(swapchainHeight));
+
             auto nextImage = swapchain.AcquireNextImage(std::numeric_limits<uint64_t>::max(), imageAvailableSemaphoresList[currentSynchro], {});
             currentImage = nextImage.first;
             redoSwapchain = !nextImage.second;
+
+            VulkanSimplified::QueueSubmitObject submitObject;
+            submitObject._commandBuffers = { commandBufferIDList[currentImage] };
+            submitObject._waitSemaphores.emplace_back(VulkanSimplified::PipelineStage::COLOR_ATTACHMENT_OUTPUT, imageAvailableSemaphoresList[currentSynchro]);
+            submitObject._signalSemaphores = { renderFinishedSemaphoresList[currentSynchro] };
+
+            if (descriptorMemory.memoryType == VulkanSimplified::MemoryType::EXCLUSIVE)
+            {
+                submitObject._waitSemaphores.emplace_back(VulkanSimplified::PipelineStage::VERTEX_SHADER, transferFinishedSemaphoresList[currentSynchro]);
+
+                dataBuffersSimplifier.WriteToStagingBuffer(stagingBuffer, 0, *reinterpret_cast<char*>(&ubo), sizeof(ubo), true);
+
+                transferCommandRecorders[currentImage].ResetCommandBuffer(false);
+                transferCommandRecorders[currentImage].BeginRecordingPrimaryBuffer(VulkanSimplified::PrimaryBufferRecordingSettings::SINGLE_USE);
+                transferCommandRecorders[currentImage].CopyFromStagingBufferToDescriptorSetBuffer(stagingBuffer, descriptorSetBuffers[currentSynchro], { { 0, 0, sizeof(ubo)} });
+                transferCommandRecorders[currentImage].EndCommandBuffer();
+
+                VulkanSimplified::QueueSubmitObject transferSubmit;
+                transferSubmit._commandBuffers = { transferCommandRecorderIDs[currentImage] };
+                transferSubmit._waitSemaphores = { };
+                transferSubmit._signalSemaphores = { transferFinishedSemaphoresList[currentSynchro] };
+
+                commandBufferList.SubmitToQueue(VulkanSimplified::QueueFamilyType::TRANSFER, { transferSubmit }, {});
+            }
+            else
+            {
+                dataBuffersSimplifier.WriteToDescriptorSetsBuffer(descriptorSetBuffers[currentSynchro], 0, *reinterpret_cast<char*>(&ubo), sizeof(ubo), true);
+            }
 
             commandRecorderList[currentImage].ResetCommandBuffer(false);
 
@@ -409,11 +494,6 @@ int main()
             commandRecorderList[currentImage].EndRenderPass();
 
             commandRecorderList[currentImage].EndCommandBuffer();
-
-            VulkanSimplified::QueueSubmitObject submitObject;
-            submitObject._commandBuffers = { commandBufferIDList[currentImage] };
-            submitObject._waitSemaphores = { {VulkanSimplified::PipelineStage::COLOR_ATTACHMENT_OUTPUT, imageAvailableSemaphoresList[currentSynchro]} };
-            submitObject._signalSemaphores = { renderFinishedSemaphoresList[currentSynchro] };
 
             commandBufferList.SubmitToQueue(VulkanSimplified::QueueFamilyType::GRAPHICS, { submitObject }, { inFlightFencesList[currentSynchro] });
 

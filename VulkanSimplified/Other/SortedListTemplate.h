@@ -327,7 +327,7 @@ namespace VulkanSimplified
 
 						while (freePosition > 0)
 						{
-							if constexpr (std::is_move_assignable<T>::value)
+							if constexpr (std::is_nothrow_move_assignable<T>::value)
 							{
 								_list[freePosition--] = std::move(_list[currentPosition--]);
 							}
@@ -346,7 +346,7 @@ namespace VulkanSimplified
 			}
 			else
 			{
-				size_t insertPosition = position - 1;
+				size_t insertPosition = position;
 
 				auto it = std::lower_bound(_deletedList.cbegin(), _deletedList.cend(), insertPosition);
 
@@ -381,7 +381,7 @@ namespace VulkanSimplified
 
 						while (freePosition > insertPosition)
 						{
-							if constexpr (std::is_move_assignable<T>::value)
+							if constexpr (std::is_nothrow_move_assignable<T>::value)
 							{
 								_list[freePosition--] = std::move(_list[currentPosition--]);
 							}
@@ -399,10 +399,10 @@ namespace VulkanSimplified
 				}
 				else
 				{
+					CheckCapacity(add);
 					auto insertIt = _list.cbegin();
 					std::advance(insertIt, insertPosition);
-
-					CheckCapacity(add);
+					
 					_list.insert(insertIt, SortedListObjectTemplate<T>(ret, std::move(value)));
 				}
 			}

@@ -170,6 +170,34 @@ namespace VulkanSimplified
 		return _bigIndexBuffers.AddObject(AutoCleanupBigIndexBuffer(_device, add));
 	}
 
+	ListObjectID<AutoCleanupDescriptorSetsBuffer> DeviceDataBufferSimplifierInternal::AddDescriptorSetsBuffer(uint64_t descriptorSetSize, uint64_t descriptorSetAligment,
+		uint64_t descriptorSetsAmount, bool enableTransferTo)
+	{
+		VkBuffer add = VK_NULL_HANDLE;
+
+		VkBufferCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		createInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+
+		if (enableTransferTo)
+			createInfo.usage |= VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+
+		VkDeviceSize totalSize = descriptorSetSize;
+
+		if (totalSize % descriptorSetAligment != 0)
+			totalSize += descriptorSetAligment - (totalSize % descriptorSetAligment);
+
+		totalSize *= descriptorSetsAmount;
+
+		createInfo.size = totalSize;
+
+		if (vkCreateBuffer(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::AddSmallIndexBuffer Error: Program failed to create the buffer!");
+
+		return _descriptorSetsBuffers.AddObject(AutoCleanupDescriptorSetsBuffer(_device, add));
+	}
+
 	void DeviceDataBufferSimplifierInternal::BindShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> _shaderInputBuffer, MemoryID memoryID, size_t addOnReserve)
 	{
 		auto& shaderInput = _shaderInputs.GetObject(_shaderInputBuffer);
@@ -226,6 +254,20 @@ namespace VulkanSimplified
 		return indexBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
 	}
 
+	void DeviceDataBufferSimplifierInternal::BindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& descriptorBuffer = _descriptorSetsBuffers.GetObject(descriptorSetsBufferID);
+
+		descriptorBuffer.BindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
+	bool DeviceDataBufferSimplifierInternal::TryToBindDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> descriptorSetsBufferID, MemoryID memoryID, size_t addOnReserve)
+	{
+		auto& descriptorBuffer = _descriptorSetsBuffers.GetObject(descriptorSetsBufferID);
+
+		return descriptorBuffer.TryToBindBuffer(_memorySimplifier, memoryID, addOnReserve);
+	}
+
 	VkBuffer DeviceDataBufferSimplifierInternal::GetShaderInputBuffer(ListObjectID<AutoCleanupShaderInputBuffer> bufferID) const
 	{
 		auto& buffer = _shaderInputs.GetConstObject(bufferID);
@@ -250,6 +292,13 @@ namespace VulkanSimplified
 	VkBuffer DeviceDataBufferSimplifierInternal::GetBigIndexBuffer(ListObjectID<AutoCleanupBigIndexBuffer> bufferID) const
 	{
 		auto& buffer = _bigIndexBuffers.GetConstObject(bufferID);
+
+		return buffer.GetBuffer();
+	}
+
+	VkBuffer DeviceDataBufferSimplifierInternal::GetDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID) const
+	{
+		auto& buffer = _descriptorSetsBuffers.GetConstObject(bufferID);
 
 		return buffer.GetBuffer();
 	}
@@ -286,6 +335,23 @@ namespace VulkanSimplified
 		}
 		else
 			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToStagingBuffer Error: Program tried to write data to an unbound buffer!");
+	}
+
+	void DeviceDataBufferSimplifierInternal::WriteToDescriptorSetsBuffer(ListObjectID<AutoCleanupDescriptorSetsBuffer> bufferID, uint64_t offset, const char& data, uint64_t dataSize, bool flushOnWrite)
+	{
+		auto& buffer = _descriptorSetsBuffers.GetConstObject(bufferID);
+
+		auto binding = buffer.GetBuffersBindingID();
+
+		if (binding.has_value())
+		{
+			auto& memory = binding.value().first;
+			auto& suballocation = binding.value().second;
+
+			_memorySimplifier.WriteToMemoryObject(memory, suballocation, offset, data, dataSize, flushOnWrite);
+		}
+		else
+			throw std::runtime_error("DeviceDataBufferSimplifierInternal::WriteToDescriptorSetsBuffer Error: Program tried to write data to an unbound buffer!");
 	}
 
 	void DeviceDataBufferSimplifierInternal::WriteToSmallIndexBuffer(ListObjectID<AutoCleanupSmallIndexBuffer> bufferID, uint64_t indicesSkipped, const uint16_t& indices,

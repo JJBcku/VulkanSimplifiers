@@ -189,13 +189,26 @@ namespace VulkanSimplified
 		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
 	}
 
-	void DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID, ListObjectID<AutoCleanupBigIndexBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	void DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupBigIndexBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
 	{
 		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
 			throw std::runtime_error("DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer Error: copy orders vector overflow!");
 
 		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
 		auto destinationBuffer = _dataBuffersList.GetBigIndexBuffer(destinationBufferID);
+
+		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
+	}
+
+	void DeviceCommandRecorderInternal::CopyFromStagingBufferToDescriptorSetBuffer(ListObjectID<AutoCleanupStagingBuffer> stagingBufferID,
+		ListObjectID<AutoCleanupDescriptorSetsBuffer> destinationBufferID, const std::vector<BufferCopyOrder>& copyOrders)
+	{
+		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::CopyFromStagingBufferToBigIndexBuffer Error: copy orders vector overflow!");
+
+		auto stagingBuffer = _dataBuffersList.GetStagingBuffer(stagingBufferID);
+		auto destinationBuffer = _dataBuffersList.GetDescriptorSetsBuffer(destinationBufferID);
 
 		CopyFromBufferToBuffer(stagingBuffer, destinationBuffer, copyOrders);
 	}

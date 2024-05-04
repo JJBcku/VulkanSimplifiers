@@ -125,6 +125,8 @@ namespace VulkanSimplified
 		TOP = 1,
 		BOTTOM = 2,
 		COLOR_ATTACHMENT_OUTPUT = 4,
+		VERTEX_INPUT = 8,
+		VERTEX_SHADER = 0X10
 	};
 
 	VkPipelineStageFlags TranslatePipelineStage(PipelineStage stages);

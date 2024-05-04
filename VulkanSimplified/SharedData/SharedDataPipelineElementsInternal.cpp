@@ -26,7 +26,7 @@ namespace VulkanSimplified
 		return _shaderPipelineData.AddUniqueObject(ShaderStageCreationData(stage, mainFunctionName));
 	}
 
-	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex)
+	ListObjectID<VkVertexInputBindingDescription> SharedDataPipelineElementsInternal::AddVertexInputBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex)
 	{
 		VkVertexInputBindingDescription add{};
 		add.binding = binding;

@@ -43,7 +43,7 @@ namespace VulkanSimplified
 
 		ListObjectID<ShaderStageCreationData> AddShaderPipelineData(ShaderStageType stage, const char* mainFunctionName);
 
-		ListObjectID<VkVertexInputBindingDescription> AddBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex);
+		ListObjectID<VkVertexInputBindingDescription> AddVertexInputBindingDescription(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes, bool useInstanceIndex);
 		ListObjectID<VkVertexInputAttributeDescription> AddAttributeDescription(uint32_t location, uint32_t binding, VertexAttributeFormats format, uint32_t offset);
 		std::vector<ListObjectID<VkVertexInputAttributeDescription>> AddAttributeDescriptions(uint32_t binding, const std::vector<VertexAttributeFormats>& attributes);
 
