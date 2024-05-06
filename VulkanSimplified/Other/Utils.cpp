@@ -1,5 +1,5 @@
 #include "../Other/pch.h"
-#include "../Include/Common/Utils.h"
+#include "Utils.h"
 
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
 
@@ -153,6 +153,71 @@ namespace VulkanSimplified
 
 			location += GetAttributeUsedLocationsAmount(attributes[i]);
 			totalSize += GetShaderInputSize(attributes[i]);
+		}
+
+		return ret;
+	}
+
+	VkPipelineStageFlags Utils::TranslatePipelineStage(PipelineStage stages)
+	{
+		VkPipelineStageFlags ret = VK_PIPELINE_STAGE_NONE;
+
+		if ((stages & PipelineStage::TOP) == PipelineStage::TOP)
+			ret |= VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+		if ((stages & PipelineStage::BOTTOM) == PipelineStage::BOTTOM)
+			ret |= VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+
+		if ((stages & PipelineStage::COLOR_ATTACHMENT_OUTPUT) == PipelineStage::COLOR_ATTACHMENT_OUTPUT)
+			ret |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+		if ((stages & PipelineStage::VERTEX_INPUT) == PipelineStage::VERTEX_INPUT)
+			ret |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
+
+		if ((stages & PipelineStage::VERTEX_SHADER) == PipelineStage::VERTEX_SHADER)
+			ret |= VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+
+		return ret;
+	}
+
+	VkDescriptorType Utils::TranslateDescriptorType(PipelineLayoutDescriptorType descriptorType)
+	{
+		VkDescriptorType ret = VK_DESCRIPTOR_TYPE_MAX_ENUM;
+
+		switch (descriptorType)
+		{
+		case VulkanSimplified::PipelineLayoutDescriptorType::SAMPLER:
+			ret = VK_DESCRIPTOR_TYPE_SAMPLER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::COMBINED_SAMPLER:
+			ret = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::SAMPLED_IMAGE:
+			ret = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_IMAGE:
+			ret = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_TEXEL_BUFFER:
+			ret = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_TEXEL_BUFFER:
+			ret = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER:
+			ret = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_BUFFER:
+			ret = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER_DYNAMIC:
+			ret = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+			break;
+		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_BUFFER_DYNAMIC:
+			ret = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+			break;
+		default:
+			break;
 		}
 
 		return ret;

@@ -11,6 +11,7 @@
 #include "../Include/Device/DeviceSynchronizationSimplifier.h"
 #include "../Include/Device/DeviceMemorySimplifier.h"
 #include "../Include/Device/DeviceDataBufferSimplifier.h"
+#include "../Include/Device/DeviceDescriptorSimplifier.h"
 
 namespace VulkanSimplified
 {
@@ -61,6 +62,11 @@ namespace VulkanSimplified
 	DeviceDataBufferSimplifier DeviceDataListSimplifier::GetDeviceDataBufferSimplifier()
 	{
 		return DeviceDataBufferSimplifier(_internal.GetDeviceDataBufferSimplifier());
+	}
+
+	DeviceDescriptorSimplifier DeviceDataListSimplifier::GetDeviceDescriptorSimplifier()
+	{
+		return DeviceDescriptorSimplifier(_internal.GetDeviceDescriptorSimplifier());
 	}
 
 }

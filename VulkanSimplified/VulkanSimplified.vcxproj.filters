@@ -198,11 +198,17 @@
     <ClInclude Include="Include\Basics\SwapchainSimplifierStructs.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\Utils.h">
+    <ClInclude Include="Other\Utils.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h">
       <Filter>Header Files\Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="Device\DeviceDescriptorSimplifierInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Device\DeviceDescriptorSimplifier.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +364,12 @@
     </ClCompile>
     <ClCompile Include="Basics\SwapchainSimplifierEnums.cpp">
       <Filter>Source Files\Basics</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceDescriptorSimplifierInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Device\DeviceDescriptorSimplifier.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

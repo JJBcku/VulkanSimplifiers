@@ -33,6 +33,7 @@
 #include <Device/DeviceMemorySimplifier.h>
 
 #include <Device/DeviceDataBufferSimplifier.h>
+#include <Device/DeviceDescriptorSimplifier.h>
 
 static intmax_t GPURatingFunction(const VulkanSimplified::SimplifiedDeviceInfo& deviceInfo);
 
@@ -240,6 +241,10 @@ int main()
         auto transferPool = commandBufferList.AddCommandPool(VulkanSimplified::QueueFamilyType::TRANSFER, true, true);
 
         uint32_t frameAmount = swapchain.GetSwapchainImagesAmount();
+
+        auto deviceDescriptorList = deviceDataList.GetDeviceDescriptorSimplifier();
+
+        auto deviceDescriptorPool = deviceDescriptorList.AddDescriptorPool({ {VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER, frameAmount} }, frameAmount, false);
 
         std::vector<ListObjectID<std::unique_ptr<VulkanSimplified::DeviceCommandRecorderInternal>>> commandBufferIDList;
         std::vector<VulkanSimplified::DeviceCommandRecorder> commandRecorderList;

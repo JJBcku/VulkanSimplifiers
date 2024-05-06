@@ -1,7 +1,7 @@
 #include "../Other/pch.h"
 #include "SharedDataPipelineElementsInternal.h"
 
-#include "../Include/Common/Utils.h"
+#include "../Other/Utils.h"
 
 namespace VulkanSimplified
 {

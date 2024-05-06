@@ -1,6 +1,8 @@
 #include "../Other/pch.h"
 #include "SharedDataPipelineLayoutElementsInternal.h"
 
+#include "../Other/Utils.h"
+
 namespace VulkanSimplified
 {
 
@@ -41,42 +43,11 @@ namespace VulkanSimplified
 	{
 		VkDescriptorSetLayoutBinding add{};
 		add.binding = binding;
-		
-		switch (descriptorType)
-		{
-		case VulkanSimplified::PipelineLayoutDescriptorType::SAMPLER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::COMBINED_SAMPLER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::SAMPLED_IMAGE:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_IMAGE:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_TEXEL_BUFFER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_TEXEL_BUFFER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_BUFFER:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::UNIFORM_BUFFER_DYNAMIC:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
-			break;
-		case VulkanSimplified::PipelineLayoutDescriptorType::STORAGE_BUFFER_DYNAMIC:
-			add.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
-			break;
-		default:
+		add.descriptorType = Utils::TranslateDescriptorType(descriptorType);
+
+		if (add.descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
 			throw std::runtime_error("SharedDataPipelineLayoutElementsInternal::AddDescriptorSetLayoutBinding Error: Program was given an erroneous pipeline layout descriptor type!");
-		}
+		
 
 		add.descriptorCount = descriptorCount;
 

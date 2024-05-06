@@ -9,6 +9,8 @@
 
 #include "DeviceCommandBufferSimplifierInternal.h"
 
+#include "../Other/Utils.h"
+
 namespace VulkanSimplified
 {
 	DeviceCommandBufferSimplifierInternal::DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
@@ -149,7 +151,7 @@ namespace VulkanSimplified
 
 				for (size_t j = 0; j < waitData.size(); ++j)
 				{
-					semaphoreStageFlags[i].push_back(TranslatePipelineStage(waitData[j].first));
+					semaphoreStageFlags[i].push_back(Utils::TranslatePipelineStage(waitData[j].first));
 					waitSemaphores[i].push_back(_synchronizationData.GetSemaphore(waitData[j].second));
 				}
 

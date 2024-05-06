@@ -129,8 +129,6 @@ namespace VulkanSimplified
 		VERTEX_SHADER = 0X10
 	};
 
-	VkPipelineStageFlags TranslatePipelineStage(PipelineStage stages);
-
 	enum PipelineAccess : uint64_t
 	{
 		COLOR_READ = 1,

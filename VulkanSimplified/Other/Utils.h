@@ -3,6 +3,8 @@
 namespace VulkanSimplified
 {
 	enum class VertexAttributeFormats : uint64_t;
+	enum PipelineStage : uint64_t;
+	enum class PipelineLayoutDescriptorType : uint64_t;
 
 	class Utils
 	{
@@ -16,5 +18,8 @@ namespace VulkanSimplified
 		static uint64_t GetShaderInputPaddedSize(const std::vector<VertexAttributeFormats>& attributes);
 
 		static std::vector<VkVertexInputAttributeDescription> CreateAttachmentDescriptors(const std::vector<VertexAttributeFormats>& attributes, uint32_t binding);
+
+		static VkPipelineStageFlags TranslatePipelineStage(PipelineStage stages);
+		static VkDescriptorType TranslateDescriptorType(PipelineLayoutDescriptorType descriptorType);
 	};
 }

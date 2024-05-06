@@ -5,6 +5,8 @@
 
 #include "../Other/MainSimplifierInternal.h"
 
+#include "../Other/Utils.h"
+
 namespace VulkanSimplified
 {
 	VkImageLayout SharedDataRenderPassElementsInternal::GetImageLayout(AttachmentLayout layout)
@@ -239,8 +241,8 @@ namespace VulkanSimplified
 		else
 			add.dstSubpass = VK_SUBPASS_EXTERNAL;
 
-		add.srcStageMask = TranslatePipelineStage(srcStageMask);
-		add.dstStageMask = TranslatePipelineStage(dstStageMask);
+		add.srcStageMask = Utils::TranslatePipelineStage(srcStageMask);
+		add.dstStageMask = Utils::TranslatePipelineStage(dstStageMask);
 
 		add.srcAccessMask = GetAccessFlags(srcAccessMask);
 		add.dstAccessMask = GetAccessFlags(dstAccessMask);
