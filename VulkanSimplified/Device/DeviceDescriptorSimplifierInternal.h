@@ -6,6 +6,7 @@ namespace VulkanSimplified
 {
 	class BasicDescriptorSet
 	{
+	protected:
 		VkDescriptorSet _desciptorSet;
 
 	public:
@@ -19,45 +20,72 @@ namespace VulkanSimplified
 		BasicDescriptorSet& operator=(BasicDescriptorSet&& other) noexcept = default;
 	};
 
+	class UniformBufferDescriptorSet : public BasicDescriptorSet
+	{
+	public:
+		UniformBufferDescriptorSet(VkDescriptorSet descriptorSet);
+		~UniformBufferDescriptorSet();
+
+		UniformBufferDescriptorSet(const UniformBufferDescriptorSet&) noexcept = default;
+		UniformBufferDescriptorSet(UniformBufferDescriptorSet&&) noexcept = default;
+
+		UniformBufferDescriptorSet& operator=(const UniformBufferDescriptorSet&) noexcept = default;
+		UniformBufferDescriptorSet& operator=(UniformBufferDescriptorSet&&) noexcept = default;
+	};
+
 	enum class PipelineLayoutDescriptorType : uint64_t;
 
-	class AutoCleanUpDescriptorPool
+	class AutoCleanupDescriptorPool
 	{
 		VkDescriptorPool _descriptorPool;
 		VkDevice _device;
+		bool _freeIndividual;
+		char _padding[sizeof(size_t) - 1];
 
 		uint32_t _maxSets;
-		std::vector<std::pair<VkDescriptorPoolSize, uint64_t>> _setTypeSizes;
+		uint32_t _currentSets;
+		std::vector<VkDescriptorPoolSize> _setTypeSizes;
+
+		ListTemplate<UniformBufferDescriptorSet> _uniformBuffers;
 
 	public:
-		AutoCleanUpDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets, const std::vector<VkDescriptorPoolSize>& setTypeMaxSizes);
-		~AutoCleanUpDescriptorPool();
+		AutoCleanupDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets, bool freeIndividual, const std::vector<VkDescriptorPoolSize>& setTypeMaxSizes);
+		AutoCleanupDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets, bool freeIndividual, std::vector<VkDescriptorPoolSize>&& setTypeMaxSizes);
+		~AutoCleanupDescriptorPool();
 
-		AutoCleanUpDescriptorPool(const AutoCleanUpDescriptorPool&) noexcept = delete;
-		AutoCleanUpDescriptorPool(AutoCleanUpDescriptorPool&& other) noexcept;
+		AutoCleanupDescriptorPool(const AutoCleanupDescriptorPool&) noexcept = delete;
+		AutoCleanupDescriptorPool(AutoCleanupDescriptorPool&& other) noexcept;
 
-		AutoCleanUpDescriptorPool& operator=(const AutoCleanUpDescriptorPool&) noexcept = delete;
-		AutoCleanUpDescriptorPool& operator=(AutoCleanUpDescriptorPool&& other) noexcept;
+		AutoCleanupDescriptorPool& operator=(const AutoCleanupDescriptorPool&) noexcept = delete;
+		AutoCleanupDescriptorPool& operator=(AutoCleanupDescriptorPool&& other) noexcept;
+
+		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(const std::vector<VkDescriptorSetLayout>& descriptorLayouts);
 	};
+
+	class DevicePipelineDataInternal;
+	class AutoCleanupDescriptorSetLayout;
 
 	class DeviceDescriptorSimplifierInternal
 	{
 		VkDevice _device;
-		void* _ppadding;
+		DevicePipelineDataInternal& _pipelineData;
 
-		ListTemplate<AutoCleanUpDescriptorPool> _descriptorPools;
+		ListTemplate<AutoCleanupDescriptorPool> _descriptorPools;
 
 		std::string GetPipelineLayoutDescriptorName(PipelineLayoutDescriptorType type) const;
 
 	public:
-		DeviceDescriptorSimplifierInternal(VkDevice device);
+		DeviceDescriptorSimplifierInternal(VkDevice device, DevicePipelineDataInternal& pipelineData);
 		~DeviceDescriptorSimplifierInternal();
 
 		DeviceDescriptorSimplifierInternal(const DeviceDescriptorSimplifierInternal&) noexcept = delete;
 
 		DeviceDescriptorSimplifierInternal& operator=(const DeviceDescriptorSimplifierInternal&) noexcept = delete;
 
-		ListObjectID<AutoCleanUpDescriptorPool> AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes, uint64_t maxTotalSets,
+		ListObjectID<AutoCleanupDescriptorPool> AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes, uint64_t maxTotalSets,
 			bool freeIndividual);
+
+		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
+			const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs);
 	};
 }

@@ -117,6 +117,7 @@ namespace VulkanSimplified
 			const std::vector<ListObjectID<VkPushConstantRange>>& pushConstantRanges);
 
 		VkDescriptorSetLayout GetDescriptorSetLayout(ListObjectID<AutoCleanupDescriptorSetLayout> descriptorID) const;
+		std::vector<VkDescriptorSetLayout> GetDescriptorSetLayouts(const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorIDs) const;
 
 		ListObjectID<AutoCleanupRenderPass> AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors,
 			const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies);

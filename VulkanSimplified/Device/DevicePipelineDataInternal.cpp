@@ -102,6 +102,34 @@ namespace VulkanSimplified
 		return _descriptorSetLayouts.GetConstObject(descriptorID).GetDescriptorSetLayout();
 	}
 
+	std::vector<VkDescriptorSetLayout> DevicePipelineDataInternal::GetDescriptorSetLayouts(const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorIDs) const
+	{
+		std::vector<VkDescriptorSetLayout> ret;
+		ret.reserve(descriptorIDs.size());
+
+		for (size_t i = 0; i < descriptorIDs.size(); ++i)
+		{
+			auto& descriptorID = descriptorIDs[i];
+
+			bool found = false;
+
+			for (size_t j = 0; j < i; ++j)
+			{
+				if (descriptorID == descriptorIDs[j])
+				{
+					found = true;
+					ret.push_back(ret[j]);
+					break;
+				}
+			}
+
+			if (!found)
+				ret.push_back(GetDescriptorSetLayout(descriptorID));
+		}
+
+		return ret;
+	}
+
 	ListObjectID<AutoCleanupRenderPass> DevicePipelineDataInternal::AddRenderPass(const std::vector<ListObjectID<VkAttachmentDescription>>& attachmentDescriptors,
 		const std::vector<ListObjectID<SubpassDescriptionData>>& subpassDescriptions, const std::vector<ListObjectID<VkSubpassDependency>>& subpassDependencies)
 	{

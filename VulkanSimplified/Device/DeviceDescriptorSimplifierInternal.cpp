@@ -4,46 +4,87 @@
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
 #include "../Other/Utils.h"
 
+#include "DevicePipelineDataInternal.h"
+
 namespace VulkanSimplified
 {
 
-	AutoCleanUpDescriptorPool::AutoCleanUpDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets,
-		const std::vector<VkDescriptorPoolSize>& setTypeMaxSizes) : _descriptorPool(descriptorPool), _device(device), _maxSets(maxSets)
+	AutoCleanupDescriptorPool::AutoCleanupDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets, bool freeIndividual,
+		const std::vector<VkDescriptorPoolSize>& setTypeMaxSizes) : _descriptorPool(descriptorPool), _device(device), _freeIndividual(freeIndividual),
+		_maxSets(maxSets), _currentSets(0), _setTypeSizes(setTypeMaxSizes)
 	{
-		_setTypeSizes.reserve(setTypeMaxSizes.size());
-
-		for (auto& setMax : setTypeMaxSizes)
-		{
-			_setTypeSizes.emplace_back(setMax, 0);
-		}
+		memset(_padding, 0, sizeof(_padding));
 	}
 
-	AutoCleanUpDescriptorPool::~AutoCleanUpDescriptorPool()
+	AutoCleanupDescriptorPool::AutoCleanupDescriptorPool(VkDescriptorPool descriptorPool, VkDevice device, uint32_t maxSets, bool freeIndividual,
+		std::vector<VkDescriptorPoolSize>&& setTypeMaxSizes) : _descriptorPool(descriptorPool), _device(device), _freeIndividual(freeIndividual),
+		_maxSets(maxSets), _currentSets(0), _setTypeSizes(std::move(setTypeMaxSizes))
+	{
+		memset(_padding, 0, sizeof(_padding));
+	}
+
+	AutoCleanupDescriptorPool::~AutoCleanupDescriptorPool()
 	{
 		if (_descriptorPool != VK_NULL_HANDLE)
 			vkDestroyDescriptorPool(_device, _descriptorPool, nullptr);
 	}
 
-	AutoCleanUpDescriptorPool::AutoCleanUpDescriptorPool(AutoCleanUpDescriptorPool&& other) noexcept : _descriptorPool(other._descriptorPool), _device(other._device),
-		_maxSets(other._maxSets), _setTypeSizes(std::move(other._setTypeSizes))
+	AutoCleanupDescriptorPool::AutoCleanupDescriptorPool(AutoCleanupDescriptorPool&& other) noexcept : _descriptorPool(other._descriptorPool), _device(other._device),
+		_freeIndividual(other._freeIndividual), _maxSets(other._maxSets), _currentSets(other._currentSets), _setTypeSizes(std::move(other._setTypeSizes))
 	{
+		memset(_padding, 0, sizeof(_padding));
+
 		other._descriptorPool = VK_NULL_HANDLE;
 		other._device = VK_NULL_HANDLE;
+		other._freeIndividual = false;
 		other._maxSets = 0;
+		other._currentSets = 0;
 	}
 
-	AutoCleanUpDescriptorPool& AutoCleanUpDescriptorPool::operator=(AutoCleanUpDescriptorPool&& other) noexcept
+	AutoCleanupDescriptorPool& AutoCleanupDescriptorPool::operator=(AutoCleanupDescriptorPool&& other) noexcept
 	{
 		_descriptorPool = other._descriptorPool;
 		_device = other._device;
+		_freeIndividual = other._freeIndividual;
+		memset(_padding, 0, sizeof(_padding));
 		_maxSets = other._maxSets;
+		_currentSets = other._currentSets;
 		_setTypeSizes = std::move(other._setTypeSizes);
 
 		other._descriptorPool = VK_NULL_HANDLE;
 		other._device = VK_NULL_HANDLE;
+		other._freeIndividual = false;
 		other._maxSets = 0;
+		other._currentSets = 0;
 
 		return *this;
+	}
+
+	std::vector<ListObjectID<UniformBufferDescriptorSet>> AutoCleanupDescriptorPool::AddUniformBuffers(const std::vector<VkDescriptorSetLayout>& descriptorLayouts)
+	{
+		if (descriptorLayouts.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("AutoCleanUpDescriptorPool::AddUniformBuffers Error: descriptor layouts vector overlowed at size = " + std::to_string(descriptorLayouts.size()));
+
+		std::vector<ListObjectID<UniformBufferDescriptorSet>> ret;
+		std::vector<VkDescriptorSet> descriptorSets(descriptorLayouts.size(), VK_NULL_HANDLE);
+
+		VkDescriptorSetAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		allocInfo.descriptorPool = _descriptorPool;
+		allocInfo.descriptorSetCount = static_cast<uint32_t>(descriptorLayouts.size());
+		allocInfo.pSetLayouts = descriptorLayouts.data();
+
+		if (vkAllocateDescriptorSets(_device, &allocInfo, descriptorSets.data()) != VK_SUCCESS)
+			throw std::runtime_error("AutoCleanUpDescriptorPool::AddUniformBuffers Error: Program failed to allocate " + std::to_string(descriptorLayouts.size()) + std::string(" descriptor sets!"));
+
+		ret.reserve(descriptorLayouts.size());
+
+		for (auto& set : descriptorSets)
+		{
+			ret.push_back(_uniformBuffers.AddObject(UniformBufferDescriptorSet(set)));
+		}
+
+		return ret;
 	}
 
 	BasicDescriptorSet::BasicDescriptorSet(VkDescriptorSet descriptorSet) : _desciptorSet(descriptorSet)
@@ -98,7 +139,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	DeviceDescriptorSimplifierInternal::DeviceDescriptorSimplifierInternal(VkDevice device) : _device(device), _ppadding(nullptr)
+	DeviceDescriptorSimplifierInternal::DeviceDescriptorSimplifierInternal(VkDevice device, DevicePipelineDataInternal& pipelineData) : _device(device), _pipelineData(pipelineData)
 	{
 	}
 
@@ -106,7 +147,7 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<AutoCleanUpDescriptorPool> DeviceDescriptorSimplifierInternal::AddDescriptorPool(
+	ListObjectID<AutoCleanupDescriptorPool> DeviceDescriptorSimplifierInternal::AddDescriptorPool(
 		const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes, uint64_t maxTotalSets, bool freeIndividual)
 	{
 		if (maxTotalSets == 0)
@@ -141,14 +182,14 @@ namespace VulkanSimplified
 				throw std::runtime_error("DeviceDescriptorSimplifierInternal::AddDescriptorPool Error: descriptor of a type " + GetPipelineLayoutDescriptorName(type.first) +
 					std::string(", has erroneous max size = " + std::to_string(type.second)));
 
-			for (size_t j = 0; j < i; ++j)
+			auto descriptorType = Utils::TranslateDescriptorType(type.first);
+
+			for (size_t j = 0; j < descriptorTypeMaximums.size(); ++j)
 			{
-				if (descriptorSetTypes[j].first == type.first)
+				if (descriptorTypeMaximums[j].type == descriptorType)
 					throw std::runtime_error("DeviceDescriptorSimplifierInternal::AddDescriptorPool Error: Single type of descriptor has multiple entries in list. Detected indexes are " +
 						std::to_string(j) + std::string(" and ") + std::to_string(i));
 			}
-
-			auto descriptorType = Utils::TranslateDescriptorType(type.first);
 
 			if (descriptorType == VK_DESCRIPTOR_TYPE_MAX_ENUM)
 				throw std::runtime_error("DeviceDescriptorSimplifierInternal::AddDescriptorPool Error: Program was given an erroneous descriptor type in index " + std::to_string(i));
@@ -162,7 +203,25 @@ namespace VulkanSimplified
 		if (vkCreateDescriptorPool(_device, &createInfo, nullptr, &add) != VK_SUCCESS)
 			throw std::runtime_error("DeviceDescriptorSimplifierInternal::AddDescriptorPool Error: Program failed to create a descriptor pool!");
 
-		return _descriptorPools.AddObject(AutoCleanUpDescriptorPool(add, _device, static_cast<uint32_t>(maxTotalSets), descriptorTypeMaximums));
+		return _descriptorPools.AddObject(AutoCleanupDescriptorPool(add, _device, static_cast<uint32_t>(maxTotalSets), freeIndividual, std::move(descriptorTypeMaximums)));
+	}
+
+	std::vector<ListObjectID<UniformBufferDescriptorSet>> DeviceDescriptorSimplifierInternal::AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
+		const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs)
+	{
+		auto& descriptorPool = _descriptorPools.GetObject(poolID);
+
+		auto descriptorLayouts = _pipelineData.GetDescriptorSetLayouts(descriptorLayoutIDs);
+
+		return descriptorPool.AddUniformBuffers(descriptorLayouts);
+	}
+
+	UniformBufferDescriptorSet::UniformBufferDescriptorSet(VkDescriptorSet descriptorSet) : BasicDescriptorSet(descriptorSet)
+	{
+	}
+
+	UniformBufferDescriptorSet::~UniformBufferDescriptorSet()
+	{
 	}
 
 }

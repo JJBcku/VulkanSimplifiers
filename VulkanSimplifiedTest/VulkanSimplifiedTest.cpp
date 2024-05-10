@@ -336,6 +336,9 @@ int main()
             throw std::runtime_error("Program failed to find an appriopriate memory type for the descriptor memory!");
         }
 
+        std::vector<ListObjectID<VulkanSimplified::AutoCleanupDescriptorSetLayout>> uniformLayouts(frameAmount, deviceDescriptorSetLayout);
+        std::vector<ListObjectID<VulkanSimplified::UniformBufferDescriptorSet>> uniformBuffers = deviceDescriptorList.AddUniformBuffers(deviceDescriptorPool, uniformLayouts);
+
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupShaderInputBuffer>> vectorInputBuffers;
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupSmallIndexBuffer>> indexInputBuffers;
         std::vector<ListObjectID<VulkanSimplified::AutoCleanupDescriptorSetsBuffer>> descriptorSetBuffers;

@@ -17,10 +17,16 @@ namespace VulkanSimplified
 	{
 	}
 
-	ListObjectID<AutoCleanUpDescriptorPool> DeviceDescriptorSimplifier::AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes,
+	ListObjectID<AutoCleanupDescriptorPool> DeviceDescriptorSimplifier::AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes,
 		uint64_t maxTotalSets, bool freeIndividual)
 	{
 		return _internal.AddDescriptorPool(descriptorSetTypes, maxTotalSets, freeIndividual);
+	}
+
+	std::vector<ListObjectID<UniformBufferDescriptorSet>> DeviceDescriptorSimplifier::AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
+		const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs)
+	{
+		return _internal.AddUniformBuffers(poolID, descriptorLayoutIDs);
 	}
 
 }

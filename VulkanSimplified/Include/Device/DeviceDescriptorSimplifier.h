@@ -4,7 +4,10 @@ namespace VulkanSimplified
 {
 	class DeviceDescriptorSimplifierInternal;
 
-	class AutoCleanUpDescriptorPool;
+	class AutoCleanupDescriptorSetLayout;
+
+	class AutoCleanupDescriptorPool;
+	class UniformBufferDescriptorSet;
 
 	template<class T>
 	class ListObjectID;
@@ -23,7 +26,10 @@ namespace VulkanSimplified
 
 		DeviceDescriptorSimplifier& operator=(const DeviceDescriptorSimplifier&) noexcept = delete;
 
-		ListObjectID<AutoCleanUpDescriptorPool> AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes, uint64_t maxTotalSets,
+		ListObjectID<AutoCleanupDescriptorPool> AddDescriptorPool(const std::vector<std::pair<PipelineLayoutDescriptorType, uint64_t>>& descriptorSetTypes, uint64_t maxTotalSets,
 			bool freeIndividual);
+
+		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
+			const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs);
 	};
 }
