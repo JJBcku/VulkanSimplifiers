@@ -9,6 +9,9 @@ namespace VulkanSimplified
 	class AutoCleanupDescriptorPool;
 	class UniformBufferDescriptorSet;
 
+	struct DescriptorSetUniformBufferWriteOrder;
+	struct DescriptorSetUniformBufferCopyOrder;
+
 	template<class T>
 	class ListObjectID;
 
@@ -31,5 +34,8 @@ namespace VulkanSimplified
 
 		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
 			const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs);
+
+		void UpdateUniformBufferDescriptorSets(const std::vector<DescriptorSetUniformBufferWriteOrder>& writeOrders,
+			const std::vector<DescriptorSetUniformBufferCopyOrder>& copyOrders);
 	};
 }

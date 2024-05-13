@@ -5,6 +5,7 @@
 
 #include "../Include/Common/ListObjectID.h"
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
 namespace VulkanSimplified
 {
@@ -27,6 +28,12 @@ namespace VulkanSimplified
 		const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs)
 	{
 		return _internal.AddUniformBuffers(poolID, descriptorLayoutIDs);
+	}
+
+	void DeviceDescriptorSimplifier::UpdateUniformBufferDescriptorSets(const std::vector<DescriptorSetUniformBufferWriteOrder>& writeOrders,
+		const std::vector<DescriptorSetUniformBufferCopyOrder>& copyOrders)
+	{
+		_internal.UpdateUniformBufferDescriptorSets(writeOrders, copyOrders);
 	}
 
 }

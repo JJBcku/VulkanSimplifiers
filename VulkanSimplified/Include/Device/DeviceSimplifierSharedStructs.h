@@ -177,4 +177,47 @@ namespace VulkanSimplified
 		uint64_t destinationOffset = 0;
 		uint64_t dataSize = 0;
 	};
+
+	class AutoCleanupDescriptorPool;
+
+	struct CommonDescriptorSetWriteOrder
+	{
+		ListObjectID<AutoCleanupDescriptorPool> poolID;
+		uint32_t binding = std::numeric_limits<uint32_t>::max();
+		uint32_t firstArrayElement = std::numeric_limits<uint32_t>::max();
+	};
+
+	class UniformBufferDescriptorSet;
+	class AutoCleanupDescriptorSetsBuffer;
+
+	struct DescriptorSetBufferWriteOrder
+	{
+		std::optional<ListObjectID<AutoCleanupDescriptorSetsBuffer>> objectID;
+		uint64_t offset = std::numeric_limits<uint64_t>::max();
+		uint64_t range = 0;
+	};
+
+	class UniformBufferDescriptorSet;
+
+	struct DescriptorSetUniformBufferWriteOrder : public CommonDescriptorSetWriteOrder
+	{
+		ListObjectID<UniformBufferDescriptorSet> descriptorID;
+		std::vector<DescriptorSetBufferWriteOrder> writeOrdersBufferData;
+	};
+
+	struct DescriptorSetUniformBufferCopyObjectInfo
+	{
+		ListObjectID<AutoCleanupDescriptorPool> poolID;
+		ListObjectID<UniformBufferDescriptorSet> descriptorID;
+		uint32_t binding = 0;
+		uint32_t firstArrayElement = 0;
+	};
+
+	struct DescriptorSetUniformBufferCopyOrder
+	{
+		DescriptorSetUniformBufferCopyObjectInfo srcBuffer;
+		DescriptorSetUniformBufferCopyObjectInfo dstBuffer;
+		uint32_t amountOfArrayElementsToCopy = 0;
+		uint32_t padding = 0;
+	};
 }

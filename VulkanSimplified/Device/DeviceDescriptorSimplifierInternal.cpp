@@ -2,9 +2,11 @@
 #include "DeviceDescriptorSimplifierInternal.h"
 
 #include "../Include/SharedData/SharedDataSimplifierEnums.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
 #include "../Other/Utils.h"
 
 #include "DevicePipelineDataInternal.h"
+#include "DeviceDataBufferSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
@@ -65,6 +67,9 @@ namespace VulkanSimplified
 		if (descriptorLayouts.size() > std::numeric_limits<uint32_t>::max())
 			throw std::runtime_error("AutoCleanUpDescriptorPool::AddUniformBuffers Error: descriptor layouts vector overlowed at size = " + std::to_string(descriptorLayouts.size()));
 
+		if (descriptorLayouts.empty())
+			throw std::runtime_error("AutoCleanUpDescriptorPool::AddUniformBuffers Error: Program tried to allocate zero uniform buffer descriptors!");
+
 		std::vector<ListObjectID<UniformBufferDescriptorSet>> ret;
 		std::vector<VkDescriptorSet> descriptorSets(descriptorLayouts.size(), VK_NULL_HANDLE);
 
@@ -87,12 +92,22 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	VkDescriptorSet AutoCleanupDescriptorPool::GetUniformBufferDescriptorSet(ListObjectID<UniformBufferDescriptorSet> _descriptorID) const
+	{
+		return _uniformBuffers.GetConstObject(_descriptorID).GetDescriptorSet();
+	}
+
 	BasicDescriptorSet::BasicDescriptorSet(VkDescriptorSet descriptorSet) : _desciptorSet(descriptorSet)
 	{
 	}
 
 	BasicDescriptorSet::~BasicDescriptorSet()
 	{
+	}
+
+	VkDescriptorSet BasicDescriptorSet::GetDescriptorSet() const
+	{
+		return _desciptorSet;
 	}
 
 	std::string DeviceDescriptorSimplifierInternal::GetPipelineLayoutDescriptorName(PipelineLayoutDescriptorType type) const
@@ -139,7 +154,8 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	DeviceDescriptorSimplifierInternal::DeviceDescriptorSimplifierInternal(VkDevice device, DevicePipelineDataInternal& pipelineData) : _device(device), _pipelineData(pipelineData)
+	DeviceDescriptorSimplifierInternal::DeviceDescriptorSimplifierInternal(VkDevice device, const DevicePipelineDataInternal& pipelineData,
+		const DeviceDataBufferSimplifierInternal& dataBuffers) : _device(device), _ppadding(nullptr), _pipelineData(pipelineData), _dataBuffers(dataBuffers)
 	{
 	}
 
@@ -214,6 +230,100 @@ namespace VulkanSimplified
 		auto descriptorLayouts = _pipelineData.GetDescriptorSetLayouts(descriptorLayoutIDs);
 
 		return descriptorPool.AddUniformBuffers(descriptorLayouts);
+	}
+
+	void DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets(const std::vector<DescriptorSetUniformBufferWriteOrder>& writeOrders,
+		const std::vector<DescriptorSetUniformBufferCopyOrder>& copyOrders)
+	{
+		if (writeOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets Error: write order list overflowed at " + std::to_string(writeOrders.size()));
+
+		if (copyOrders.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets Error: copy order list overflowed at " + std::to_string(copyOrders.size()));
+
+		if (writeOrders.empty() && copyOrders.empty())
+			throw std::runtime_error("DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets Error: All order lists are empty!");
+
+		std::vector<VkWriteDescriptorSet> descriptorWrites;
+		std::vector<VkCopyDescriptorSet> descriptorCopies;
+		std::vector<std::vector<VkDescriptorBufferInfo>> descriptorBufferListsList;
+
+		descriptorWrites.reserve(writeOrders.size());
+		descriptorBufferListsList.resize(writeOrders.size());
+
+		for (size_t i = 0; i < writeOrders.size(); ++i)
+		{
+			auto& writeOrder = writeOrders[i];
+
+			if (writeOrder.writeOrdersBufferData.empty())
+				throw std::runtime_error("DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets Error: In write order " + std::to_string(i)
+					+ std::string(" the array elements data list is empty!"));
+
+			if (writeOrder.writeOrdersBufferData.size() > std::numeric_limits<uint32_t>::max())
+				throw std::runtime_error("DeviceDescriptorSimplifierInternal::UpdateUniformBufferDescriptorSets Error: In write order " + std::to_string(i)
+					+ std::string(" the array elements data list overflowed at ") + std::to_string(writeOrder.writeOrdersBufferData.size()));
+
+			descriptorBufferListsList[i].reserve(writeOrder.writeOrdersBufferData.size());
+
+			for (auto& bufferData : writeOrder.writeOrdersBufferData)
+			{
+				VkDescriptorBufferInfo bufferInfo{};
+				if (bufferData.objectID.has_value())
+				{
+					bufferInfo.buffer = _dataBuffers.GetDescriptorSetsBuffer(bufferData.objectID.value());
+				}
+				else
+				{
+					bufferInfo.buffer = VK_NULL_HANDLE;
+				}
+
+				bufferInfo.offset = bufferData.offset;
+				bufferInfo.range = bufferData.range;
+
+				descriptorBufferListsList[i].push_back(bufferInfo);
+			}
+
+			auto& descriptorPool = _descriptorPools.GetConstObject(writeOrder.poolID);
+
+			VkWriteDescriptorSet add{};
+			add.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			add.dstSet = descriptorPool.GetUniformBufferDescriptorSet(writeOrder.descriptorID);
+			add.dstBinding = writeOrder.binding;
+			add.dstArrayElement = writeOrder.firstArrayElement;
+
+			add.descriptorCount = static_cast<uint32_t>(writeOrder.writeOrdersBufferData.size());
+			add.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			add.pBufferInfo = descriptorBufferListsList[i].data();
+
+			descriptorWrites.push_back(add);
+		}
+
+		for (size_t i = 0; i < copyOrders.size(); ++i)
+		{
+			auto& copyOrder = copyOrders[i];
+
+			VkCopyDescriptorSet add{};
+			add.sType = VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET;
+
+			auto& srcPool = _descriptorPools.GetConstObject(copyOrder.srcBuffer.poolID);
+
+			add.srcSet = srcPool.GetUniformBufferDescriptorSet(copyOrder.srcBuffer.descriptorID);
+			add.srcBinding = copyOrder.srcBuffer.binding;
+			add.srcArrayElement = copyOrder.srcBuffer.firstArrayElement;
+
+			auto& dstPool = _descriptorPools.GetConstObject(copyOrder.dstBuffer.poolID);
+
+			add.dstSet = dstPool.GetUniformBufferDescriptorSet(copyOrder.dstBuffer.descriptorID);
+			add.dstBinding = copyOrder.srcBuffer.binding;
+			add.dstArrayElement = copyOrder.srcBuffer.firstArrayElement;
+
+			add.descriptorCount = copyOrder.amountOfArrayElementsToCopy;
+
+			descriptorCopies.push_back(add);
+		}
+
+		vkUpdateDescriptorSets(_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(),
+			static_cast<uint32_t>(descriptorCopies.size()), descriptorCopies.data());
 	}
 
 	UniformBufferDescriptorSet::UniformBufferDescriptorSet(VkDescriptorSet descriptorSet) : BasicDescriptorSet(descriptorSet)

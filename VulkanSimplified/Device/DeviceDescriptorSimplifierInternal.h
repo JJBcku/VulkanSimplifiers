@@ -18,6 +18,8 @@ namespace VulkanSimplified
 
 		BasicDescriptorSet& operator=(const BasicDescriptorSet&) noexcept = default;
 		BasicDescriptorSet& operator=(BasicDescriptorSet&& other) noexcept = default;
+
+		VkDescriptorSet GetDescriptorSet() const;
 	};
 
 	class UniformBufferDescriptorSet : public BasicDescriptorSet
@@ -34,6 +36,10 @@ namespace VulkanSimplified
 	};
 
 	enum class PipelineLayoutDescriptorType : uint64_t;
+	struct DescriptorSetUniformBufferWriteOrder;
+	struct DescriptorSetUniformBufferCopyOrder;
+
+	struct DescriptorSetUniformBufferWriteOrder;
 
 	class AutoCleanupDescriptorPool
 	{
@@ -60,22 +66,28 @@ namespace VulkanSimplified
 		AutoCleanupDescriptorPool& operator=(AutoCleanupDescriptorPool&& other) noexcept;
 
 		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(const std::vector<VkDescriptorSetLayout>& descriptorLayouts);
+
+		VkDescriptorSet GetUniformBufferDescriptorSet(ListObjectID<UniformBufferDescriptorSet> _descriptorID) const;
 	};
 
 	class DevicePipelineDataInternal;
+	class DeviceDataBufferSimplifierInternal;
 	class AutoCleanupDescriptorSetLayout;
 
 	class DeviceDescriptorSimplifierInternal
 	{
 		VkDevice _device;
-		DevicePipelineDataInternal& _pipelineData;
+		void* _ppadding;
+
+		const DevicePipelineDataInternal& _pipelineData;
+		const DeviceDataBufferSimplifierInternal& _dataBuffers;
 
 		ListTemplate<AutoCleanupDescriptorPool> _descriptorPools;
 
 		std::string GetPipelineLayoutDescriptorName(PipelineLayoutDescriptorType type) const;
 
 	public:
-		DeviceDescriptorSimplifierInternal(VkDevice device, DevicePipelineDataInternal& pipelineData);
+		DeviceDescriptorSimplifierInternal(VkDevice device, const DevicePipelineDataInternal& pipelineData, const DeviceDataBufferSimplifierInternal& dataBuffers);
 		~DeviceDescriptorSimplifierInternal();
 
 		DeviceDescriptorSimplifierInternal(const DeviceDescriptorSimplifierInternal&) noexcept = delete;
@@ -87,5 +99,8 @@ namespace VulkanSimplified
 
 		std::vector<ListObjectID<UniformBufferDescriptorSet>> AddUniformBuffers(ListObjectID<AutoCleanupDescriptorPool> poolID,
 			const std::vector<ListObjectID<AutoCleanupDescriptorSetLayout>>& descriptorLayoutIDs);
+
+		void UpdateUniformBufferDescriptorSets(const std::vector<DescriptorSetUniformBufferWriteOrder>& writeOrders,
+			const std::vector<DescriptorSetUniformBufferCopyOrder>& copyOrders);
 	};
 }
