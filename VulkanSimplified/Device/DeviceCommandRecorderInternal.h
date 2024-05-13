@@ -1,8 +1,3 @@
-#include "../Other/VulkanSimplifierListTemplate.h"
-
-#include "../Include/Device/DeviceSimplifierSharedEnums.h"
-#include "../Include/Device/DeviceSimplifierSharedStructs.h"
-
 namespace VulkanSimplified
 {
 	class DevicePipelineDataInternal;
@@ -12,6 +7,7 @@ namespace VulkanSimplified
 	class AutoCleanupRenderPass;
 	class AutoCleanupSwapchainFramebuffer;
 	class AutoCleanupGraphicsPipeline;
+	class AutoCleanupPipelineLayout;
 
 	class AutoCleanupShaderInputBuffer;
 	class AutoCleanupStagingBuffer;
@@ -20,6 +16,16 @@ namespace VulkanSimplified
 	class AutoCleanupDescriptorSetsBuffer;
 
 	class DeviceDataBufferSimplifierInternal;
+	class DeviceDescriptorSimplifierInternal;
+
+	struct UniformBufferDescriptorSetID;
+	struct BufferCopyOrder;
+
+	enum class PrimaryBufferRecordingSettings : uint64_t;
+	enum class PipelineBindPoint : uint64_t;
+
+	template<class T>
+	class ListObjectID;
 
 	class DeviceCommandRecorderInternal
 	{
@@ -27,8 +33,7 @@ namespace VulkanSimplified
 		const DevicePipelineDataInternal& _pipelineData;
 		const SharedDataPipelineElementsInternal& _sharedPipelineData;
 		const DeviceDataBufferSimplifierInternal& _dataBuffersList;
-
-		void* _ppadding;
+		const DeviceDescriptorSimplifierInternal& _descriptorSetsList;
 
 		VkCommandBuffer _commandBuffer;
 
@@ -36,7 +41,8 @@ namespace VulkanSimplified
 
 	public:
 		DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData, const DevicePipelineDataInternal& pipelineData,
-			const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& _dataBuffersList);
+			const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& dataBuffersList,
+			const DeviceDescriptorSimplifierInternal& descriptorSetsList);
 		~DeviceCommandRecorderInternal();
 
 		DeviceCommandRecorderInternal& operator=(const DeviceCommandRecorderInternal&) noexcept = delete;
@@ -52,6 +58,9 @@ namespace VulkanSimplified
 		void BindSmallIndexInput(ListObjectID<AutoCleanupSmallIndexBuffer> indexInputs, uint64_t indicesSkipped);
 		void BindBigIndexInput(ListObjectID<AutoCleanupBigIndexBuffer> indexInputs, uint64_t indicesSkipped);
 		void BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID);
+
+		void BindUniformBufferDescriptorSets(PipelineBindPoint bindPoint, ListObjectID<AutoCleanupPipelineLayout> pipelineLayout, uint32_t firstSet,
+			const std::vector<UniformBufferDescriptorSetID>& descriptorIDs);
 
 		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset);
 		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t instanceOffset);

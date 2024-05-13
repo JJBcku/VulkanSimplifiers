@@ -5,6 +5,7 @@ namespace VulkanSimplified
 	enum class VertexAttributeFormats : uint64_t;
 	enum PipelineStage : uint64_t;
 	enum class PipelineLayoutDescriptorType : uint64_t;
+	enum class PipelineBindPoint : uint64_t;
 
 	class Utils
 	{
@@ -21,5 +22,6 @@ namespace VulkanSimplified
 
 		static VkPipelineStageFlags TranslatePipelineStage(PipelineStage stages);
 		static VkDescriptorType TranslateDescriptorType(PipelineLayoutDescriptorType descriptorType);
+		static VkPipelineBindPoint TranslatePipelineBindPoint(PipelineBindPoint bindPoint);
 	};
 }

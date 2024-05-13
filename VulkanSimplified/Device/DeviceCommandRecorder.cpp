@@ -53,6 +53,12 @@ namespace VulkanSimplified
 		_internal.BindGraphicsPipeline(graphicsPipelineID);
 	}
 
+	void DeviceCommandRecorder::BindUniformBufferDescriptorSets(PipelineBindPoint bindPoint, ListObjectID<AutoCleanupPipelineLayout> pipelineLayout,
+		uint32_t firstSet, const std::vector<UniformBufferDescriptorSetID>& descriptorIDs)
+	{
+		_internal.BindUniformBufferDescriptorSets(bindPoint, pipelineLayout, firstSet, descriptorIDs);
+	}
+
 	void DeviceCommandRecorder::Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset)
 	{
 		_internal.Draw(vertexCount, instanceCount, vertexOffset, instanceOffset);

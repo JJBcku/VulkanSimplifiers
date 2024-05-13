@@ -278,7 +278,7 @@ namespace VulkanSimplified
 				}
 
 				bufferInfo.offset = bufferData.offset;
-				bufferInfo.range = bufferData.range;
+				bufferInfo.range = bufferData.range.value_or(VK_WHOLE_SIZE);
 
 				descriptorBufferListsList[i].push_back(bufferInfo);
 			}
@@ -324,6 +324,13 @@ namespace VulkanSimplified
 
 		vkUpdateDescriptorSets(_device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(),
 			static_cast<uint32_t>(descriptorCopies.size()), descriptorCopies.data());
+	}
+
+	VkDescriptorSet DeviceDescriptorSimplifierInternal::GetUniformBufferDescriptorSet(UniformBufferDescriptorSetID descriptorID) const
+	{
+		auto& pool = _descriptorPools.GetConstObject(descriptorID.poolID);
+
+		return pool.GetUniformBufferDescriptorSet(descriptorID.descriptorID);
 	}
 
 	UniformBufferDescriptorSet::UniformBufferDescriptorSet(VkDescriptorSet descriptorSet) : BasicDescriptorSet(descriptorSet)

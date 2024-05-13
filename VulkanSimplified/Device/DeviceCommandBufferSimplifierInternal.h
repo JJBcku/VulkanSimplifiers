@@ -13,6 +13,7 @@ namespace VulkanSimplified
 	class DevicePipelineDataInternal;
 	class DeviceSynchronizationSimplifierInternal;
 	class DeviceDataBufferSimplifierInternal;
+	class DeviceDescriptorSimplifierInternal;
 
 	class AutoCleanupFence;
 
@@ -43,8 +44,7 @@ namespace VulkanSimplified
 		const SharedDataSimplifierCoreInternal& _sharedData;
 		const DeviceSynchronizationSimplifierInternal& _synchronizationData;
 		const DeviceDataBufferSimplifierInternal& _dataBuffersList;
-
-		void* _ppadding;
+		const DeviceDescriptorSimplifierInternal& _descriptorSetsList;
 
 		VkDevice _device;
 
@@ -54,7 +54,7 @@ namespace VulkanSimplified
 	public:
 		DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
 			const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData, const DeviceSynchronizationSimplifierInternal& synchronizationData,
-			const DeviceDataBufferSimplifierInternal& dataBuffersList);
+			const DeviceDataBufferSimplifierInternal& dataBuffersList, const DeviceDescriptorSimplifierInternal& descriptorSetsList);
 		~DeviceCommandBufferSimplifierInternal();
 
 		DeviceCommandBufferSimplifierInternal(DeviceCommandBufferSimplifierInternal&) noexcept = delete;

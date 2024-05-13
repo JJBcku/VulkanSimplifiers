@@ -13,10 +13,12 @@
 
 namespace VulkanSimplified
 {
-	DeviceCommandBufferSimplifierInternal::DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore, const DeviceImageSimplifierInternal& imageData,
-		const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData, const DeviceSynchronizationSimplifierInternal& synchronizationData,
-		const DeviceDataBufferSimplifierInternal& dataBuffersList) : _deviceCore(deviceCore), _imageData(imageData), _pipelineData(pipelineData), _sharedData(sharedData),
-		_synchronizationData(synchronizationData), _dataBuffersList(dataBuffersList), _ppadding(nullptr), _device(deviceCore.GetDevice())
+	DeviceCommandBufferSimplifierInternal::DeviceCommandBufferSimplifierInternal(const DeviceCoreSimplifierInternal& deviceCore,
+		const DeviceImageSimplifierInternal& imageData, const DevicePipelineDataInternal& pipelineData, const SharedDataSimplifierCoreInternal& sharedData,
+		const DeviceSynchronizationSimplifierInternal& synchronizationData, const DeviceDataBufferSimplifierInternal& dataBuffersList,
+		const DeviceDescriptorSimplifierInternal& descriptorSetsList) : _deviceCore(deviceCore), _imageData(imageData), _pipelineData(pipelineData),
+		_sharedData(sharedData), _synchronizationData(synchronizationData), _dataBuffersList(dataBuffersList), _descriptorSetsList(descriptorSetsList),
+		_device(deviceCore.GetDevice())
 	{
 	}
 
@@ -57,7 +59,8 @@ namespace VulkanSimplified
 		if (vkAllocateCommandBuffers(_device, &allocInfo, &add) != VK_SUCCESS)
 			throw std::runtime_error("DeviceCommandBufferSimplifierInternal::AddCommandBuffer Error: Program failed to allocate the command buffer!");
 
-		return _primaryCommandBuffers.AddObject(std::make_unique<DeviceCommandRecorderInternal>(add, _imageData, _pipelineData, _sharedData.GetConstSharedDataPipelineElements(), _dataBuffersList));
+		return _primaryCommandBuffers.AddObject(std::make_unique<DeviceCommandRecorderInternal>(add, _imageData, _pipelineData,
+			_sharedData.GetConstSharedDataPipelineElements(), _dataBuffersList, _descriptorSetsList));
 	}
 
 	std::vector<ListObjectID<std::unique_ptr<DeviceCommandRecorderInternal>>> DeviceCommandBufferSimplifierInternal::AddPrimaryCommandBuffers(ListObjectID<AutoCleanupCommandPool> commandPool,
@@ -83,7 +86,8 @@ namespace VulkanSimplified
 
 		for (size_t i = 0; i < list.size(); ++i)
 		{
-			ret.push_back(_primaryCommandBuffers.AddObject(std::make_unique<DeviceCommandRecorderInternal>(list[i], _imageData, _pipelineData, _sharedData.GetConstSharedDataPipelineElements(), _dataBuffersList)));
+			ret.push_back(_primaryCommandBuffers.AddObject(std::make_unique<DeviceCommandRecorderInternal>(list[i], _imageData, _pipelineData,
+				_sharedData.GetConstSharedDataPipelineElements(), _dataBuffersList, _descriptorSetsList)));
 		}
 
 		return ret;

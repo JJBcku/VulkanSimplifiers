@@ -3,7 +3,15 @@
 
 #include "DeviceImageSimplifierInternal.h"
 #include "DevicePipelineDataInternal.h"
+#include "DeviceDescriptorSimplifierInternal.h"
 #include "../SharedData/SharedDataPipelineElementsInternal.h"
+
+#include "../Include/SharedData/SharedDataSimplifierEnums.h"
+#include "../Include/Device/DeviceSimplifierSharedEnums.h"
+#include "../Include/Device/DeviceSimplifierSharedStructs.h"
+
+#include "../Other/ListObjectTemplate.h"
+#include "../Other/Utils.h"
 
 #include "DeviceDataBufferSimplifierInternal.h"
 
@@ -29,9 +37,10 @@ namespace VulkanSimplified
 	}
 
 	DeviceCommandRecorderInternal::DeviceCommandRecorderInternal(VkCommandBuffer commandBuffer, const DeviceImageSimplifierInternal& imagesData,
-		const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData, const DeviceDataBufferSimplifierInternal& dataBuffersList) :
-		_imagesData(imagesData), _pipelineData(pipelineData), _sharedPipelineData(sharedPipelineData), _dataBuffersList(dataBuffersList), _ppadding(nullptr),
-		_commandBuffer(commandBuffer)
+		const DevicePipelineDataInternal& pipelineData, const SharedDataPipelineElementsInternal& sharedPipelineData,
+		const DeviceDataBufferSimplifierInternal& dataBuffersList, const DeviceDescriptorSimplifierInternal& descriptorSetsList) :
+		_imagesData(imagesData), _pipelineData(pipelineData), _sharedPipelineData(sharedPipelineData), _dataBuffersList(dataBuffersList),
+		_descriptorSetsList(descriptorSetsList), _commandBuffer(commandBuffer)
 	{
 	}
 
@@ -124,6 +133,25 @@ namespace VulkanSimplified
 	void DeviceCommandRecorderInternal::BindGraphicsPipeline(ListObjectID<AutoCleanupGraphicsPipeline> graphicsPipelineID)
 	{
 		vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineData.GetGraphicsPipeline(graphicsPipelineID));
+	}
+
+	void DeviceCommandRecorderInternal::BindUniformBufferDescriptorSets(PipelineBindPoint bindPoint, ListObjectID<AutoCleanupPipelineLayout> pipelineLayout,
+		uint32_t firstSet, const std::vector<UniformBufferDescriptorSetID>& descriptorIDs)
+	{
+		if (descriptorIDs.empty())
+			throw std::runtime_error("DeviceCommandRecorderInternal::BindUniformBufferDescriptorSets Error: Function was given an empty descriptor set list to bind!");
+
+		if (descriptorIDs.size() > std::numeric_limits<uint32_t>::max())
+			throw std::runtime_error("DeviceCommandRecorderInternal::BindUniformBufferDescriptorSets Error: descriptor set ID list overflowed at " + std::to_string(descriptorIDs.size()));
+
+		std::vector<VkDescriptorSet> descriptorSets;
+		descriptorSets.reserve(descriptorIDs.size());
+
+		for (auto& ID : descriptorIDs)
+			descriptorSets.push_back(_descriptorSetsList.GetUniformBufferDescriptorSet(ID));
+
+		vkCmdBindDescriptorSets(_commandBuffer, Utils::TranslatePipelineBindPoint(bindPoint), _pipelineData.GetPipelineLayout(pipelineLayout), firstSet,
+			static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
 	}
 
 	void DeviceCommandRecorderInternal::Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t vertexOffset, uint32_t instanceOffset)

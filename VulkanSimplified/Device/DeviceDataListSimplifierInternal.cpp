@@ -6,7 +6,8 @@ namespace VulkanSimplified
 	DeviceDataListSimplifierInternal::DeviceDataListSimplifierInternal(VkPhysicalDevice device, const SimplifiedDeviceInfo& deviceInfo,
 		const DeviceSettings& deviceSettings, const SharedDataSimplifierCoreInternal& sharedDataList, const SwapchainSimplifierInternal& swapchain) : _sharedDataList(sharedDataList),
 		_deviceCore(device, deviceInfo, deviceSettings), _shaderModules(_deviceCore.GetDevice()), _pipelineData(_deviceCore.GetDevice(), _sharedDataList, _shaderModules),
-		_imageData(_deviceCore.GetDevice(), swapchain, _pipelineData), _commandBuffers(_deviceCore, _imageData, _pipelineData, _sharedDataList, _synchronizationData, _dataBuffers),
+		_imageData(_deviceCore.GetDevice(), swapchain, _pipelineData),
+		_commandBuffers(_deviceCore, _imageData, _pipelineData, _sharedDataList, _synchronizationData, _dataBuffers, _descriptorSets),
 		_synchronizationData(_deviceCore.GetDevice()), _memoryData(device, _deviceCore.GetDevice()), _dataBuffers(_deviceCore.GetDevice(), _memoryData),
 		_descriptorSets(_deviceCore.GetDevice(), _pipelineData, _dataBuffers)
 	{

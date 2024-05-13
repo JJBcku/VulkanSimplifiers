@@ -74,6 +74,8 @@ namespace VulkanSimplified
 	class DeviceDataBufferSimplifierInternal;
 	class AutoCleanupDescriptorSetLayout;
 
+	struct UniformBufferDescriptorSetID;
+
 	class DeviceDescriptorSimplifierInternal
 	{
 		VkDevice _device;
@@ -102,5 +104,7 @@ namespace VulkanSimplified
 
 		void UpdateUniformBufferDescriptorSets(const std::vector<DescriptorSetUniformBufferWriteOrder>& writeOrders,
 			const std::vector<DescriptorSetUniformBufferCopyOrder>& copyOrders);
+
+		VkDescriptorSet GetUniformBufferDescriptorSet(UniformBufferDescriptorSetID descriptorID) const;
 	};
 }

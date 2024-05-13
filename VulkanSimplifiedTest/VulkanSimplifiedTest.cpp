@@ -178,7 +178,7 @@ int main()
 		std::vector<ListObjectID<VulkanSimplified::PipelineViewportsStateList>> pipelineViewportStatesList;
 
 		pipelineViewportStatesList.push_back(pipelineData.AddPipelineViewportState({ {pipelineViewport[0], pipelineScissor[0]} }));
-		auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, true);
+		auto pipelineRasterizationState = pipelineData.AddPipelineRasterizationState(VulkanSimplified::PipelinePolygonMode::FILL, VulkanSimplified::PipelineCullMode::BACK, false);
 
 		auto pipelineMultisampling = pipelineData.AddPipelineMultisampleState(VulkanSimplified::PipelineMultisampleCount::SAMPLE_1, false, 0.0f);
 		auto pipelineDepthSettings = pipelineData.AddPipelineDepthState(true, true, VulkanSimplified::PipelineDepthCompare::LESS);
@@ -513,6 +513,7 @@ int main()
 			commandRecorderList[currentImage].BindGraphicsPipeline(pipelineList[pipelineID]);
 			commandRecorderList[currentImage].BindVertexInput({ {vectorInputBuffers[currentSynchro], 0} }, 0);
 			commandRecorderList[currentImage].BindSmallIndexInput(indexInputBuffers[currentSynchro], 0);
+			commandRecorderList[currentImage].BindUniformBufferDescriptorSets(VulkanSimplified::PipelineBindPoint::GRAPHIC, devicePipelineLayout, 0, { {deviceDescriptorPool, uniformBuffers[currentSynchro]} });
 			commandRecorderList[currentImage].DrawIndexed(static_cast<uint32_t>(_index.size()), 1, 0, 0, 0);
 
 			commandRecorderList[currentImage].EndRenderPass();

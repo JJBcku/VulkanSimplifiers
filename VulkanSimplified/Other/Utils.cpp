@@ -223,4 +223,23 @@ namespace VulkanSimplified
 		return ret;
 	}
 
+	VkPipelineBindPoint Utils::TranslatePipelineBindPoint(PipelineBindPoint bindPoint)
+	{
+		VkPipelineBindPoint ret = VK_PIPELINE_BIND_POINT_MAX_ENUM;
+
+		switch (bindPoint)
+		{
+		case VulkanSimplified::PipelineBindPoint::GRAPHIC:
+			ret = VK_PIPELINE_BIND_POINT_GRAPHICS;
+			break;
+		case VulkanSimplified::PipelineBindPoint::COMPUTE:
+			ret = VK_PIPELINE_BIND_POINT_COMPUTE;
+			break;
+		default:
+			break;
+		}
+
+		return ret;
+	}
+
 }

@@ -194,7 +194,7 @@ namespace VulkanSimplified
 	{
 		std::optional<ListObjectID<AutoCleanupDescriptorSetsBuffer>> objectID;
 		uint64_t offset = std::numeric_limits<uint64_t>::max();
-		uint64_t range = 0;
+		std::optional<uint64_t> range = 0;
 	};
 
 	class UniformBufferDescriptorSet;
@@ -219,5 +219,11 @@ namespace VulkanSimplified
 		DescriptorSetUniformBufferCopyObjectInfo dstBuffer;
 		uint32_t amountOfArrayElementsToCopy = 0;
 		uint32_t padding = 0;
+	};
+
+	struct UniformBufferDescriptorSetID
+	{
+		ListObjectID<AutoCleanupDescriptorPool> poolID;
+		ListObjectID<UniformBufferDescriptorSet> descriptorID;
 	};
 }
