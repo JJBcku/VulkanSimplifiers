@@ -200,12 +200,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Basics\BasicsSimplifierInternal.h" />
+    <ClInclude Include="Basics\BasicsSimplifierInternalStructs.h" />
     <ClInclude Include="Include\Device\DeviceDescriptorSimplifier.h" />
     <ClInclude Include="Device\DeviceDescriptorSimplifierInternal.h" />
     <ClInclude Include="Include\Device\DeviceDataBufferSimplifier.h" />
     <ClInclude Include="Device\DeviceDataBufferSimplifierInternal.h" />
-    <ClInclude Include="Include\Basics\SwapchainSimplifierEnums.h" />
-    <ClInclude Include="Include\Basics\SwapchainSimplifierStructs.h" />
+    <ClInclude Include="Include\Basics\SwapchainSimplifierSharedEnums.h" />
+    <ClInclude Include="Include\Basics\SwapchainSimplifierSharedStructs.h" />
     <ClInclude Include="Other\Utils.h" />
     <ClInclude Include="Include\Device\DeviceMemorySimplifier.h" />
     <ClInclude Include="Device\DeviceMemorySimplifierInternal.h" />
@@ -260,6 +261,7 @@
   <ItemGroup>
     <ClCompile Include="Basics\BasicsSimplifier.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierInternal.cpp" />
+    <ClCompile Include="Basics\BasicsSimplifierInternalStructs.cpp" />
     <ClCompile Include="Basics\BasicsSimplifierSharedStructs.cpp" />
     <ClCompile Include="Basics\SwapchainSimplifierEnums.cpp" />
     <ClCompile Include="Basics\SwapchainSimplifierStructs.cpp" />

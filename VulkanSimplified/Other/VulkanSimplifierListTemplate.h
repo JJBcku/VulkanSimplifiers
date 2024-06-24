@@ -170,7 +170,7 @@ namespace VulkanSimplified
 		{
 			auto it = std::find(_list.begin(), _list.end(), objectID);
 
-			if (it == _list.end())
+			if (it == _list.cend())
 			{
 				if (throwOnIDNotFound)
 					throw std::runtime_error("ListTemplate: Program tried to delete a non-existent entry in a list!");

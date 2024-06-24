@@ -43,15 +43,23 @@ namespace VulkanSimplified
     {
     }
 
-    MemoryHeapSizes::MemoryHeapSizes()
+    MemoryHeapSizes::MemoryHeapSizes() : externalMemory(), sharedMemory()
     {
-        externalUncachedDeviceAccessibleMemorySize = 0;
-        externalCachedCoherentDeviceAccessibleMemorySize = 0;
-        externalCachedIncoherentDeviceAccessibleMemorySize = 0;
         localMemorySize = 0;
-        sharedUncachedMemorySize = 0;
-        sharedCachedCoherentMemorySize = 0;
-        sharedCachedIncoherentMemorySize = 0;
+    }
+
+    ExternalMemoryHeapSizes::ExternalMemoryHeapSizes()
+    {
+        uncached = 0;
+        cachedCoherent = 0;
+        cachedIncoherent = 0;
+    }
+
+    SharedMemoryHeapSizes::SharedMemoryHeapSizes()
+    {
+        uncached = 0;
+        cachedCoherent = 0;
+        cachedIncoherent = 0;
     }
 
 }

@@ -1,11 +1,9 @@
 #pragma once
 
-#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
-#include "../Include/Basics/BasicsSimplifierSharedEnums.h"
-
 namespace VulkanSimplified
 {
 	struct VersionArray;
+	struct AppData;
 
 	class VulkanCoreSimplifierInternal
 	{

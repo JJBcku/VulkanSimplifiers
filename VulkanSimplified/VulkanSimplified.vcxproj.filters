@@ -192,10 +192,10 @@
     <ClInclude Include="Other\SortedListTemplate.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Basics\SwapchainSimplifierEnums.h">
+    <ClInclude Include="Include\Basics\SwapchainSimplifierSharedEnums.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Basics\SwapchainSimplifierStructs.h">
+    <ClInclude Include="Include\Basics\SwapchainSimplifierSharedStructs.h">
       <Filter>Header Files\Basics</Filter>
     </ClInclude>
     <ClInclude Include="Other\Utils.h">
@@ -208,6 +208,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Device\DeviceDescriptorSimplifier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Basics\BasicsSimplifierInternalStructs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -369,6 +372,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Device\DeviceDescriptorSimplifier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Basics\BasicsSimplifierInternalStructs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

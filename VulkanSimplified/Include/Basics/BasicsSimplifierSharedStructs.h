@@ -52,14 +52,30 @@ namespace VulkanSimplified
 
 		QueueFamilies();
 	};
+
+	struct ExternalMemoryHeapSizes
+	{
+		uint64_t uncached;
+		uint64_t cachedCoherent;
+		uint64_t cachedIncoherent;
+
+		ExternalMemoryHeapSizes();
+	};
+
+	struct SharedMemoryHeapSizes
+	{
+		uint64_t uncached;
+		uint64_t cachedCoherent;
+		uint64_t cachedIncoherent;
+
+		SharedMemoryHeapSizes();
+	};
 	
 	struct MemoryHeapSizes
 	{
-		uint64_t externalUncachedDeviceAccessibleMemorySize, externalCachedCoherentDeviceAccessibleMemorySize, externalCachedIncoherentDeviceAccessibleMemorySize;
+		ExternalMemoryHeapSizes externalMemory;
+		SharedMemoryHeapSizes sharedMemory;
 		uint64_t localMemorySize;
-		uint64_t sharedUncachedMemorySize;
-		uint64_t sharedCachedCoherentMemorySize;
-		uint64_t sharedCachedIncoherentMemorySize;
 
 		MemoryHeapSizes();
 	};

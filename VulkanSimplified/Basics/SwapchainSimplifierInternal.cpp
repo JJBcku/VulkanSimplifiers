@@ -4,11 +4,13 @@
 #include "WindowSimplifierInternal.h"
 #include "DeviceListSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"
+#include "BasicsSimplifierInternalStructs.h"
 
-#include "../Include/Basics/SwapchainSimplifierEnums.h"
-#include "../Include/Basics/SwapchainSimplifierStructs.h"
+#include "../Include/Basics/SwapchainSimplifierSharedEnums.h"
+#include "../Include/Basics/SwapchainSimplifierSharedStructs.h"
 #include "../Include/Device/DeviceSimplifierSharedStructs.h"
 
+#include "../Device/DeviceDataListSimplifierInternal.h"
 #include "../Device/DeviceSynchronizationSimplifierInternal.h"
 #include "../Device/DeviceImageSimplifierInternal.h"
 

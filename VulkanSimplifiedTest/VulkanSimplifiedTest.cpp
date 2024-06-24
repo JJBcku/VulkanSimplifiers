@@ -8,8 +8,8 @@
 #include <Basics/BasicsSimplifier.h>
 #include <Basics/DeviceListSimplifier.h>
 #include <Basics/SwapchainSimplifier.h>
-#include <Basics/SwapchainSimplifierEnums.h>
-#include <Basics/SwapchainSimplifierStructs.h>
+#include <Basics/SwapchainSimplifierSharedEnums.h>
+#include <Basics/SwapchainSimplifierSharedStructs.h>
 #include <Basics/WindowSimplifier.h>
 
 #include <Device/DeviceDataListSimplifier.h>

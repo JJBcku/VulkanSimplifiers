@@ -1,7 +1,7 @@
 #include "../Other/pch.h"
-#include "../Include/Basics/SwapchainSimplifierStructs.h"
+#include "../Include/Basics/SwapchainSimplifierSharedStructs.h"
 
-#include "../Include/Basics/SwapchainSimplifierEnums.h"
+#include "../Include/Basics/SwapchainSimplifierSharedEnums.h"
 
 namespace VulkanSimplified
 {

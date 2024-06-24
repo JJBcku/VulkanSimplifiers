@@ -2,9 +2,12 @@
 #include "DeviceListSimplifierInternal.h"
 
 #include "../Include/Basics/BasicsSimplifierSharedStructs.h"
+#include "BasicsSimplifierInternalStructs.h"
 
 #include "VulkanCoreSimplifierInternal.h"
 #include "SurfaceSimplifierInternal.h"
+#include "../SharedData/SharedDataSimplifierCoreInternal.h"
+#include "../Device/DeviceDataListSimplifierInternal.h"
 
 namespace VulkanSimplified
 {
@@ -357,23 +360,23 @@ namespace VulkanSimplified
 				}
 				else if ((flags & sharedUncachedMemoryProperties) == sharedUncachedMemoryProperties && (flags & sharedUncachedMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.sharedUncachedMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.sharedMemory.uncached < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.sharedUncachedMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.sharedMemory.uncached = heap.size;
 					}
 				}
 				else if ((flags & sharedCachedCoherentMemoryProperties) == sharedCachedCoherentMemoryProperties && (flags & sharedCachedCoherentMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.sharedCachedCoherentMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.sharedMemory.cachedCoherent < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.sharedCachedCoherentMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.sharedMemory.cachedCoherent = heap.size;
 					}
 				}
 				else if ((flags & sharedCachedIncoherentMemoryProperties) == sharedCachedIncoherentMemoryProperties && (flags & sharedCachedIncoherentMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.sharedCachedIncoherentMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.sharedMemory.cachedIncoherent < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.sharedCachedIncoherentMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.sharedMemory.cachedIncoherent = heap.size;
 					}
 				}
 			}
@@ -381,23 +384,23 @@ namespace VulkanSimplified
 			{
 				if ((flags & externalUncachedMemoryProperties) == externalUncachedMemoryProperties && (flags & externalUncachedMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.externalUncachedDeviceAccessibleMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.externalMemory.uncached < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.externalUncachedDeviceAccessibleMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.externalMemory.uncached = heap.size;
 					}
 				}
 				else if ((flags & externalCachedCoherentMemoryProperties) == externalCachedCoherentMemoryProperties && (flags & externalCachedCoherentMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.externalCachedCoherentDeviceAccessibleMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.externalMemory.cachedCoherent < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.externalCachedCoherentDeviceAccessibleMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.externalMemory.cachedCoherent = heap.size;
 					}
 				}
 				else if ((flags & externalCachedIncoherentMemoryProperties) == externalCachedIncoherentMemoryProperties && (flags & externalCachedIncoherentMemoryRejectedProperties) == 0)
 				{
-					if (ret.memoryHeapBiggestSizes.externalCachedIncoherentDeviceAccessibleMemorySize < heap.size)
+					if (ret.memoryHeapBiggestSizes.externalMemory.cachedIncoherent < heap.size)
 					{
-						ret.memoryHeapBiggestSizes.externalCachedIncoherentDeviceAccessibleMemorySize = heap.size;
+						ret.memoryHeapBiggestSizes.externalMemory.cachedIncoherent = heap.size;
 					}
 				}
 			}
@@ -547,37 +550,6 @@ namespace VulkanSimplified
 	DeviceListSimplifierInternal::~DeviceListSimplifierInternal()
 	{
 		_logicalDevices.Reset();
-	}
-
-	SwapChainSupportDetails::SwapChainSupportDetails()
-	{
-		capabilities = {};
-		memset(padding, 0, sizeof(padding));
-	}
-
-	DeviceProperties::DeviceProperties()
-	{
-		properties = {};
-		properties11 = {};
-		properties12 = {};
-		properties13 = {};
-
-		memory = {};
-	}
-
-	DeviceFeatures::DeviceFeatures()
-	{
-		features = {};
-		memset(padding, 0, sizeof(padding));
-		features11 = {};
-		features12 = {};
-		features13 = {};
-	}
-
-	DeviceInfo::DeviceInfo() : queueFamilies(), swapChainSupport(), features(), properties()
-	{
-		padding = 0;
-		device = VK_NULL_HANDLE;
 	}
 
 }

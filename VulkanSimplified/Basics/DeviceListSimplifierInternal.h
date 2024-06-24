@@ -1,67 +1,24 @@
 #pragma once
 
 #include "../Other/VulkanSimplifierListTemplate.h"
-#include "../Include/Basics/BasicsSimplifierSharedStructs.h"
-
-#include "../Device/DeviceDataListSimplifierInternal.h"
-#include "../Include/Device/DeviceCoreSimplifier.h"
 
 namespace VulkanSimplified
 {
 	class SurfaceSimplifierInternal;
 	class SwapchainSimplifierInternal;
 	class VulkanCoreSimplifierInternal;
+	class SharedDataSimplifierCoreInternal;
 
-	struct QueueFamilies;
-
-	struct SwapChainSupportDetails
-	{
-		VkSurfaceCapabilitiesKHR capabilities;
-		char padding[4];
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
-
-		SwapChainSupportDetails();
-	};
-
-	struct DeviceProperties
-	{
-		VkPhysicalDeviceProperties properties;
-		VkPhysicalDeviceVulkan11Properties properties11;
-		VkPhysicalDeviceVulkan12Properties properties12;
-		VkPhysicalDeviceVulkan13Properties properties13;
-		VkPhysicalDeviceMemoryProperties memory;
-
-		std::vector<VkExtensionProperties> availableExtensions;
-		std::vector<void*> extra;
-
-		DeviceProperties();
-	};
-
-	struct DeviceFeatures
-	{
-		VkPhysicalDeviceFeatures features;
-		char padding[4];
-		VkPhysicalDeviceVulkan11Features features11;
-		VkPhysicalDeviceVulkan12Features features12;
-		VkPhysicalDeviceVulkan13Features features13;
-
-		DeviceFeatures();
-	};
-
-	struct DeviceInfo
-	{
-		VkPhysicalDevice device;
-		size_t padding;
-		QueueFamilies queueFamilies;
-		SwapChainSupportDetails swapChainSupport;
-		DeviceFeatures features;
-		DeviceProperties properties;
-
-		DeviceInfo();
-	};
+	class DeviceDataListSimplifierInternal;
 
 	struct SimplifiedDeviceInfo;
+	struct DeviceInfo;
+
+	struct DeviceSettings;
+	struct DeviceFeatures;
+	struct DeviceProperties;
+	struct SwapChainSupportDetails;
+	struct QueueFamilies;
 
 	class DeviceScore
 	{
@@ -114,8 +71,8 @@ namespace VulkanSimplified
 		SimplifiedDeviceInfo SimplifyDeviceInfo(const DeviceInfo& deviceInfo) const;
 
 	public:
-		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier, const SwapchainSimplifierInternal& swapchain,
-			const SharedDataSimplifierCoreInternal& sharedDataList);
+		DeviceListSimplifierInternal(const VulkanCoreSimplifierInternal& coreSimplifier, const SurfaceSimplifierInternal& surfaceSimplifier,
+			const SwapchainSimplifierInternal& swapchain, const SharedDataSimplifierCoreInternal& sharedDataList);
 		~DeviceListSimplifierInternal();
 
 		DeviceListSimplifierInternal(const DeviceListSimplifierInternal&) = delete;
