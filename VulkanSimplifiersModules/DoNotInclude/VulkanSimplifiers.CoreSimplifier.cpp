@@ -2,13 +2,11 @@ module;
 
 module VulkanSimplifiers.CoreSimplifier;
 
-namespace VulkanSimplifiers
+CoreSimplifier::CoreSimplifier(size_t reserveInstances, size_t reserveWindows)
 {
-	CoreSimplifier::CoreSimplifier(size_t reserve) : _internal(reserve)
-	{
-	}
+	_internal = std::make_unique<CoreSimplifierInternal>(reserveInstances, reserveWindows);
+}
 
-	CoreSimplifier::~CoreSimplifier()
-	{
-	}
+CoreSimplifier::~CoreSimplifier()
+{
 }

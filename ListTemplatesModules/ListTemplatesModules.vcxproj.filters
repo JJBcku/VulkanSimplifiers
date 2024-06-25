@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ListTemplates.IDObject.ixx">
+    <ClCompile Include="Include\ListTemplates.IDObject.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ListTemplates.UnsortedList.Object.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ListTemplates.UnsortedList.ixx">
+    <ClCompile Include="Include\ListTemplates.UnsortedList.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

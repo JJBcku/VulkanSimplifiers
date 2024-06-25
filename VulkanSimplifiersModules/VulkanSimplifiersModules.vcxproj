@@ -97,6 +97,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <EnableModules>true</EnableModules>
       <BuildStlModules>true</BuildStlModules>
+      <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -117,6 +118,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <EnableModules>true</EnableModules>
       <BuildStlModules>true</BuildStlModules>
+      <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +139,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <EnableModules>true</EnableModules>
       <BuildStlModules>true</BuildStlModules>
+      <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +160,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <EnableModules>true</EnableModules>
       <BuildStlModules>true</BuildStlModules>
+      <AdditionalIncludeDirectories>D:\Libraries\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,11 +173,22 @@
   <ItemGroup>
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.cpp" />
     <ClCompile Include="Include\VulkanSimplifiers.CoreSimplifier.ixx" />
-    <ClCompile Include="VulkanSimplifiers.CoreSimplifierInternal.cpp" />
-    <ClCompile Include="VulkanSimplifiers.CoreSimplifierInternal.ixx" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.Internal.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.Internal.ixx" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Instance.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.ixx" />
+    <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VulkanSimplifiers.Instance.ixx" />
+    <ClCompile Include="Include\VulkanSimplifiers.Instance.ixx">
+      <FileType>Document</FileType>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ListTemplatesModules\ListTemplatesModules.vcxproj">
+      <Project>{8b599cc9-5737-4478-ac6c-801fa089bb60}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

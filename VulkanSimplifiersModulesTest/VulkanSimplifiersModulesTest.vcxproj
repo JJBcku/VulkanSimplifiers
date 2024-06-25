@@ -146,6 +146,9 @@
     <ClCompile Include="VulkanSimplifiersModulesTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ListTemplatesModules\ListTemplatesModules.vcxproj">
+      <Project>{8b599cc9-5737-4478-ac6c-801fa089bb60}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\VulkanSimplifiersModules\VulkanSimplifiersModules.vcxproj">
       <Project>{d165bbde-2d60-4458-8865-c74606e06266}</Project>
     </ProjectReference>
