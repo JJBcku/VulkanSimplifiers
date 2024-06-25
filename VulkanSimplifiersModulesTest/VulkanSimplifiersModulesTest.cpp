@@ -4,7 +4,7 @@ import std;
 
 int main()
 {
-    VulkanSimplifiers::CoreSimplifier core(0x10, 0x10);
+    CoreSimplifier core(0x10, 0x10);
 
     std::cout << "Hello World!\n";
 }
