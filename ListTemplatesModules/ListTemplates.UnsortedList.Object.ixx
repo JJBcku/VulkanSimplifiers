@@ -53,13 +53,15 @@ public:
 		_objectID = objectID;
 	}
 
+	IDObject<T> GetObjectID() const { return _objectID; }
+
 	std::optional<T>& GetObjectOptional() { return _object; }
 	const std::optional<T>& GetConstObjectOptional() const { return _object; }
 	std::optional<T> GetObjectOptionalCopy() const { return _object; }
 
-	T& GetObject() { assert(_object.has_value()); return _object.value(); }
-	const T& GetConstObject() const { assert(_object.has_value()); return _object.value(); }
-	T GetObjectCopy() const { assert(_object.has_value()); return _object.value(); }
+	T& GetObject() { return _object.value(); }
+	const T& GetConstObject() const { return _object.value(); }
+	T GetObjectCopy() const { return _object.value(); }
 
 	bool HasValue() const { return _object.has_value(); }
 
@@ -68,8 +70,8 @@ public:
 	bool operator==(bool has_value) const { return _object.has_value() == has_value; }
 	bool operator==(const IDObject<T>& ID) const { return ID == _objectID; }
 
-	//std::strong_ordering operator<=>(const ListObject<T>&) const noexcept = default;
-	//bool operator==(const ListObject<T>&) const noexcept = default;
+	std::strong_ordering operator<=>(const ListObject<T>&) const noexcept = default;
+	bool operator==(const ListObject<T>&) const noexcept = default;
 
 	bool operator==(const T& other) const noexcept { return _object == other; };
 	bool operator==(const std::optional<T>& other) const noexcept { return _object == other; };

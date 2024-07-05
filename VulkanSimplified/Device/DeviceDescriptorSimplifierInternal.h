@@ -51,6 +51,7 @@ namespace VulkanSimplified
 		uint32_t _maxSets;
 		uint32_t _currentSets;
 		std::vector<VkDescriptorPoolSize> _setTypeSizes;
+		char padding[16 - (sizeof(_setTypeSizes) % 16)];
 
 		ListTemplate<UniformBufferDescriptorSet> _uniformBuffers;
 

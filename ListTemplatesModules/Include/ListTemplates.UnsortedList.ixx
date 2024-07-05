@@ -74,7 +74,7 @@ public:
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), value);
+				_list[pos].ReplaceValue(IDObject<T>(GetNextId(), _vectorID), value);
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -82,7 +82,7 @@ public:
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), value);
+				_list.emplace_back(IDObject<T>(GetNextId(), _vectorID), value);
 				return _list.back().GetObjectID();
 			}
 		}
@@ -101,7 +101,7 @@ public:
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
+				_list[pos].ReplaceValue(IDObject<T>(GetNextId(), _vectorID), std::move(value));
 				_deletedList.pop_back();
 				return _list[pos].GetObjectID();
 			}
@@ -109,7 +109,7 @@ public:
 			{
 				CheckCapacity(add);
 
-				_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
+				_list.emplace_back(IDObject<T>(GetNextId(), _vectorID), std::move(value));
 				return _list.back().GetObjectID();
 			}
 		}
@@ -120,7 +120,7 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), value);
+			_list[pos].ReplaceValue(IDObject<T>(GetNextId(), _vectorID), value);
 			_deletedList.pop_back();
 			return _list[pos].GetObjectID();
 		}
@@ -128,7 +128,7 @@ public:
 		{
 			CheckCapacity(add);
 
-			_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), value);
+			_list.emplace_back(IDObject<T>(GetNextId(), _vectorID), value);
 			return _list.back().GetObjectID();
 		}
 	}
@@ -138,7 +138,7 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
+			_list[pos].ReplaceValue(IDObject<T>(GetNextId(), _vectorID), std::move(value));
 			_deletedList.pop_back();
 			return _list[pos].GetObjectID();
 		}
@@ -146,7 +146,7 @@ public:
 		{
 			CheckCapacity(add);
 
-			_list.emplace_back(ListObjectID<T>(GetNextId(), _vectorID), std::move(value));
+			_list.emplace_back(IDObject<T>(GetNextId(), _vectorID), std::move(value));
 			return _list.back().GetObjectID();
 		}
 	}

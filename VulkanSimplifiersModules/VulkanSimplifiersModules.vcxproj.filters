@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.cpp">
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Simplifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.Internal.ixx">
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Internal.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\VulkanSimplifiers.CoreSimplifier.Internal.cpp">
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Internal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\VulkanSimplifiers.CoreSimplifier.ixx">
+    <ClCompile Include="Include\VulkanSimplifiers.Core.Simplifier.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Instance.cpp">
@@ -40,6 +40,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\VulkanSimplifiers.Window.Simplifier.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -203,6 +203,7 @@ namespace VulkanSimplified
 	{
 		ListObjectID<UniformBufferDescriptorSet> descriptorID;
 		std::vector<DescriptorSetBufferWriteOrder> writeOrdersBufferData;
+		char padding[16 - (sizeof(writeOrdersBufferData) % 16)];
 	};
 
 	struct DescriptorSetUniformBufferCopyObjectInfo

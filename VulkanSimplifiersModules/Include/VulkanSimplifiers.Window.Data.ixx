@@ -11,11 +11,12 @@ export enum class WindowProperties : std::uint64_t
 	FULSCREEN_BORDERLESS = 8
 };
 
-struct WindowCreationData
+export struct WindowCreationData
 {
-	const char* windowTitle;
-	size_t padding;
-	std::int32_t windowWidth, windowHeight;
+	const char* windowTitle = nullptr;
+	size_t padding = 0;
+	std::int32_t windowWidth = 0;
+	std::int32_t windowHeight = 0;
 
-	WindowProperties properties;
+	WindowProperties properties = WindowProperties::NONE;
 };
