@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\EventHandling">
+      <UniqueIdentifier>{e21ab816-ceee-4673-aa17-2e67173e2bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EventHandling">
+      <UniqueIdentifier>{3eb53c97-00e3-47f2-8c88-e1f858c05890}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Simplifier.cpp">
@@ -33,19 +39,22 @@
     <ClCompile Include="Include\VulkanSimplifiers.Instance.ixx">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx">
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.ixx">
+      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\VulkanSimplifiers.Window.Simplifier.ixx">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp">
+    <ClCompile Include="VulkanSimplifiers.EventHandler.Internal.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -386,7 +386,7 @@ public:
 		}
 	}
 
-private:
+protected:
 	IDType _nextID;
 	IDType _vectorID;
 	std::vector<ListObject<T>> _list;

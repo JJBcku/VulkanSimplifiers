@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="Include\ListTemplates.IDObject.ixx" />
     <ClCompile Include="Include\ListTemplates.UnsortedList.ixx" />
+    <ClCompile Include="ListTemplates.IterativeUnsortedList.ixx" />
     <ClCompile Include="ListTemplates.UnsortedList.Object.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

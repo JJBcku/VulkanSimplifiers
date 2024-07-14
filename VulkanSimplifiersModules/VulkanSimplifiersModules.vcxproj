@@ -193,6 +193,7 @@
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx" />
+    <ClCompile Include="VulkanSimplifiers.EventHandler.Internal.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\VulkanSimplifiers.Instance.ixx">

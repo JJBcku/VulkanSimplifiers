@@ -16,12 +16,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\ListTemplates.IDObject.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ListTemplates.UnsortedList.Object.ixx">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Include\ListTemplates.UnsortedList.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ListTemplates.UnsortedList.Object.ixx">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ListTemplates.IterativeUnsortedList.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
