@@ -1,4 +1,4 @@
-export module ListTemplates.UnsortedList.Object;
+export module ListTemplates.Common.Object;
 
 import std;
 export import ListTemplates.IDObject;

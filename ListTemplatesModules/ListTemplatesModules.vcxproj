@@ -168,9 +168,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Include\ListTemplates.IDObject.ixx" />
+    <ClCompile Include="Include\ListTemplates.OrderIndependentDeletionStack.ixx" />
     <ClCompile Include="Include\ListTemplates.UnsortedList.ixx" />
-    <ClCompile Include="ListTemplates.IterativeUnsortedList.ixx" />
-    <ClCompile Include="ListTemplates.UnsortedList.Object.ixx" />
+    <ClCompile Include="Include\ListTemplates.IterativeUnsortedList.ixx" />
+    <ClCompile Include="ListTemplates.Common.Object.ixx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

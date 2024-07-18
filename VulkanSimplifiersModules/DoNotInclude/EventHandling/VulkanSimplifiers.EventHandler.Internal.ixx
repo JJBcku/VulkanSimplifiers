@@ -22,6 +22,8 @@ import VulkanSimplifiers.EventHandler.SDLModule.SensorEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.SystemEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.UserEvent;
 
+import ListTemplates.OrderIndependentDeletionStack;
+
 export typedef std::function<bool(const SDLModuleQuitEvent&, void*)> QuitEventFunction;
 
 export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppTerminatingEventFunction;
@@ -72,50 +74,50 @@ export typedef std::function<bool(const SDLModuleUserEvent&, void*)> UserEventFu
 export class EventHandlerInternal
 {
 private:
-	std::vector<std::pair<QuitEventFunction, void*>> _quitEventFunctions;
+	OrderIndependentDeletionStack<std::pair<QuitEventFunction, void*>> _quitEventFunctions;
 
-	std::vector<std::pair<AppTerminatingEventFunction, void*>> _appTerminatingEventFunctions;
-	std::vector<std::pair<AppLowMemoryEventFunction, void*>> _appLowMemoryEventFunctions;
-	std::vector<std::pair<AppWillEnterBackgroundEventFunction, void*>> _appWillEnterBackgroundEventFunctions;
-	std::vector<std::pair<AppDidEnterBackgroundEventFunction, void*>> _appDidEnterBackgroundEventFunctions;
-	std::vector<std::pair<AppWillEnterForegroundEventFunction, void*>> _appWillEnterForegroundEventFunctions;
-	std::vector<std::pair<AppDidEnterForegroundEventFunction, void*>> _appDidEnterForegroundEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppTerminatingEventFunction, void*>> _appTerminatingEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppLowMemoryEventFunction, void*>> _appLowMemoryEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppWillEnterBackgroundEventFunction, void*>> _appWillEnterBackgroundEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppDidEnterBackgroundEventFunction, void*>> _appDidEnterBackgroundEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppWillEnterForegroundEventFunction, void*>> _appWillEnterForegroundEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AppDidEnterForegroundEventFunction, void*>> _appDidEnterForegroundEventFunctions;
 
-	std::vector<std::pair<LocaleChangedEventFunction, void*>> _localeChangedEventFunctions;
+	OrderIndependentDeletionStack<std::pair<LocaleChangedEventFunction, void*>> _localeChangedEventFunctions;
 
-	std::vector<std::pair<DisplayEventFunction, void*>> _displayEventFunctions;
-	std::vector<std::pair<WindowEventFunction, void*>> _windowEventFunctions;
+	OrderIndependentDeletionStack<std::pair<DisplayEventFunction, void*>> _displayEventFunctions;
+	OrderIndependentDeletionStack<std::pair<WindowEventFunction, void*>> _windowEventFunctions;
 
-	std::vector<std::pair<KeyboardEventFunction, void*>> _keyboardEventFunctions;
-	std::vector<std::pair<TextEditingEventFunction, void*>> _textEditingEventFunctions;
-	std::vector<std::pair<TextEditingExtendedEventFunction, void*>> _textEditingExtendedEventFunctions;
-	std::vector<std::pair<TextInputEventFunction, void*>> _textInputEventFunctions;
+	OrderIndependentDeletionStack<std::pair<KeyboardEventFunction, void*>> _keyboardEventFunctions;
+	OrderIndependentDeletionStack<std::pair<TextEditingEventFunction, void*>> _textEditingEventFunctions;
+	OrderIndependentDeletionStack<std::pair<TextEditingExtendedEventFunction, void*>> _textEditingExtendedEventFunctions;
+	OrderIndependentDeletionStack<std::pair<TextInputEventFunction, void*>> _textInputEventFunctions;
 
-	std::vector<std::pair<MouseMotionEventFunction, void*>> _mouseMotionEventFunctions;
-	std::vector<std::pair<MouseButtonEventFunction, void*>> _mouseButtonEventFunctions;
-	std::vector<std::pair<MouseWheelEventFunction, void*>> _mouseWheelEventFunctions;
+	OrderIndependentDeletionStack<std::pair<MouseMotionEventFunction, void*>> _mouseMotionEventFunctions;
+	OrderIndependentDeletionStack<std::pair<MouseButtonEventFunction, void*>> _mouseButtonEventFunctions;
+	OrderIndependentDeletionStack<std::pair<MouseWheelEventFunction, void*>> _mouseWheelEventFunctions;
 
-	std::vector<std::pair<JoyAxisEventFunction, void*>> _joyAxisEventFunctions;
-	std::vector<std::pair<JoyBallEventFunction, void*>> _joyBallEventFunctions;
-	std::vector<std::pair<JoyHatEventFunction, void*>> _joyHatEventFunctions;
-	std::vector<std::pair<JoyButtonEventFunction, void*>> _joyButtonEventFunctions;
-	std::vector<std::pair<JoyDeviceEventFunction, void*>> _joyDeviceEventFunctions;
-	std::vector<std::pair<JoyBatteryEventFunction, void*>> _joyBatteryEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyAxisEventFunction, void*>> _joyAxisEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyBallEventFunction, void*>> _joyBallEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyHatEventFunction, void*>> _joyHatEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyButtonEventFunction, void*>> _joyButtonEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyDeviceEventFunction, void*>> _joyDeviceEventFunctions;
+	OrderIndependentDeletionStack<std::pair<JoyBatteryEventFunction, void*>> _joyBatteryEventFunctions;
 
-	std::vector<std::pair<ControllerAxisEventFunction, void*>> _controllerAxisEventFunctions;
-	std::vector<std::pair<ControllerButtonEventFunction, void*>> _controllerButtonEventFunctions;
-	std::vector<std::pair<ControllerDeviceEventFunction, void*>> _controllerDeviceEventFunctions;
-	std::vector<std::pair<ControllerTouchpadEventFunction, void*>> _controllerTouchpadEventFunctions;
-	std::vector<std::pair<ControllerSensorEventFunction, void*>> _controllerSensorEventFunctions;
+	OrderIndependentDeletionStack<std::pair<ControllerAxisEventFunction, void*>> _controllerAxisEventFunctions;
+	OrderIndependentDeletionStack<std::pair<ControllerButtonEventFunction, void*>> _controllerButtonEventFunctions;
+	OrderIndependentDeletionStack<std::pair<ControllerDeviceEventFunction, void*>> _controllerDeviceEventFunctions;
+	OrderIndependentDeletionStack<std::pair<ControllerTouchpadEventFunction, void*>> _controllerTouchpadEventFunctions;
+	OrderIndependentDeletionStack<std::pair<ControllerSensorEventFunction, void*>> _controllerSensorEventFunctions;
 
-	std::vector<std::pair<AudioDeviceEventFunction, void*>> _audioDeviceEventFunctions;
-	std::vector<std::pair<TouchFingerEventFunction, void*>> _touchFingerEventFunctions;
-	std::vector<std::pair<MultiGestureEventFunction, void*>> _multiGestureEventFunctions;
-	std::vector<std::pair<DollarGestureEventFunction, void*>> _dollarGestureEventFunctions;
+	OrderIndependentDeletionStack<std::pair<AudioDeviceEventFunction, void*>> _audioDeviceEventFunctions;
+	OrderIndependentDeletionStack<std::pair<TouchFingerEventFunction, void*>> _touchFingerEventFunctions;
+	OrderIndependentDeletionStack<std::pair<MultiGestureEventFunction, void*>> _multiGestureEventFunctions;
+	OrderIndependentDeletionStack<std::pair<DollarGestureEventFunction, void*>> _dollarGestureEventFunctions;
 
-	std::vector<std::pair<DropEventFunction, void*>> _dropEventFunctions;
-	std::vector<std::pair<SensorEventFunction, void*>> _sensorEventFunctions;
-	std::vector<std::pair<OSEventFunction, void*>> _OSEventFunctions;
-	std::vector<std::pair<UserEventFunction, void*>> _UserEventFunctions;
-	//std::vector<std::pair<SystemWindowsManagerEventFunction, void*>> _systemWindowsManagerEventFunctions;
+	OrderIndependentDeletionStack<std::pair<DropEventFunction, void*>> _dropEventFunctions;
+	OrderIndependentDeletionStack<std::pair<SensorEventFunction, void*>> _sensorEventFunctions;
+	OrderIndependentDeletionStack<std::pair<OSEventFunction, void*>> _OSEventFunctions;
+	OrderIndependentDeletionStack<std::pair<UserEventFunction, void*>> _UserEventFunctions;
+	//OrderIndependentDeletionStack<std::pair<SystemWindowsManagerEventFunction, void*>> _systemWindowsManagerEventFunctions;
 };

@@ -4,7 +4,7 @@ export module ListTemplates.UnsortedList;
 
 import std;
 export import ListTemplates.IDObject;
-import ListTemplates.UnsortedList.Object;
+import ListTemplates.Common.Object;
 
 constexpr size_t listTemplateDefaultReserve = 0x10;
 
@@ -39,27 +39,6 @@ public:
 
 	UnsortedList<T>& operator=(const UnsortedList<T>&) noexcept = delete;
 	UnsortedList<T>& operator=(UnsortedList<T>&&) noexcept = default;
-
-	void ReserveAdditional(size_t add)
-	{
-		_list.reserve(_list.capacity() + add);
-		_deletedList.reserve(_list.capacity() + add);
-	}
-
-	void CheckCapacity(size_t add)
-	{
-		if (_list.capacity() == _list.size())
-		{
-			if (add == 0)
-			{
-				ReserveAdditional(_list.capacity());
-			}
-			else
-			{
-				ReserveAdditional(add);
-			}
-		}
-	}
 
 	IDObject<T> AddUniqueObject(const T& value, size_t add)
 	{
@@ -158,7 +137,7 @@ public:
 		if (it == _list.cend())
 		{
 			if (throwOnIDNotFound)
-				throw std::runtime_error("ListTemplate: Program tried to delete a non-existent entry in a list!");
+				throw std::runtime_error("UnsortedList: Program tried to delete a non-existent entry in a list!");
 			else
 				return false;
 		}
@@ -179,7 +158,7 @@ public:
 		size_t ret = _list.size() - _deletedList.size();
 
 		if (ret > _list.size())
-			throw std::runtime_error("ListTemplate GetUsedSize Error: returned value underflowed!");
+			throw std::runtime_error("UnsortedList GetUsedSize Error: returned value underflowed!");
 
 		return ret;
 	}
@@ -190,7 +169,7 @@ public:
 		size_t ret = _list.capacity() - _list.size();
 
 		if (ret > _list.capacity())
-			throw std::runtime_error("ListTemplate GetUnusedCapacity Error: returned value underflowed!");
+			throw std::runtime_error("UnsortedList GetUnusedCapacity Error: returned value underflowed!");
 
 		return ret;
 	}
@@ -200,7 +179,7 @@ public:
 		size_t ret = GetUnusedCapacity() + _deletedList.size();
 
 		if (ret < _deletedList.size())
-			throw std::runtime_error("ListTemplate GetUnusedAndDeletedCapacity Error: returned value overflowed!");
+			throw std::runtime_error("UnsortedList GetUnusedAndDeletedCapacity Error: returned value overflowed!");
 
 		return ret;
 	}
@@ -217,7 +196,7 @@ public:
 			size_t fullres = GetUsedSize() + reserve;
 
 			if (fullres < reserve)
-				throw std::runtime_error("ListTemplate ShrinkToFit Error: reservation amount overflowed!");
+				throw std::runtime_error("UnsortedList ShrinkToFit Error: reservation amount overflowed!");
 
 			tempList.reserve(fullres);
 		}
@@ -248,6 +227,9 @@ public:
 			}
 		}
 
+		if (tempList.capacity() == 0)
+			tempList.reserve(listTemplateDefaultReserve);
+
 		_list = std::move(tempList);
 		_deletedList.clear();
 		_deletedList.shrink_to_fit();
@@ -259,7 +241,7 @@ public:
 		auto it = std::find(_list.begin(), _list.end(), objectID);
 
 		if (it == _list.end())
-			throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetObject Error: Program tried to get non-existent object!");
 
 		return it->GetObjectOptional();
 	}
@@ -269,7 +251,7 @@ public:
 		auto it = std::find(_list.begin(), _list.end(), objectID);
 
 		if (it == _list.end())
-			throw std::runtime_error("ListTemplate GetConstObject Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetConstObject Error: Program tried to get non-existent object!");
 
 		return it->GetConstObjectOptional();
 	}
@@ -279,7 +261,7 @@ public:
 		auto it = std::find(_list.begin(), _list.end(), objectID);
 
 		if (it == _list.end())
-			throw std::runtime_error("ListTemplate GetObjectCopy Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetObjectCopy Error: Program tried to get non-existent object!");
 
 		return it->GetObjectOptionalCopy();
 	}
@@ -314,7 +296,7 @@ public:
 		auto it = std::find(_list.begin(), _list.end(), objectID);
 
 		if (it == _list.end())
-			throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetObject Error: Program tried to get non-existent object!");
 
 		return it->GetObject();
 	}
@@ -324,7 +306,7 @@ public:
 		auto it = std::find(_list.cbegin(), _list.cend(), objectID);
 
 		if (it == _list.cend())
-			throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetObject Error: Program tried to get non-existent object!");
 
 		return it->GetConstObject();
 	}
@@ -334,7 +316,7 @@ public:
 		auto it = std::find(_list.begin(), _list.end(), objectID);
 
 		if (it == _list.end())
-			throw std::runtime_error("ListTemplate GetObject Error: Program tried to get non-existent object!");
+			throw std::runtime_error("UnsortedList GetObject Error: Program tried to get non-existent object!");
 
 		return it->GetObjectCopy();
 	}
@@ -370,7 +352,7 @@ public:
 		_deletedList.clear();
 
 		if (_vectorID == std::numeric_limits<IDType>::max())
-			throw std::runtime_error("ListTemplate Reset Error: vector ID overflow!");
+			throw std::runtime_error("UnsortedList Reset Error: vector ID overflow!");
 
 		_vectorID++;
 
@@ -396,9 +378,30 @@ protected:
 	{
 		IDType ret = _nextID;
 		if (_nextID == std::numeric_limits<IDType>::max())
-			throw std::runtime_error("ListTemplate Error: Id system overflowed!");
+			throw std::runtime_error("UnsortedList Error: Id system overflowed!");
 
 		_nextID++;
 		return ret;
+	}
+
+	void ReserveAdditional(size_t add)
+	{
+		_list.reserve(_list.capacity() + add);
+		_deletedList.reserve(_list.capacity() + add);
+	}
+
+	void CheckCapacity(size_t add)
+	{
+		if (_list.capacity() == _list.size())
+		{
+			if (add == 0)
+			{
+				ReserveAdditional(_list.capacity());
+			}
+			else
+			{
+				ReserveAdditional(add);
+			}
+		}
 	}
 };
