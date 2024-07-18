@@ -156,5 +156,17 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ClipboardEvent.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ClipboardEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.RenderEvents.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.RenderEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

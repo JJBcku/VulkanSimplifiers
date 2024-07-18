@@ -19,3 +19,8 @@ SDLModuleKeyboardEvent::SDLModuleKeyboardEvent(const SDL_KeyboardEvent& eventDat
 	padding3 = eventData.padding3;
 	padding = 0;
 }
+
+SDLModuleKeymapChanged::SDLModuleKeymapChanged(const SDL_CommonEvent& eventData)
+{
+	timestamp = eventData.timestamp;
+}

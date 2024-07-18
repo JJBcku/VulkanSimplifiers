@@ -18,8 +18,10 @@ import VulkanSimplifiers.EventHandler.SDLModule.JoyEvents;
 import VulkanSimplifiers.EventHandler.SDLModule.ControllerEvents;
 import VulkanSimplifiers.EventHandler.SDLModule.AudioDeviceEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.TouchpadEvents;
+import VulkanSimplifiers.EventHandler.SDLModule.ClipboardEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.DropEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.SensorEvent;
+import VulkanSimplifiers.EventHandler.SDLModule.RenderEvents;
 import VulkanSimplifiers.EventHandler.SDLModule.SystemEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.UserEvent;
 
@@ -34,12 +36,13 @@ export typedef std::function<bool(const SDLModuleAppDidEnterBackgroundEvent&, vo
 export typedef std::function<bool(const SDLModuleAppWillEnterForegroundEvent&, void*)> AppWillEnterForegroundEventFunction;
 export typedef std::function<bool(const SDLModuleAppDidEnterForegroundEvent&, void*)> AppDidEnterForegroundEventFunction;
 
-export typedef std::function<bool(const SDLModuleLocaleChangeEvents&, void*)> LocaleChangedEventFunction;
+export typedef std::function<bool(const SDLModuleLocaleChangeEvent&, void*)> LocaleChangedEventFunction;
 
 export typedef std::function<bool(const SDLModuleDisplayEvent&, void*)> DisplayEventFunction;
 export typedef std::function<bool(const SDLModuleWindowEvent&, void*)> WindowEventFunction;
 
 export typedef std::function<bool(const SDLModuleKeyboardEvent&, void*)> KeyboardEventFunction;
+export typedef std::function<bool(const SDLModuleKeymapChanged&, void*)> KeymapChangeEventFunction;
 export typedef std::function<bool(const SDLModuleTextEditingEvent&, void*)> TextEditingEventFunction;
 export typedef std::function<bool(const SDLModuleTextEditingExtendedEvent&, void*)> TextEditingExtendedEventFunction;
 export typedef std::function<bool(const SDLModuleTextInputEvent&, void*)> TextInputEventFunction;
@@ -66,10 +69,15 @@ export typedef std::function<bool(const SDLModuleTouchFingerEvent&, void*)> Touc
 export typedef std::function<bool(const SDLModuleMultiGestureEvent&, void*)> MultiGestureEventFunction;
 export typedef std::function<bool(const SDLModuleDollarGestureEvent&, void*)> DollarGestureEventFunction;
 
+export typedef std::function<bool(const SDLModuleClipboardEvent&, void*)> ClipboardEventFunction;
+
 export typedef std::function<bool(const SDLModuleDropEvent&, void*)> DropEventFunction;
 export typedef std::function<bool(const SDLModuleSensorEvent&, void*)> SensorEventFunction;
 export typedef std::function<bool(const SDLModuleOSEvent&, void*)> OSEventFunction;
 export typedef std::function<bool(const SDLModuleUserEvent&, void*)> UserEventFunction;
+
+export typedef std::function<bool(const SDLModuleRenderTargetsResetEvent&, void*)> RenderTargetsResetEventFunction;
+export typedef std::function<bool(const SDLModuleRenderDeviceResetEvent&, void*)> RenderDeviceResetEventFunction;
 //export typedef std::function<bool(const SDL_SysWMEvent&, void*)> SystemWindowsManagerEventFunction;
 
 export class EventHandlerInternal
@@ -83,6 +91,8 @@ public:
 
 	EventHandlerInternal& operator=(const EventHandlerInternal&) noexcept = delete;
 	//EventHandlerInternal& operator=(EventHandlerInternal&&) noexcept = delete;
+
+	void HandleEvents();
 
 private:
 	OrderIndependentDeletionStack<std::pair<QuitEventFunction, void*>> _quitEventFunctions;
@@ -100,6 +110,7 @@ private:
 	OrderIndependentDeletionStack<std::pair<WindowEventFunction, void*>> _windowEventFunctions;
 
 	OrderIndependentDeletionStack<std::pair<KeyboardEventFunction, void*>> _keyboardEventFunctions;
+	OrderIndependentDeletionStack<std::pair<KeymapChangeEventFunction, void*>> _keymapChangedEventFunctions;
 	OrderIndependentDeletionStack<std::pair<TextEditingEventFunction, void*>> _textEditingEventFunctions;
 	OrderIndependentDeletionStack<std::pair<TextEditingExtendedEventFunction, void*>> _textEditingExtendedEventFunctions;
 	OrderIndependentDeletionStack<std::pair<TextInputEventFunction, void*>> _textInputEventFunctions;
@@ -126,11 +137,68 @@ private:
 	OrderIndependentDeletionStack<std::pair<MultiGestureEventFunction, void*>> _multiGestureEventFunctions;
 	OrderIndependentDeletionStack<std::pair<DollarGestureEventFunction, void*>> _dollarGestureEventFunctions;
 
+	OrderIndependentDeletionStack<std::pair<ClipboardEventFunction, void*>> _clipboardEventFunctions;
+
 	OrderIndependentDeletionStack<std::pair<DropEventFunction, void*>> _dropEventFunctions;
 	OrderIndependentDeletionStack<std::pair<SensorEventFunction, void*>> _sensorEventFunctions;
 	OrderIndependentDeletionStack<std::pair<OSEventFunction, void*>> _OSEventFunctions;
 	OrderIndependentDeletionStack<std::pair<UserEventFunction, void*>> _userEventFunctions;
+
+	OrderIndependentDeletionStack<std::pair<RenderTargetsResetEventFunction, void*>> _renderTargetsResetEventFunctions;
+	OrderIndependentDeletionStack<std::pair<RenderDeviceResetEventFunction, void*>> _renderDeviceResetEventFunctions;
 	//OrderIndependentDeletionStack<std::pair<SystemWindowsManagerEventFunction, void*>> _systemWindowsManagerEventFunctions;
 
-	//void HandleEvent(SDLModuleQuitEvent event);
+	void HandleEvent(SDL_Event& event);
+
+	void HandleEvent(SDLModuleQuitEvent event);
+
+	void HandleEvent(SDLModuleAppTerminatingEvent event);
+	void HandleEvent(SDLModuleAppLowMemoryEvent event);
+	void HandleEvent(SDLModuleAppWillEnterBackgroundEvent event);
+	void HandleEvent(SDLModuleAppDidEnterBackgroundEvent event);
+	void HandleEvent(SDLModuleAppWillEnterForegroundEvent event);
+	void HandleEvent(SDLModuleAppDidEnterForegroundEvent event);
+
+	void HandleEvent(SDLModuleLocaleChangeEvent event);
+
+	void HandleEvent(SDLModuleDisplayEvent event);
+	void HandleEvent(SDLModuleWindowEvent event);
+
+	void HandleEvent(SDLModuleKeyboardEvent event);
+	void HandleEvent(SDLModuleKeymapChanged event);
+	void HandleEvent(SDLModuleTextEditingEvent event);
+	void HandleEvent(SDLModuleTextEditingExtendedEvent event);
+	void HandleEvent(SDLModuleTextInputEvent event);
+
+	void HandleEvent(SDLModuleMouseMotionEvent event);
+	void HandleEvent(SDLModuleMouseButtonEvent event);
+	void HandleEvent(SDLModuleMouseWheelEvent event);
+
+	void HandleEvent(SDLModuleJoyAxisEvent event);
+	void HandleEvent(SDLModuleJoyBallEvent event);
+	void HandleEvent(SDLModuleJoyHatEvent event);
+	void HandleEvent(SDLModuleJoyButtonEvent event);
+	void HandleEvent(SDLModuleJoyDeviceEvent event);
+	void HandleEvent(SDLModuleJoyBatteryEvent event);
+
+	void HandleEvent(SDLModuleControllerAxisEvent event);
+	void HandleEvent(SDLModuleControllerButtonEvent event);
+	void HandleEvent(SDLModuleControllerDeviceEvent event);
+	void HandleEvent(SDLModuleControllerTouchpadEvent event);
+	void HandleEvent(SDLModuleControllerSensorEvent event);
+
+	void HandleEvent(SDLModuleAudioDeviceEvent event);
+	void HandleEvent(SDLModuleTouchFingerEvent event);
+	void HandleEvent(SDLModuleMultiGestureEvent event);
+	void HandleEvent(SDLModuleDollarGestureEvent event);
+
+	void HandleEvent(SDLModuleClipboardEvent event);
+
+	void HandleEvent(SDLModuleDropEvent event);
+	void HandleEvent(SDLModuleSensorEvent event);
+	void HandleEvent(SDLModuleOSEvent event);
+	void HandleEvent(SDLModuleUserEvent event);
+
+	void HandleEvent(SDLModuleRenderTargetsResetEvent event);
+	void HandleEvent(SDLModuleRenderDeviceResetEvent event);
 };

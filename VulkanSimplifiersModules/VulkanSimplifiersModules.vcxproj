@@ -186,6 +186,7 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.Internal.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AppEvents.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AudioDeviceEvent.cpp" />
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ClipboardEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ControllerEvents.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DropEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.JoyEvents.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.MouseEvents.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.QuitEvent.cpp" />
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.RenderEvents.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.SensorEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.SystemEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.TextEvents.cpp" />
@@ -204,6 +206,7 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DisplayEvent.cpp" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AppEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AudioDeviceEvent.ixx" />
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ClipboardEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.ControllerEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DisplayEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DropEvent.ixx" />
@@ -212,6 +215,7 @@
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.MouseEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.QuitEvent.ixx" />
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.RenderEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.SensorEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.SystemEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.TextEvents.ixx" />

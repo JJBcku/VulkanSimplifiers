@@ -732,3 +732,10 @@ export struct SDLModuleKeyboardEvent
 
     SDLModuleKeyboardEvent(const SDL_KeyboardEvent& eventData);
 };
+
+export struct SDLModuleKeymapChanged
+{
+    std::uint32_t timestamp;   /**< In milliseconds, populated using SDL_GetTicks() */
+
+    SDLModuleKeymapChanged(const SDL_CommonEvent& eventData);
+};

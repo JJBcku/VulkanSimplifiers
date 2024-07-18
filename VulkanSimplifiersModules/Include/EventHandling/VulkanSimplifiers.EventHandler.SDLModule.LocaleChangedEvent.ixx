@@ -6,9 +6,9 @@ export module VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent;
 
 import std;
 
-export struct SDLModuleLocaleChangeEvents
+export struct SDLModuleLocaleChangeEvent
 {
 	std::uint32_t timestamp;
 
-	SDLModuleLocaleChangeEvents(const SDL_CommonEvent& eventData);
+	SDLModuleLocaleChangeEvent(const SDL_CommonEvent& eventData);
 };
