@@ -4,7 +4,8 @@ module;
 
 module VulkanSimplifiers.Core.Internal;
 
-CoreInternal::CoreInternal(size_t reserveInstances, size_t reserveWindows) : _instanceList(reserveInstances), _windowList(reserveWindows)
+CoreInternal::CoreInternal(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows) : _eventHandler(callbackListInitialCapacity),
+_instanceList(reserveInstances), _windowList(reserveWindows)
 {
 	int result = SDL_Init(SDL_INIT_VIDEO);
 	 if (result < 0)

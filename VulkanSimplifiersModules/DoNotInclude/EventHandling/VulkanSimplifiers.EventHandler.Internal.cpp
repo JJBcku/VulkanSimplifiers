@@ -31,6 +31,206 @@ void EventHandlerInternal::HandleEvents()
 	}
 }
 
+IDObject<std::pair<QuitEventFunction, void*>> EventHandlerInternal::RegisterQuitEventCallback(QuitEventFunction function, void* data, size_t add)
+{
+	return _quitEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppTerminatingEventFunction, void*>> EventHandlerInternal::RegisterAppTerminatingEventCallback(AppTerminatingEventFunction function, void* data, size_t add)
+{
+	return _appTerminatingEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppLowMemoryEventFunction, void*>> EventHandlerInternal::RegisterAppLowMemoryWarningEventCallback(AppLowMemoryEventFunction function, void* data, size_t add)
+{
+	return _appLowMemoryEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppWillEnterBackgroundEventFunction, void*>> EventHandlerInternal::RegisterAppWillEnterBackgroundWarningEventCallback(AppWillEnterBackgroundEventFunction function, void* data, size_t add)
+{
+	return _appWillEnterBackgroundEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppDidEnterBackgroundEventFunction, void*>> EventHandlerInternal::RegisterAppDidEnterBackgroundEventCallback(AppDidEnterBackgroundEventFunction function, void* data, size_t add)
+{
+	return _appDidEnterBackgroundEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppWillEnterForegroundEventFunction, void*>> EventHandlerInternal::RegisterAppWillEnterForegroundWarningEventCallback(AppWillEnterForegroundEventFunction function, void* data, size_t add)
+{
+	return _appWillEnterForegroundEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AppDidEnterForegroundEventFunction, void*>> EventHandlerInternal::RegisterAppDidEnterForegroundEventCallback(AppDidEnterForegroundEventFunction function, void* data, size_t add)
+{
+	return _appDidEnterForegroundEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<LocaleChangedEventFunction, void*>> EventHandlerInternal::RegisterLocaleChangingEventCallback(LocaleChangedEventFunction function, void* data, size_t add)
+{
+	return _localeChangedEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<DisplayEventFunction, void*>> EventHandlerInternal::RegisterDisplayEventCallback(DisplayEventFunction function, void* data, size_t add)
+{
+	return _displayEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<WindowEventFunction, void*>> EventHandlerInternal::RegisterWindowEventCallback(WindowEventFunction function, void* data, size_t add)
+{
+	return _windowEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<KeyboardEventFunction, void*>> EventHandlerInternal::RegisterKeyboardEventCallback(KeyboardEventFunction function, void* data, size_t add)
+{
+	return _keyboardEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<KeymapChangeEventFunction, void*>> EventHandlerInternal::RegisterKeymapChangingEventCallback(KeymapChangeEventFunction function, void* data, size_t add)
+{
+	return _keymapChangedEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<TextEditingEventFunction, void*>> EventHandlerInternal::RegisterTextEditingEventCallback(TextEditingEventFunction function, void* data, size_t add)
+{
+	return _textEditingEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<TextEditingExtendedEventFunction, void*>> EventHandlerInternal::RegisterTextEditingExtendedEventCallback(TextEditingExtendedEventFunction function, void* data, size_t add)
+{
+	return _textEditingExtendedEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<TextInputEventFunction, void*>> EventHandlerInternal::RegisterTextInputEventCallback(TextInputEventFunction function, void* data, size_t add)
+{
+	return _textInputEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<MouseMotionEventFunction, void*>> EventHandlerInternal::RegisterMouseMotionEventCallback(MouseMotionEventFunction function, void* data, size_t add)
+{
+	return _mouseMotionEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<MouseButtonEventFunction, void*>> EventHandlerInternal::RegisterMouseButtonEventCallback(MouseButtonEventFunction function, void* data, size_t add)
+{
+	return _mouseButtonEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<MouseWheelEventFunction, void*>> EventHandlerInternal::RegisterMouseWheelEventCallback(MouseWheelEventFunction function, void* data, size_t add)
+{
+	return _mouseWheelEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyAxisEventFunction, void*>> EventHandlerInternal::RegisterJoystickAxisEventCallback(JoyAxisEventFunction function, void* data, size_t add)
+{
+	return _joyAxisEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyBallEventFunction, void*>> EventHandlerInternal::RegisterJoystickBallEventCallback(JoyBallEventFunction function, void* data, size_t add)
+{
+	return _joyBallEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyHatEventFunction, void*>> EventHandlerInternal::RegisterJoystickHatEventCallback(JoyHatEventFunction function, void* data, size_t add)
+{
+	return _joyHatEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyButtonEventFunction, void*>> EventHandlerInternal::RegisterJoystickButtonEventCallback(JoyButtonEventFunction function, void* data, size_t add)
+{
+	return _joyButtonEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyDeviceEventFunction, void*>> EventHandlerInternal::RegisterJoystickDeviceEventCallback(JoyDeviceEventFunction function, void* data, size_t add)
+{
+	return _joyDeviceEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<JoyBatteryEventFunction, void*>> EventHandlerInternal::RegisterJoystickBatteryEventCallback(JoyBatteryEventFunction function, void* data, size_t add)
+{
+	return _joyBatteryEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ControllerAxisEventFunction, void*>> EventHandlerInternal::RegisterControllerAxisEventCallback(ControllerAxisEventFunction function, void* data, size_t add)
+{
+	return _controllerAxisEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ControllerButtonEventFunction, void*>> EventHandlerInternal::RegisterControllerButtonEventCallback(ControllerButtonEventFunction function, void* data, size_t add)
+{
+	return _controllerButtonEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ControllerDeviceEventFunction, void*>> EventHandlerInternal::RegisterControllerDeviceEventCallback(ControllerDeviceEventFunction function, void* data, size_t add)
+{
+	return _controllerDeviceEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ControllerTouchpadEventFunction, void*>> EventHandlerInternal::RegisterControllerTouchpadEventCallback(ControllerTouchpadEventFunction function, void* data, size_t add)
+{
+	return _controllerTouchpadEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ControllerSensorEventFunction, void*>> EventHandlerInternal::RegisterControllerSensorEventCallback(ControllerSensorEventFunction function, void* data, size_t add)
+{
+	return _controllerSensorEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<AudioDeviceEventFunction, void*>> EventHandlerInternal::RegisterAudioDeviceEventCallback(AudioDeviceEventFunction function, void* data, size_t add)
+{
+	return _audioDeviceEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<TouchFingerEventFunction, void*>> EventHandlerInternal::RegisterTouchFingerEventCallback(TouchFingerEventFunction function, void* data, size_t add)
+{
+	return _touchFingerEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<MultiGestureEventFunction, void*>> EventHandlerInternal::RegisterMultiGestureEventCallback(MultiGestureEventFunction function, void* data, size_t add)
+{
+	return _multiGestureEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<DollarGestureEventFunction, void*>> EventHandlerInternal::RegisterDollarGestureEventCallback(DollarGestureEventFunction function, void* data, size_t add)
+{
+	return _dollarGestureEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<ClipboardEventFunction, void*>> EventHandlerInternal::RegisterClipboardEventCallback(ClipboardEventFunction function, void* data, size_t add)
+{
+	return _clipboardEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<DropEventFunction, void*>> EventHandlerInternal::RegisterDropEventCallback(DropEventFunction function, void* data, size_t add)
+{
+	return _dropEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<SensorEventFunction, void*>> EventHandlerInternal::RegisterSensorEventCallback(SensorEventFunction function, void* data, size_t add)
+{
+	return _sensorEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<OSEventFunction, void*>> EventHandlerInternal::RegisterOSEventCallback(OSEventFunction function, void* data, size_t add)
+{
+	return _OSEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<UserEventFunction, void*>> EventHandlerInternal::RegisterUserEventCallback(UserEventFunction function, void* data, size_t add)
+{
+	return _userEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<RenderTargetsResetEventFunction, void*>> EventHandlerInternal::RegisterRenderTargetsResetEventCallback(RenderTargetsResetEventFunction function, void* data, size_t add)
+{
+	return _renderTargetsResetEventFunctions.AddObject(std::pair(function, data), add);
+}
+
+IDObject<std::pair<RenderDeviceResetEventFunction, void*>> EventHandlerInternal::RegisterRenderDeviceResetEventCallback(RenderDeviceResetEventFunction function, void* data, size_t add)
+{
+	return _renderDeviceResetEventFunctions.AddObject(std::pair(function, data), add);
+}
+
 void EventHandlerInternal::HandleEvent(SDL_Event& event)
 {
 	auto& type = event.type;

@@ -10,7 +10,7 @@ import VulkanSimplifiers.Window.Simplifier;
 export class CoreSimplifier
 {
 public:
-	explicit CoreSimplifier(size_t reserveInstances, size_t reserveWindows);
+	explicit CoreSimplifier(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows);
 	~CoreSimplifier();
 
 	CoreSimplifier(const CoreSimplifier&) = delete;
