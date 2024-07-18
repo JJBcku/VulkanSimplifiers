@@ -334,6 +334,7 @@ private:
 	std::vector<ListObject<T>> _list;
 	std::vector<size_t> _deletedList;
 	std::vector<IDObject<T>> _additionOrder;
+	char padding[16 - (sizeof(_additionOrder) % 8)];
 
 	IDType GetNextId()
 	{

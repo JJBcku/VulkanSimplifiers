@@ -168,5 +168,11 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.RenderEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -22,7 +22,11 @@ public:
 
 	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved);
 
-	WindowSimplifier GetWindowSimplifier(IDObject<WindowPointer> windowID);
+	EventHandlerInternal& GetEventHandler();
+	WindowInternal& GetWindowSimplifier(IDObject<WindowPointer> windowID);
+
+	const EventHandlerInternal& GetEventHandler() const;
+	const WindowInternal& GetWindowSimplifier(IDObject<WindowPointer> windowID) const;
 
 private:
 	EventHandlerInternal _eventHandler;

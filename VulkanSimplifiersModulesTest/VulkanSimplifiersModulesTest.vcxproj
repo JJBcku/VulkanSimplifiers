@@ -163,6 +163,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MainSettings.cpp" />
+    <ClCompile Include="MainSettings.ixx" />
     <ClCompile Include="VulkanSimplifiersModulesTest.cpp" />
   </ItemGroup>
   <ItemGroup>

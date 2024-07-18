@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PublicModuleDirectories>Include</PublicModuleDirectories>
+    <PublicModuleDirectories>D:\projects\VulkanSimplifiers\VulkanSimplifiersModules\Include\EventHandling;Include</PublicModuleDirectories>
     <AllProjectBMIsArePublic>false</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PublicModuleDirectories>Include</PublicModuleDirectories>
+    <PublicModuleDirectories>D:\projects\VulkanSimplifiers\VulkanSimplifiersModules\Include\EventHandling;Include</PublicModuleDirectories>
     <AllProjectBMIsArePublic>false</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PublicModuleDirectories>Include</PublicModuleDirectories>
+    <PublicModuleDirectories>D:\projects\VulkanSimplifiers\VulkanSimplifiersModules\Include\EventHandling;Include</PublicModuleDirectories>
     <AllProjectBMIsArePublic>false</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PublicModuleDirectories>Include</PublicModuleDirectories>
+    <PublicModuleDirectories>D:\projects\VulkanSimplifiers\VulkanSimplifiersModules\Include\EventHandling;Include</PublicModuleDirectories>
     <AllProjectBMIsArePublic>false</AllProjectBMIsArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -201,6 +201,7 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.TouchpadEvents.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.UserEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.WindowEvent.cpp" />
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Simplifier.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DisplayEvent.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.TouchpadEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.UserEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.WindowEvent.ixx" />
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Window.Simplifier.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Core.Simplifier.ixx" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Internal.cpp" />

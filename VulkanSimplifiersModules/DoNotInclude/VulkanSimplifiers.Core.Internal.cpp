@@ -22,9 +22,26 @@ IDObject<WindowPointer> CoreInternal::CreateWindow(WindowCreationData data, size
 	return _windowList.AddObject(std::make_unique<WindowInternal>(data), addReserved);
 }
 
-WindowSimplifier CoreInternal::GetWindowSimplifier(IDObject<WindowPointer> windowID)
+EventHandlerInternal& CoreInternal::GetEventHandler()
+{
+	return _eventHandler;
+}
+
+WindowInternal& CoreInternal::GetWindowSimplifier(IDObject<WindowPointer> windowID)
 {
 	auto& window = _windowList.GetObject(windowID);
 
-	return WindowSimplifier(*window);
+	return *window;
+}
+
+const EventHandlerInternal& CoreInternal::GetEventHandler() const
+{
+	return _eventHandler;
+}
+
+const WindowInternal& CoreInternal::GetWindowSimplifier(IDObject<WindowPointer> windowID) const
+{
+	auto& window = _windowList.GetConstObject(windowID);
+
+	return *window;
 }

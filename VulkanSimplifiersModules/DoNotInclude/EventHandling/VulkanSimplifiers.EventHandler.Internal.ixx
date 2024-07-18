@@ -91,7 +91,7 @@ public:
 	EventHandlerInternal& operator=(const EventHandlerInternal&) noexcept = delete;
 	//EventHandlerInternal& operator=(EventHandlerInternal&&) noexcept = delete;
 
-	void HandleEvents();
+	void HandleEvents() const;
 
 	IDObject<std::pair<QuitEventFunction, void*>> RegisterQuitEventCallback(QuitEventFunction function, void* data, size_t add);
 
@@ -197,56 +197,56 @@ private:
 	OrderIndependentDeletionStack<std::pair<RenderDeviceResetEventFunction, void*>> _renderDeviceResetEventFunctions;
 	//OrderIndependentDeletionStack<std::pair<SystemWindowsManagerEventFunction, void*>> _systemWindowsManagerEventFunctions;
 
-	void HandleEvent(SDL_Event& event);
+	void HandleEvent(SDL_Event& event) const;
 
-	void HandleEvent(SDLModuleQuitEvent event);
+	void HandleEvent(SDLModuleQuitEvent event) const;
 
-	void HandleEvent(SDLModuleAppTerminatingEvent event);
-	void HandleEvent(SDLModuleAppLowMemoryEvent event);
-	void HandleEvent(SDLModuleAppWillEnterBackgroundEvent event);
-	void HandleEvent(SDLModuleAppDidEnterBackgroundEvent event);
-	void HandleEvent(SDLModuleAppWillEnterForegroundEvent event);
-	void HandleEvent(SDLModuleAppDidEnterForegroundEvent event);
+	void HandleEvent(SDLModuleAppTerminatingEvent event) const;
+	void HandleEvent(SDLModuleAppLowMemoryEvent event) const;
+	void HandleEvent(SDLModuleAppWillEnterBackgroundEvent event) const;
+	void HandleEvent(SDLModuleAppDidEnterBackgroundEvent event) const;
+	void HandleEvent(SDLModuleAppWillEnterForegroundEvent event) const;
+	void HandleEvent(SDLModuleAppDidEnterForegroundEvent event) const;
 
-	void HandleEvent(SDLModuleLocaleChangeEvent event);
+	void HandleEvent(SDLModuleLocaleChangeEvent event) const;
 
-	void HandleEvent(SDLModuleDisplayEvent event);
-	void HandleEvent(SDLModuleWindowEvent event);
+	void HandleEvent(SDLModuleDisplayEvent event) const;
+	void HandleEvent(SDLModuleWindowEvent event) const;
 
-	void HandleEvent(SDLModuleKeyboardEvent event);
-	void HandleEvent(SDLModuleKeymapChanged event);
-	void HandleEvent(SDLModuleTextEditingEvent event);
-	void HandleEvent(SDLModuleTextEditingExtendedEvent event);
-	void HandleEvent(SDLModuleTextInputEvent event);
+	void HandleEvent(SDLModuleKeyboardEvent event) const;
+	void HandleEvent(SDLModuleKeymapChanged event) const;
+	void HandleEvent(SDLModuleTextEditingEvent event) const;
+	void HandleEvent(SDLModuleTextEditingExtendedEvent event) const;
+	void HandleEvent(SDLModuleTextInputEvent event) const;
 
-	void HandleEvent(SDLModuleMouseMotionEvent event);
-	void HandleEvent(SDLModuleMouseButtonEvent event);
-	void HandleEvent(SDLModuleMouseWheelEvent event);
+	void HandleEvent(SDLModuleMouseMotionEvent event) const;
+	void HandleEvent(SDLModuleMouseButtonEvent event) const;
+	void HandleEvent(SDLModuleMouseWheelEvent event) const;
 
-	void HandleEvent(SDLModuleJoyAxisEvent event);
-	void HandleEvent(SDLModuleJoyBallEvent event);
-	void HandleEvent(SDLModuleJoyHatEvent event);
-	void HandleEvent(SDLModuleJoyButtonEvent event);
-	void HandleEvent(SDLModuleJoyDeviceEvent event);
-	void HandleEvent(SDLModuleJoyBatteryEvent event);
+	void HandleEvent(SDLModuleJoyAxisEvent event) const;
+	void HandleEvent(SDLModuleJoyBallEvent event) const;
+	void HandleEvent(SDLModuleJoyHatEvent event) const;
+	void HandleEvent(SDLModuleJoyButtonEvent event) const;
+	void HandleEvent(SDLModuleJoyDeviceEvent event) const;
+	void HandleEvent(SDLModuleJoyBatteryEvent event) const;
 
-	void HandleEvent(SDLModuleControllerAxisEvent event);
-	void HandleEvent(SDLModuleControllerButtonEvent event);
-	void HandleEvent(SDLModuleControllerDeviceEvent event);
-	void HandleEvent(SDLModuleControllerTouchpadEvent event);
-	void HandleEvent(SDLModuleControllerSensorEvent event);
+	void HandleEvent(SDLModuleControllerAxisEvent event) const;
+	void HandleEvent(SDLModuleControllerButtonEvent event) const;
+	void HandleEvent(SDLModuleControllerDeviceEvent event) const;
+	void HandleEvent(SDLModuleControllerTouchpadEvent event) const;
+	void HandleEvent(SDLModuleControllerSensorEvent event) const;
 
-	void HandleEvent(SDLModuleAudioDeviceEvent event);
-	void HandleEvent(SDLModuleTouchFingerEvent event);
-	void HandleEvent(SDLModuleMultiGestureEvent event);
-	void HandleEvent(SDLModuleDollarGestureEvent event);
-	void HandleEvent(SDLModuleClipboardEvent event);
+	void HandleEvent(SDLModuleAudioDeviceEvent event) const;
+	void HandleEvent(SDLModuleTouchFingerEvent event) const;
+	void HandleEvent(SDLModuleMultiGestureEvent event) const;
+	void HandleEvent(SDLModuleDollarGestureEvent event) const;
+	void HandleEvent(SDLModuleClipboardEvent event) const;
 
-	void HandleEvent(SDLModuleDropEvent event);
-	void HandleEvent(SDLModuleSensorEvent event);
-	void HandleEvent(SDLModuleOSEvent event);
-	void HandleEvent(SDLModuleUserEvent event);
+	void HandleEvent(SDLModuleDropEvent event) const;
+	void HandleEvent(SDLModuleSensorEvent event) const;
+	void HandleEvent(SDLModuleOSEvent event) const;
+	void HandleEvent(SDLModuleUserEvent event) const;
 
-	void HandleEvent(SDLModuleRenderTargetsResetEvent event);
-	void HandleEvent(SDLModuleRenderDeviceResetEvent event);
+	void HandleEvent(SDLModuleRenderTargetsResetEvent event) const;
+	void HandleEvent(SDLModuleRenderDeviceResetEvent event) const;
 };

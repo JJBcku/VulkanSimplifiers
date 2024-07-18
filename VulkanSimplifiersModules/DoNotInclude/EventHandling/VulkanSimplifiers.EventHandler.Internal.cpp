@@ -21,7 +21,7 @@ EventHandlerInternal::~EventHandlerInternal()
 {
 }
 
-void EventHandlerInternal::HandleEvents()
+void EventHandlerInternal::HandleEvents() const
 {
 	SDL_Event event{};
 
@@ -231,7 +231,7 @@ IDObject<std::pair<RenderDeviceResetEventFunction, void*>> EventHandlerInternal:
 	return _renderDeviceResetEventFunctions.AddObject(std::pair(function, data), add);
 }
 
-void EventHandlerInternal::HandleEvent(SDL_Event& event)
+void EventHandlerInternal::HandleEvent(SDL_Event& event) const
 {
 	auto& type = event.type;
 
@@ -381,7 +381,7 @@ void EventHandlerInternal::HandleEvent(SDL_Event& event)
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleQuitEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleQuitEvent event) const
 {
 	auto size = _quitEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -393,13 +393,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleQuitEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _quitEventFunctions.GetObject(current++);
+		auto& functiondata = _quitEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppTerminatingEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppTerminatingEvent event) const
 {
 	auto size = _appTerminatingEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -411,13 +411,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppTerminatingEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _appTerminatingEventFunctions.GetObject(current++);
+		auto& functiondata = _appTerminatingEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppLowMemoryEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppLowMemoryEvent event) const
 {
 	auto size = _appLowMemoryEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -429,13 +429,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppLowMemoryEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _appLowMemoryEventFunctions.GetObject(current++);
+		auto& functiondata = _appLowMemoryEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterBackgroundEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterBackgroundEvent event) const
 {
 	auto size = _appWillEnterBackgroundEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -447,13 +447,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterBackgroundEvent even
 		if (current == size)
 			break;
 
-		auto& functiondata = _appWillEnterBackgroundEventFunctions.GetObject(current++);
+		auto& functiondata = _appWillEnterBackgroundEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterBackgroundEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterBackgroundEvent event) const
 {
 	auto size = _appDidEnterBackgroundEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -465,13 +465,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterBackgroundEvent event
 		if (current == size)
 			break;
 
-		auto& functiondata = _appDidEnterBackgroundEventFunctions.GetObject(current++);
+		auto& functiondata = _appDidEnterBackgroundEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterForegroundEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterForegroundEvent event) const
 {
 	auto size = _appWillEnterForegroundEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -483,13 +483,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppWillEnterForegroundEvent even
 		if (current == size)
 			break;
 
-		auto& functiondata = _appWillEnterForegroundEventFunctions.GetObject(current++);
+		auto& functiondata = _appWillEnterForegroundEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterForegroundEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterForegroundEvent event) const
 {
 	auto size = _appDidEnterForegroundEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -501,13 +501,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAppDidEnterForegroundEvent event
 		if (current == size)
 			break;
 
-		auto& functiondata = _appDidEnterForegroundEventFunctions.GetObject(current++);
+		auto& functiondata = _appDidEnterForegroundEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleLocaleChangeEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleLocaleChangeEvent event) const
 {
 	auto size = _localeChangedEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -519,13 +519,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleLocaleChangeEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _localeChangedEventFunctions.GetObject(current++);
+		auto& functiondata = _localeChangedEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleDisplayEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleDisplayEvent event) const
 {
 	auto size = _displayEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -537,13 +537,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleDisplayEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _displayEventFunctions.GetObject(current++);
+		auto& functiondata = _displayEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleWindowEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleWindowEvent event) const
 {
 	auto size = _windowEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -555,13 +555,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleWindowEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _windowEventFunctions.GetObject(current++);
+		auto& functiondata = _windowEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleKeyboardEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleKeyboardEvent event) const
 {
 	auto size = _keyboardEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -573,13 +573,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleKeyboardEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _keyboardEventFunctions.GetObject(current++);
+		auto& functiondata = _keyboardEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleKeymapChanged event)
+void EventHandlerInternal::HandleEvent(SDLModuleKeymapChanged event) const
 {
 	auto size = _keymapChangedEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -591,13 +591,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleKeymapChanged event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _keymapChangedEventFunctions.GetObject(current++);
+		auto& functiondata = _keymapChangedEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleTextEditingEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleTextEditingEvent event) const
 {
 	auto size = _textEditingEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -609,13 +609,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleTextEditingEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _textEditingEventFunctions.GetObject(current++);
+		auto& functiondata = _textEditingEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleTextEditingExtendedEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleTextEditingExtendedEvent event) const
 {
 	auto size = _textEditingExtendedEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -627,13 +627,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleTextEditingExtendedEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _textEditingExtendedEventFunctions.GetObject(current++);
+		auto& functiondata = _textEditingExtendedEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleTextInputEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleTextInputEvent event) const
 {
 	auto size = _textInputEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -645,13 +645,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleTextInputEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _textInputEventFunctions.GetObject(current++);
+		auto& functiondata = _textInputEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleMouseMotionEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleMouseMotionEvent event) const
 {
 	auto size = _mouseMotionEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -663,13 +663,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleMouseMotionEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _mouseMotionEventFunctions.GetObject(current++);
+		auto& functiondata = _mouseMotionEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleMouseButtonEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleMouseButtonEvent event) const
 {
 	auto size = _mouseButtonEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -681,13 +681,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleMouseButtonEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _mouseButtonEventFunctions.GetObject(current++);
+		auto& functiondata = _mouseButtonEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleMouseWheelEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleMouseWheelEvent event) const
 {
 	auto size = _mouseWheelEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -699,13 +699,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleMouseWheelEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _mouseWheelEventFunctions.GetObject(current++);
+		auto& functiondata = _mouseWheelEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyAxisEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyAxisEvent event) const
 {
 	auto size = _joyAxisEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -717,13 +717,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyAxisEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyAxisEventFunctions.GetObject(current++);
+		auto& functiondata = _joyAxisEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyBallEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyBallEvent event) const
 {
 	auto size = _joyBallEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -735,13 +735,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyBallEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyBallEventFunctions.GetObject(current++);
+		auto& functiondata = _joyBallEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyHatEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyHatEvent event) const
 {
 	auto size = _joyHatEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -753,13 +753,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyHatEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyHatEventFunctions.GetObject(current++);
+		auto& functiondata = _joyHatEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyButtonEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyButtonEvent event) const
 {
 	auto size = _joyButtonEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -771,13 +771,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyButtonEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyButtonEventFunctions.GetObject(current++);
+		auto& functiondata = _joyButtonEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyDeviceEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyDeviceEvent event) const
 {
 	auto size = _joyDeviceEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -789,13 +789,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyDeviceEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyDeviceEventFunctions.GetObject(current++);
+		auto& functiondata = _joyDeviceEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleJoyBatteryEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleJoyBatteryEvent event) const
 {
 	auto size = _joyBatteryEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -807,13 +807,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleJoyBatteryEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _joyBatteryEventFunctions.GetObject(current++);
+		auto& functiondata = _joyBatteryEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleControllerAxisEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleControllerAxisEvent event) const
 {
 	auto size = _controllerAxisEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -825,13 +825,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleControllerAxisEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _controllerAxisEventFunctions.GetObject(current++);
+		auto& functiondata = _controllerAxisEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleControllerButtonEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleControllerButtonEvent event) const
 {
 	auto size = _controllerButtonEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -843,13 +843,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleControllerButtonEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _controllerButtonEventFunctions.GetObject(current++);
+		auto& functiondata = _controllerButtonEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleControllerDeviceEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleControllerDeviceEvent event) const
 {
 	auto size = _controllerDeviceEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -861,13 +861,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleControllerDeviceEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _controllerDeviceEventFunctions.GetObject(current++);
+		auto& functiondata = _controllerDeviceEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleControllerTouchpadEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleControllerTouchpadEvent event) const
 {
 	auto size = _controllerTouchpadEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -879,13 +879,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleControllerTouchpadEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _controllerTouchpadEventFunctions.GetObject(current++);
+		auto& functiondata = _controllerTouchpadEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleControllerSensorEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleControllerSensorEvent event) const
 {
 	auto size = _controllerSensorEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -897,13 +897,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleControllerSensorEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _controllerSensorEventFunctions.GetObject(current++);
+		auto& functiondata = _controllerSensorEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleAudioDeviceEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleAudioDeviceEvent event) const
 {
 	auto size = _audioDeviceEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -915,13 +915,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleAudioDeviceEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _audioDeviceEventFunctions.GetObject(current++);
+		auto& functiondata = _audioDeviceEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleTouchFingerEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleTouchFingerEvent event) const
 {
 	auto size = _touchFingerEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -933,13 +933,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleTouchFingerEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _touchFingerEventFunctions.GetObject(current++);
+		auto& functiondata = _touchFingerEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleMultiGestureEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleMultiGestureEvent event) const
 {
 	auto size = _multiGestureEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -951,13 +951,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleMultiGestureEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _multiGestureEventFunctions.GetObject(current++);
+		auto& functiondata = _multiGestureEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleDollarGestureEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleDollarGestureEvent event) const
 {
 	auto size = _dollarGestureEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -969,13 +969,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleDollarGestureEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _dollarGestureEventFunctions.GetObject(current++);
+		auto& functiondata = _dollarGestureEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleClipboardEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleClipboardEvent event) const
 {
 	auto size = _clipboardEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -987,13 +987,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleClipboardEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _clipboardEventFunctions.GetObject(current++);
+		auto& functiondata = _clipboardEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleDropEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleDropEvent event) const
 {
 	auto size = _dropEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1005,13 +1005,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleDropEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _dropEventFunctions.GetObject(current++);
+		auto& functiondata = _dropEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleSensorEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleSensorEvent event) const
 {
 	auto size = _sensorEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1023,13 +1023,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleSensorEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _sensorEventFunctions.GetObject(current++);
+		auto& functiondata = _sensorEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleOSEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleOSEvent event) const
 {
 	auto size = _OSEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1041,13 +1041,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleOSEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _OSEventFunctions.GetObject(current++);
+		auto& functiondata = _OSEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleUserEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleUserEvent event) const
 {
 	auto size = _userEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1059,13 +1059,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleUserEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _userEventFunctions.GetObject(current++);
+		auto& functiondata = _userEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleRenderTargetsResetEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleRenderTargetsResetEvent event) const
 {
 	auto size = _renderTargetsResetEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1077,13 +1077,13 @@ void EventHandlerInternal::HandleEvent(SDLModuleRenderTargetsResetEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _renderTargetsResetEventFunctions.GetObject(current++);
+		auto& functiondata = _renderTargetsResetEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
 }
 
-void EventHandlerInternal::HandleEvent(SDLModuleRenderDeviceResetEvent event)
+void EventHandlerInternal::HandleEvent(SDLModuleRenderDeviceResetEvent event) const
 {
 	auto size = _renderDeviceResetEventFunctions.GetUsedSize();
 	size_t current = 0;
@@ -1095,7 +1095,7 @@ void EventHandlerInternal::HandleEvent(SDLModuleRenderDeviceResetEvent event)
 		if (current == size)
 			break;
 
-		auto& functiondata = _renderDeviceResetEventFunctions.GetObject(current++);
+		auto& functiondata = _renderDeviceResetEventFunctions.GetConstObject(current++);
 
 		fallthrough = functiondata.first(event, functiondata.second);
 	}
