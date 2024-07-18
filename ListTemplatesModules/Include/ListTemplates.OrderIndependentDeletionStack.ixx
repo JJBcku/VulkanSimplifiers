@@ -9,6 +9,7 @@ constexpr size_t listTemplateDefaultReserve = 0x10;
 export template<class T>
 class OrderIndependentDeletionStack
 {
+public:
 	OrderIndependentDeletionStack(size_t reserve)
 	{
 		_nextID = std::numeric_limits<IDType>::lowest();
@@ -294,6 +295,35 @@ class OrderIndependentDeletionStack
 		else
 		{
 			throw std::runtime_error("OrderIndependentDeletionStack GetObjectCopy Error: An ID from the addition list does not exist in the object list!");
+		}
+	}
+
+	void Reset(size_t reserve)
+	{
+		_list.clear();
+		_deletedList.clear();
+		_additionOrder.clear();
+
+		_list.shrink_to_fit();
+		_deletedList.shrink_to_fit();
+		_additionOrder.shrink_to_fit();
+
+		if (_vectorID == std::numeric_limits<IDType>::max())
+			throw std::runtime_error("UnsortedList Reset Error: vector ID overflow!");
+
+		_vectorID++;
+
+		if (reserve != 0)
+		{
+			_list.reserve(reserve);
+			_deletedList.reserve(reserve);
+			_additionOrder.reserve(reserve);
+		}
+		else
+		{
+			_list.reserve(listTemplateDefaultReserve);
+			_deletedList.reserve(listTemplateDefaultReserve);
+			_additionOrder.reserve(listTemplateDefaultReserve);
 		}
 	}
 

@@ -351,6 +351,9 @@ public:
 		_list.clear();
 		_deletedList.clear();
 
+		_list.shrink_to_fit();
+		_deletedList.shrink_to_fit();
+
 		if (_vectorID == std::numeric_limits<IDType>::max())
 			throw std::runtime_error("UnsortedList Reset Error: vector ID overflow!");
 

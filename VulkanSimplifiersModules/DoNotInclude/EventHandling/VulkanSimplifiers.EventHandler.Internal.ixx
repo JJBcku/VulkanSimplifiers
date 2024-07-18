@@ -7,7 +7,8 @@ export module VulkanSimplifiers.EventHandler.Internal;
 
 import std;
 import VulkanSimplifiers.EventHandler.SDLModule.QuitEvent;
-import VulkanSimplifiers.EventHandler.SDLModule.CommonEvent;
+import VulkanSimplifiers.EventHandler.SDLModule.AppEvents;
+import VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.DisplayEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.WindowEvent;
 import VulkanSimplifiers.EventHandler.SDLModule.KeyboardEvent;
@@ -26,14 +27,14 @@ import ListTemplates.OrderIndependentDeletionStack;
 
 export typedef std::function<bool(const SDLModuleQuitEvent&, void*)> QuitEventFunction;
 
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppTerminatingEventFunction;
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppLowMemoryEventFunction;
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppWillEnterBackgroundEventFunction;
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppDidEnterBackgroundEventFunction;
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppWillEnterForegroundEventFunction;
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> AppDidEnterForegroundEventFunction;
+export typedef std::function<bool(const SDLModuleAppTerminatingEvent&, void*)> AppTerminatingEventFunction;
+export typedef std::function<bool(const SDLModuleAppLowMemoryEvent&, void*)> AppLowMemoryEventFunction;
+export typedef std::function<bool(const SDLModuleAppWillEnterBackgroundEvent&, void*)> AppWillEnterBackgroundEventFunction;
+export typedef std::function<bool(const SDLModuleAppDidEnterBackgroundEvent&, void*)> AppDidEnterBackgroundEventFunction;
+export typedef std::function<bool(const SDLModuleAppWillEnterForegroundEvent&, void*)> AppWillEnterForegroundEventFunction;
+export typedef std::function<bool(const SDLModuleAppDidEnterForegroundEvent&, void*)> AppDidEnterForegroundEventFunction;
 
-export typedef std::function<bool(const SDLModuleCommonEvent&, void*)> LocaleChangedEventFunction;
+export typedef std::function<bool(const SDLModuleLocaleChangeEvents&, void*)> LocaleChangedEventFunction;
 
 export typedef std::function<bool(const SDLModuleDisplayEvent&, void*)> DisplayEventFunction;
 export typedef std::function<bool(const SDLModuleWindowEvent&, void*)> WindowEventFunction;
@@ -73,6 +74,16 @@ export typedef std::function<bool(const SDLModuleUserEvent&, void*)> UserEventFu
 
 export class EventHandlerInternal
 {
+public:
+	EventHandlerInternal(size_t reserve);
+	~EventHandlerInternal();
+
+	EventHandlerInternal(const EventHandlerInternal&) noexcept = delete;
+	//EventHandlerInternal(EventHandlerInternal&&) noexcept = delete;
+
+	EventHandlerInternal& operator=(const EventHandlerInternal&) noexcept = delete;
+	//EventHandlerInternal& operator=(EventHandlerInternal&&) noexcept = delete;
+
 private:
 	OrderIndependentDeletionStack<std::pair<QuitEventFunction, void*>> _quitEventFunctions;
 
@@ -118,6 +129,8 @@ private:
 	OrderIndependentDeletionStack<std::pair<DropEventFunction, void*>> _dropEventFunctions;
 	OrderIndependentDeletionStack<std::pair<SensorEventFunction, void*>> _sensorEventFunctions;
 	OrderIndependentDeletionStack<std::pair<OSEventFunction, void*>> _OSEventFunctions;
-	OrderIndependentDeletionStack<std::pair<UserEventFunction, void*>> _UserEventFunctions;
+	OrderIndependentDeletionStack<std::pair<UserEventFunction, void*>> _userEventFunctions;
 	//OrderIndependentDeletionStack<std::pair<SystemWindowsManagerEventFunction, void*>> _systemWindowsManagerEventFunctions;
+
+	//void HandleEvent(SDLModuleQuitEvent event);
 };

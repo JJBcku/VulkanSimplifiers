@@ -63,12 +63,6 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.DisplayEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.CommonEvent.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.CommonEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.WindowEvent.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +139,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.UserEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.Internal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AppEvents.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.AppEvents.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.LocaleChangedEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
