@@ -3,6 +3,8 @@ export module VulkanSimplifiers.EventHandler.Simplifier;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.EventHandler.Internal;
 
+import VulkanSimplifiers.EventHandler.Data;
+
 import std;
 
 export class EventHandlerSimplifier

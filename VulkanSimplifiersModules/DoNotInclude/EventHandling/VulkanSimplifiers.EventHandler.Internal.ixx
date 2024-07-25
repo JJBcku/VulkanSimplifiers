@@ -27,6 +27,8 @@ import VulkanSimplifiers.EventHandler.SDLModule.UserEvent;
 
 import ListTemplates.OrderIndependentDeletionStack;
 
+import VulkanSimplifiers.EventHandler.Data;
+
 export typedef std::function<bool(const SDLModuleQuitEvent&, void*)> QuitEventFunction;
 
 export typedef std::function<bool(const SDLModuleAppTerminatingEvent&, void*)> AppTerminatingEventFunction;
@@ -82,7 +84,7 @@ export typedef std::function<bool(const SDLModuleRenderDeviceResetEvent&, void*)
 export class EventHandlerInternal
 {
 public:
-	EventHandlerInternal(size_t reserve);
+	EventHandlerInternal(const EventHandlerInitData& initData);
 	~EventHandlerInternal();
 
 	EventHandlerInternal(const EventHandlerInternal&) noexcept = delete;
