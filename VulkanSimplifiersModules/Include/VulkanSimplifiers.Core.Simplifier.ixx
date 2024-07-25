@@ -1,6 +1,7 @@
 export module VulkanSimplifiers.Core.Simplifier;
 
 import std;
+import VulkanSimplifiers.Core.Data;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.EventHandler.Simplifier;
 import VulkanSimplifiers.Core.Internal;
@@ -11,7 +12,7 @@ import VulkanSimplifiers.Window.Simplifier;
 export class CoreSimplifier
 {
 public:
-	explicit CoreSimplifier(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows);
+	explicit CoreSimplifier(const CoreSimplifierInitData& initData);
 	~CoreSimplifier();
 
 	CoreSimplifier(const CoreSimplifier&) = delete;

@@ -202,6 +202,8 @@
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.UserEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.WindowEvent.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Common.StandardNonVulkanVersion.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Data.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Simplifier.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.EventHandler.Data.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp" />
@@ -226,6 +228,7 @@
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.UserEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.SDLModule.WindowEvent.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandler.Simplifier.ixx" />
+    <ClCompile Include="Include\VulkanSimplifiers.Common.StandardNonVulkanVersion.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Core.Data.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Window.Simplifier.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Core.Simplifier.ixx" />

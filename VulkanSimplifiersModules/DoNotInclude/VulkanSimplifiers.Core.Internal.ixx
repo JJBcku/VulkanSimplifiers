@@ -1,6 +1,7 @@
 export module VulkanSimplifiers.Core.Internal;
 
 import std;
+import VulkanSimplifiers.Core.Data;
 import ListTemplates.UnsortedList;
 import VulkanSimplifiers.EventHandler.Internal;
 import VulkanSimplifiers.Instance;
@@ -14,7 +15,7 @@ export typedef std::unique_ptr<WindowInternal> WindowPointer;
 export class CoreInternal
 {
 public:
-	explicit CoreInternal(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows);
+	explicit CoreInternal(const CoreSimplifierInitData& initData);
 	~CoreInternal();
 
 	CoreInternal(const CoreInternal&) = delete;
@@ -29,6 +30,9 @@ public:
 	const WindowInternal& GetWindowSimplifier(IDObject<WindowPointer> windowID) const;
 
 private:
+	NonVulkanVersionData _appVersion;
+	std::string _appTitle;
+	std::string _appVarianTile;
 	EventHandlerInternal _eventHandler;
 	UnsortedList<InstancePointer> _instanceList;
 	UnsortedList<WindowPointer> _windowList;

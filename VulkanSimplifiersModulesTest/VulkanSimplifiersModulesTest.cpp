@@ -1,4 +1,5 @@
 import VulkanSimplifiers.Core.Simplifier;
+import VulkanSimplifiers.Core.Data;
 import VulkanSimplifiers.EventHandler.Simplifier;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.Window.Data;
@@ -11,7 +12,12 @@ int main()
 {
     MainSettings settings;
 
-    CoreSimplifier core(0x10, 0x10, 0x10);
+    CoreSimplifierInitData initData;
+
+    initData.appVersion.patch = 1;
+    initData.appTitle = "Vulkan Simplifier test app";
+
+    CoreSimplifier core(initData);
 
     auto eventHandler = core.GetEventHandler();
     eventHandler.RegisterQuitEventCallback(settings.QuitEventCallback, &settings, 0x10);

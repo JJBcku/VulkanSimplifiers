@@ -4,12 +4,16 @@ module;
 
 module VulkanSimplifiers.Core.Internal;
 
-CoreInternal::CoreInternal(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows) : _eventHandler(callbackListInitialCapacity),
-_instanceList(reserveInstances), _windowList(reserveWindows)
+CoreInternal::CoreInternal(const CoreSimplifierInitData& initData) : _eventHandler(initData.eventHandlerData),
+_instanceList(initData.instancesListInitialCapacity), _windowList(initData.windowsListInitialCapacity)
 {
 	int result = SDL_Init(SDL_INIT_VIDEO);
 	 if (result < 0)
 		throw std::runtime_error("Program failed to initialize SDL, error code" + std::to_string(result));
+
+	 _appVersion = initData.appVersion;
+	 _appTitle = initData.appTitle;
+	 _appVarianTile = initData.appVariantTitle;
 }
 
 CoreInternal::~CoreInternal()

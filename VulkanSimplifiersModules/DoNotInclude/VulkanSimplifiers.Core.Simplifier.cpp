@@ -2,9 +2,9 @@ module;
 
 module VulkanSimplifiers.Core.Simplifier;
 
-CoreSimplifier::CoreSimplifier(size_t callbackListInitialCapacity, size_t reserveInstances, size_t reserveWindows)
+CoreSimplifier::CoreSimplifier(const CoreSimplifierInitData& initData)
 {
-	_internal = std::make_unique<CoreInternal>(callbackListInitialCapacity, reserveInstances, reserveWindows);
+	_internal = std::make_unique<CoreInternal>(initData);
 }
 
 CoreSimplifier::~CoreSimplifier()
