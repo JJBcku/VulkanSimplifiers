@@ -18,7 +18,7 @@ public:
 	CoreSimplifier(const CoreSimplifier&) = delete;
 	CoreSimplifier& operator=(const CoreSimplifier&) = delete;
 
-	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved);
+	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved = 0);
 
 	EventHandlerSimplifier GetEventHandler();
 	WindowSimplifier GetWindowSimplifier(IDObject<WindowPointer> windowID);

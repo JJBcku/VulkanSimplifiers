@@ -28,7 +28,7 @@ int main()
     window.windowWidth = 800;
     window.windowHeight = 600;
 
-    auto windowId = core.CreateWindow(window, 0);
+    auto windowId = core.CreateWindow(window);
 
     auto windowSimplifier = core.GetWindowSimplifier(windowId);
 
