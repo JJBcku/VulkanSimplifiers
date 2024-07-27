@@ -1,6 +1,6 @@
 export module MainSettings;
 
-import VulkanSimplifiers.EventHandler.SDLModule.QuitEvent;
+import VulkanSimplifiers.EventHandling.SDLModule.QuitEvent;
 
 import std;
 

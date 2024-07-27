@@ -3,7 +3,7 @@ export module VulkanSimplifiers.Core.Internal;
 import std;
 import VulkanSimplifiers.Core.Data;
 import ListTemplates.UnsortedList;
-import VulkanSimplifiers.EventHandler.Internal;
+import VulkanSimplifiers.EventHandling.Internal;
 import VulkanSimplifiers.Instance;
 import VulkanSimplifiers.Window.Internal;
 import VulkanSimplifiers.Window.Data;
@@ -23,17 +23,17 @@ public:
 
 	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved);
 
-	EventHandlerInternal& GetEventHandler();
+	EventHandlingInternal& GetEventHandler();
 	WindowInternal& GetWindowSimplifier(IDObject<WindowPointer> windowID);
 
-	const EventHandlerInternal& GetEventHandler() const;
+	const EventHandlingInternal& GetEventHandler() const;
 	const WindowInternal& GetWindowSimplifier(IDObject<WindowPointer> windowID) const;
 
 private:
 	NonVulkanVersionData _appVersion;
 	std::string _appTitle;
 	std::string _appVarianTile;
-	EventHandlerInternal _eventHandler;
+	EventHandlingInternal _eventHandler;
 	UnsortedList<InstancePointer> _instanceList;
 	UnsortedList<WindowPointer> _windowList;
 };

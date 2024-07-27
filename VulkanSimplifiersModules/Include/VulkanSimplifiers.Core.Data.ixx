@@ -1,5 +1,5 @@
 export module VulkanSimplifiers.Core.Data;
-export import VulkanSimplifiers.EventHandler.Data;
+export import VulkanSimplifiers.EventHandling.Data;
 
 export import VulkanSimplifiers.Common.StandardNonVulkanVersion;
 

@@ -3,7 +3,7 @@ export module VulkanSimplifiers.Core.Simplifier;
 import std;
 import VulkanSimplifiers.Core.Data;
 import ListTemplates.IDObject;
-import VulkanSimplifiers.EventHandler.Simplifier;
+import VulkanSimplifiers.EventHandling.Simplifier;
 import VulkanSimplifiers.Core.Internal;
 import VulkanSimplifiers.Window.Data;
 import VulkanSimplifiers.Window.Internal;
@@ -20,7 +20,7 @@ public:
 
 	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved = 0);
 
-	EventHandlerSimplifier GetEventHandler();
+	EventHandlingSimplifier GetEventHandler();
 	WindowSimplifier GetWindowSimplifier(IDObject<WindowPointer> windowID);
 
 private:

@@ -16,7 +16,7 @@ IDObject<WindowPointer> CoreSimplifier::CreateWindow(WindowCreationData data, si
 	return _internal->CreateWindow(data, addReserved);
 }
 
-EventHandlerSimplifier CoreSimplifier::GetEventHandler()
+EventHandlingSimplifier CoreSimplifier::GetEventHandler()
 {
 	return _internal->GetEventHandler();
 }

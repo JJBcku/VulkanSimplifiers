@@ -1,6 +1,6 @@
 import VulkanSimplifiers.Core.Simplifier;
 import VulkanSimplifiers.Core.Data;
-import VulkanSimplifiers.EventHandler.Simplifier;
+import VulkanSimplifiers.EventHandling.Simplifier;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.Window.Data;
 import VulkanSimplifiers.Window.Simplifier;

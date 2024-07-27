@@ -1,4 +1,4 @@
-module VulkanSimplifiers.EventHandler.Data;
+module VulkanSimplifiers.EventHandling.Data;
 
 EventHandlerInitData::EventHandlerInitData()
 {

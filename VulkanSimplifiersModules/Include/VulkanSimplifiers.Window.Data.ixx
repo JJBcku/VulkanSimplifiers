@@ -14,7 +14,6 @@ export enum class WindowProperties : std::uint64_t
 export struct WindowCreationData
 {
 	const char* windowTitle = nullptr;
-	size_t padding = 0;
 	std::int32_t windowWidth = 0;
 	std::int32_t windowHeight = 0;
 
