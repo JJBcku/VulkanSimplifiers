@@ -192,5 +192,17 @@
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Core.Data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Internal.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Internal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Include\VulkanSimplifiers.WindowList.Simplifier.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Simplifier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

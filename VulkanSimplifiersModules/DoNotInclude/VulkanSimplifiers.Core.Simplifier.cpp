@@ -11,17 +11,12 @@ CoreSimplifier::~CoreSimplifier()
 {
 }
 
-IDObject<WindowPointer> CoreSimplifier::CreateWindow(WindowCreationData data, size_t addReserved)
-{
-	return _internal->CreateWindow(data, addReserved);
-}
-
 EventHandlingSimplifier CoreSimplifier::GetEventHandler()
 {
 	return _internal->GetEventHandler();
 }
 
-WindowSimplifier CoreSimplifier::GetWindowSimplifier(IDObject<WindowPointer> windowID)
+WindowListSimplifier CoreSimplifier::GetWindowListSimplifier()
 {
-	return _internal->GetWindowSimplifier(windowID);
+	return _internal->GetWindowListSimplifier();
 }

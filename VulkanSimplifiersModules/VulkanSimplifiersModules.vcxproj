@@ -208,6 +208,8 @@
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.EventHandler.Data.cpp" />
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Simplifier.cpp" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandling.SDLModule.DisplayEvent.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Internal.cpp" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Simplifier.cpp" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandling.Data.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandling.SDLModule.AppEvents.ixx" />
     <ClCompile Include="Include\EventHandling\VulkanSimplifiers.EventHandling.SDLModule.AudioDeviceEvent.ixx" />
@@ -239,6 +241,8 @@
     <ClCompile Include="DoNotInclude\VulkanSimplifiers.Window.Internal.ixx" />
     <ClCompile Include="Include\VulkanSimplifiers.Window.Data.ixx" />
     <ClCompile Include="DoNotInclude\EventHandling\VulkanSimplifiers.EventHandling.Internal.ixx" />
+    <ClCompile Include="DoNotInclude\VulkanSimplifiers.WindowList.Internal.ixx" />
+    <ClCompile Include="Include\VulkanSimplifiers.WindowList.Simplifier.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Include\VulkanSimplifiers.Instance.ixx">

@@ -5,9 +5,7 @@ import VulkanSimplifiers.Core.Data;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.EventHandling.Simplifier;
 import VulkanSimplifiers.Core.Internal;
-import VulkanSimplifiers.Window.Data;
-import VulkanSimplifiers.Window.Internal;
-import VulkanSimplifiers.Window.Simplifier;
+import VulkanSimplifiers.WindowList.Simplifier;
 
 export class CoreSimplifier
 {
@@ -18,10 +16,8 @@ public:
 	CoreSimplifier(const CoreSimplifier&) = delete;
 	CoreSimplifier& operator=(const CoreSimplifier&) = delete;
 
-	IDObject<WindowPointer> CreateWindow(WindowCreationData data, size_t addReserved = 0);
-
 	EventHandlingSimplifier GetEventHandler();
-	WindowSimplifier GetWindowSimplifier(IDObject<WindowPointer> windowID);
+	WindowListSimplifier GetWindowListSimplifier();
 
 private:
 	std::unique_ptr<CoreInternal> _internal;

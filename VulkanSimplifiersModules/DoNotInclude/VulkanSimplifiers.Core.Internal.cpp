@@ -21,21 +21,14 @@ CoreInternal::~CoreInternal()
 	SDL_Quit();
 }
 
-IDObject<WindowPointer> CoreInternal::CreateWindow(WindowCreationData data, size_t addReserved)
-{
-	return _windowList.AddObject(std::make_unique<WindowInternal>(data), addReserved);
-}
-
 EventHandlingInternal& CoreInternal::GetEventHandler()
 {
 	return _eventHandler;
 }
 
-WindowInternal& CoreInternal::GetWindowSimplifier(IDObject<WindowPointer> windowID)
+WindowListInternal& CoreInternal::GetWindowListSimplifier()
 {
-	auto& window = _windowList.GetObject(windowID);
-
-	return *window;
+	return _windowList;
 }
 
 const EventHandlingInternal& CoreInternal::GetEventHandler() const
@@ -43,9 +36,7 @@ const EventHandlingInternal& CoreInternal::GetEventHandler() const
 	return _eventHandler;
 }
 
-const WindowInternal& CoreInternal::GetWindowSimplifier(IDObject<WindowPointer> windowID) const
+const WindowListInternal& CoreInternal::GetWindowListSimplifier() const
 {
-	auto& window = _windowList.GetConstObject(windowID);
-
-	return *window;
+	return _windowList;
 }

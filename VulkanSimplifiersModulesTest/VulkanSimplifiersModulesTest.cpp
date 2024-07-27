@@ -4,6 +4,7 @@ import VulkanSimplifiers.EventHandling.Simplifier;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.Window.Data;
 import VulkanSimplifiers.Window.Simplifier;
+import VulkanSimplifiers.WindowList.Simplifier;
 import std;
 
 import MainSettings;
@@ -28,9 +29,11 @@ int main()
     window.windowWidth = 800;
     window.windowHeight = 600;
 
-    auto windowId = core.CreateWindow(window);
+    auto windowList = core.GetWindowListSimplifier();
 
-    auto windowSimplifier = core.GetWindowSimplifier(windowId);
+    auto windowId = windowList.CreateWindow(window);
+
+    auto windowSimplifier = windowList.GetWindowSimplifier(windowId);
 
     while (!settings.GetQuit())
     {
