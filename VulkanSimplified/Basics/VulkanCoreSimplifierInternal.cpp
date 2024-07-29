@@ -6,7 +6,7 @@
 namespace VulkanSimplified
 {
 
-	uint32_t VulkanCoreSimplifierInternal::GetMaximumAvailableVulkanVersion()  const
+	uint32_t VulkanCoreSimplifierInternal::GetMaximumAvailableVulkanVersion() const
 	{
 #pragma warning(push)
 #pragma warning(disable : 4191)
@@ -27,7 +27,7 @@ namespace VulkanSimplified
 		return ret;
 	}
 
-	uint32_t VulkanCoreSimplifierInternal::ComputeVersionFromVesionArray(VersionArray version)  const
+	uint32_t VulkanCoreSimplifierInternal::ComputeVersionFromVersionArray(VersionArray version)  const
 	{
 		return VK_MAKE_API_VERSION(version.variant, version.major, version.minor, version.patch);
 	}
@@ -166,12 +166,12 @@ namespace VulkanSimplified
 		_debugMessenger = VK_NULL_HANDLE;
 		_extendedSwapchainColorSpace = false;
 
-		if (ComputeVersionFromVesionArray(appSettings.minVulkanVersion) > _usedVersion)
+		if (ComputeVersionFromVersionArray(appSettings.minVulkanVersion) > _usedVersion)
 		{
 			throw std::runtime_error("Error: Highest supported version is lower than minimum required version!");
 		}
 
-		uint32_t maxVersion = ComputeVersionFromVesionArray(appSettings.maxVulkanVersion);
+		uint32_t maxVersion = ComputeVersionFromVersionArray(appSettings.maxVulkanVersion);
 
 		if (_usedVersion > maxVersion)
 			_usedVersion = maxVersion;
@@ -191,10 +191,10 @@ namespace VulkanSimplified
 		VkApplicationInfo appInfo{};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pNext = nullptr;
-		appInfo.applicationVersion = ComputeVersionFromVesionArray(appSettings.appVersion);
+		appInfo.applicationVersion = ComputeVersionFromVersionArray(appSettings.appVersion);
 		appInfo.pApplicationName = appSettings.appTitle;
 		appInfo.pEngineName = "JJEngine";
-		appInfo.engineVersion = ComputeVersionFromVesionArray(appSettings.engineVersion);
+		appInfo.engineVersion = ComputeVersionFromVersionArray(appSettings.engineVersion);
 		appInfo.apiVersion = _usedVersion;
 
 		VkInstanceCreateInfo createInfo{};

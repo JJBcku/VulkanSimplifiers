@@ -20,7 +20,7 @@ namespace VulkanSimplified
 		char padding[3];
 
 		uint32_t GetMaximumAvailableVulkanVersion()  const;
-		uint32_t ComputeVersionFromVesionArray(VersionArray version) const;
+		uint32_t ComputeVersionFromVersionArray(VersionArray version) const;
 
 		void EnumerateInstanceExtensions();
 		void EnumerateLayers();
