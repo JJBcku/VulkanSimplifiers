@@ -7,12 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanSimplified", "VulkanS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanSimplifiedTest", "VulkanSimplifiedTest\VulkanSimplifiedTest.vcxproj", "{5EFA5D8A-4341-41A6-BC48-9892367203A2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanSimplifiersModules", "VulkanSimplifiersModules\VulkanSimplifiersModules.vcxproj", "{D165BBDE-2D60-4458-8865-C74606E06266}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanSimplifiersModulesTest", "VulkanSimplifiersModulesTest\VulkanSimplifiersModulesTest.vcxproj", "{E865B6D8-CC86-4598-A035-300659DAC3C0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ListTemplatesModules", "ListTemplatesModules\ListTemplatesModules.vcxproj", "{8B599CC9-5737-4478-AC6C-801FA089BB60}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,18 +21,6 @@ Global
 		{5EFA5D8A-4341-41A6-BC48-9892367203A2}.Debug|x64.Build.0 = Debug|x64
 		{5EFA5D8A-4341-41A6-BC48-9892367203A2}.Release|x64.ActiveCfg = Release|x64
 		{5EFA5D8A-4341-41A6-BC48-9892367203A2}.Release|x64.Build.0 = Release|x64
-		{D165BBDE-2D60-4458-8865-C74606E06266}.Debug|x64.ActiveCfg = Debug|x64
-		{D165BBDE-2D60-4458-8865-C74606E06266}.Debug|x64.Build.0 = Debug|x64
-		{D165BBDE-2D60-4458-8865-C74606E06266}.Release|x64.ActiveCfg = Release|x64
-		{D165BBDE-2D60-4458-8865-C74606E06266}.Release|x64.Build.0 = Release|x64
-		{E865B6D8-CC86-4598-A035-300659DAC3C0}.Debug|x64.ActiveCfg = Debug|x64
-		{E865B6D8-CC86-4598-A035-300659DAC3C0}.Debug|x64.Build.0 = Debug|x64
-		{E865B6D8-CC86-4598-A035-300659DAC3C0}.Release|x64.ActiveCfg = Release|x64
-		{E865B6D8-CC86-4598-A035-300659DAC3C0}.Release|x64.Build.0 = Release|x64
-		{8B599CC9-5737-4478-AC6C-801FA089BB60}.Debug|x64.ActiveCfg = Debug|x64
-		{8B599CC9-5737-4478-AC6C-801FA089BB60}.Debug|x64.Build.0 = Debug|x64
-		{8B599CC9-5737-4478-AC6C-801FA089BB60}.Release|x64.ActiveCfg = Release|x64
-		{8B599CC9-5737-4478-AC6C-801FA089BB60}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
