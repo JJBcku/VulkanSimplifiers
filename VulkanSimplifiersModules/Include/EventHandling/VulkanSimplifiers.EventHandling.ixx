@@ -1,4 +1,4 @@
-export module VulkanSimplifiers.EventHandling.Simplifier;
+export module VulkanSimplifiers.EventHandling;
 
 import ListTemplates.IDObject;
 import VulkanSimplifiers.EventHandling.Internal;

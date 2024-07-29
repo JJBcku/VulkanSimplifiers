@@ -1,9 +1,9 @@
-export module VulkanSimplifiers.Core.Data;
+export module VulkanSimplifiers.Main.Data;
 export import VulkanSimplifiers.EventHandling.Data;
 
 export import VulkanSimplifiers.Common.StandardNonVulkanVersion;
 
-export struct CoreSimplifierInitData
+export struct MainSimplifierInitData
 {
 	NonVulkanVersionData appVersion;
 	std::string appTitle;
@@ -12,5 +12,5 @@ export struct CoreSimplifierInitData
 	size_t instancesListInitialCapacity;
 	size_t windowsListInitialCapacity;
 
-	CoreSimplifierInitData();
+	MainSimplifierInitData();
 };

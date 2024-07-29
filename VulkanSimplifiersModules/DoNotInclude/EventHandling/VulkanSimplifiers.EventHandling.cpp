@@ -1,4 +1,4 @@
-module VulkanSimplifiers.EventHandling.Simplifier;
+module VulkanSimplifiers.EventHandling;
 
 EventHandlingSimplifier::EventHandlingSimplifier(EventHandlingInternal& ref) : _internal(ref)
 {

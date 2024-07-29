@@ -1,4 +1,4 @@
-module VulkanSimplifiers.Window.Simplifier;
+module VulkanSimplifiers.Window;
 
 WindowSimplifier::WindowSimplifier(WindowInternal& ref) : _internal(ref)
 {

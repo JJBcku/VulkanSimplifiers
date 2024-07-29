@@ -1,4 +1,4 @@
-export module VulkanSimplifiers.Window.Simplifier;
+export module VulkanSimplifiers.Window;
 
 import VulkanSimplifiers.Window.Internal;
 

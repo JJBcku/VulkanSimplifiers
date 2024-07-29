@@ -1,10 +1,10 @@
-import VulkanSimplifiers.Core.Simplifier;
-import VulkanSimplifiers.Core.Data;
-import VulkanSimplifiers.EventHandling.Simplifier;
+import VulkanSimplifiers.Main;
+import VulkanSimplifiers.Main.Data;
+import VulkanSimplifiers.EventHandling;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.Window.Data;
-import VulkanSimplifiers.Window.Simplifier;
-import VulkanSimplifiers.WindowList.Simplifier;
+import VulkanSimplifiers.Window;
+import VulkanSimplifiers.WindowList;
 import std;
 
 import MainSettings;
@@ -13,12 +13,12 @@ int main()
 {
     MainSettings settings;
 
-    CoreSimplifierInitData initData;
+    MainSimplifierInitData initData;
 
     initData.appVersion.patch = 1;
     initData.appTitle = "Vulkan Simplifier test app";
 
-    CoreSimplifier core(initData);
+    MainSimplifier core(initData);
 
     auto eventHandler = core.GetEventHandler();
     eventHandler.RegisterQuitEventCallback(settings.QuitEventCallback, &settings, 0x10);

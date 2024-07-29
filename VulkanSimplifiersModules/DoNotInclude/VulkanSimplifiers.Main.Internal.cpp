@@ -2,9 +2,9 @@ module;
 
 #include <SDL2/SDL.h>
 
-module VulkanSimplifiers.Core.Internal;
+module VulkanSimplifiers.Main.Internal;
 
-CoreInternal::CoreInternal(const CoreSimplifierInitData& initData) : _eventHandler(initData.eventHandlerData),
+MainInternal::MainInternal(const MainSimplifierInitData& initData) : _eventHandler(initData.eventHandlerData),
 _instanceList(initData.instancesListInitialCapacity), _windowList(initData.windowsListInitialCapacity)
 {
 	int result = SDL_Init(SDL_INIT_VIDEO);
@@ -13,30 +13,30 @@ _instanceList(initData.instancesListInitialCapacity), _windowList(initData.windo
 
 	 _appVersion = initData.appVersion;
 	 _appTitle = initData.appTitle;
-	 _appVarianTile = initData.appVariantTitle;
+	 _appVariantTile = initData.appVariantTitle;
 }
 
-CoreInternal::~CoreInternal()
+MainInternal::~MainInternal()
 {
 	SDL_Quit();
 }
 
-EventHandlingInternal& CoreInternal::GetEventHandler()
+EventHandlingInternal& MainInternal::GetEventHandler()
 {
 	return _eventHandler;
 }
 
-WindowListInternal& CoreInternal::GetWindowListSimplifier()
+WindowListInternal& MainInternal::GetWindowListSimplifier()
 {
 	return _windowList;
 }
 
-const EventHandlingInternal& CoreInternal::GetEventHandler() const
+const EventHandlingInternal& MainInternal::GetEventHandler() const
 {
 	return _eventHandler;
 }
 
-const WindowListInternal& CoreInternal::GetWindowListSimplifier() const
+const WindowListInternal& MainInternal::GetWindowListSimplifier() const
 {
 	return _windowList;
 }

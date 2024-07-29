@@ -1,9 +1,9 @@
-export module VulkanSimplifiers.WindowList.Simplifier;
+export module VulkanSimplifiers.WindowList;
 
 import ListTemplates.UnsortedList;
 import VulkanSimplifiers.WindowList.Internal;
 import VulkanSimplifiers.Window.Internal;
-import VulkanSimplifiers.Window.Simplifier;
+import VulkanSimplifiers.Window;
 import VulkanSimplifiers.Window.Data;
 
 export class WindowListSimplifier

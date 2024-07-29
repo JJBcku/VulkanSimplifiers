@@ -1,24 +1,22 @@
-export module VulkanSimplifiers.Core.Internal;
+export module VulkanSimplifiers.Main.Internal;
 
 import std;
-import VulkanSimplifiers.Core.Data;
+import VulkanSimplifiers.Main.Data;
 import ListTemplates.UnsortedList;
 import VulkanSimplifiers.EventHandling.Internal;
 import VulkanSimplifiers.Instance;
 import VulkanSimplifiers.WindowList.Internal;
-import VulkanSimplifiers.Window.Data;
-import VulkanSimplifiers.Window.Simplifier;
 
 export typedef std::unique_ptr<Instance> InstancePointer;
 
-export class CoreInternal
+export class MainInternal
 {
 public:
-	explicit CoreInternal(const CoreSimplifierInitData& initData);
-	~CoreInternal();
+	explicit MainInternal(const MainSimplifierInitData& initData);
+	~MainInternal();
 
-	CoreInternal(const CoreInternal&) = delete;
-	CoreInternal& operator=(const CoreInternal&) = delete;
+	MainInternal(const MainInternal&) = delete;
+	MainInternal& operator=(const MainInternal&) = delete;
 
 	EventHandlingInternal& GetEventHandler();
 	WindowListInternal& GetWindowListSimplifier();
@@ -29,7 +27,7 @@ public:
 private:
 	NonVulkanVersionData _appVersion;
 	std::string _appTitle;
-	std::string _appVarianTile;
+	std::string _appVariantTile;
 	EventHandlingInternal _eventHandler;
 	UnsortedList<InstancePointer> _instanceList;
 	WindowListInternal _windowList;
