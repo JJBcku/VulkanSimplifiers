@@ -16,6 +16,11 @@ EventHandlingSimplifier MainSimplifier::GetEventHandler()
 	return _internal->GetEventHandler();
 }
 
+InstanceListSimplifier MainSimplifier::GetInstanceListSimplifier()
+{
+	return _internal->GetInstanceListSimplifier();
+}
+
 WindowListSimplifier MainSimplifier::GetWindowListSimplifier()
 {
 	return _internal->GetWindowListSimplifier();

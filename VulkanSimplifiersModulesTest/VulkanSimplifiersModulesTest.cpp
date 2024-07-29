@@ -5,6 +5,7 @@ import ListTemplates.IDObject;
 import VulkanSimplifiers.Window.Data;
 import VulkanSimplifiers.Window;
 import VulkanSimplifiers.WindowList;
+import VulkanSimplifiers.InstanceList;
 import std;
 
 import MainSettings;
@@ -35,9 +36,11 @@ int main()
 
     auto windowSimplifier = windowList.GetWindowSimplifier(windowId);
 
+    auto instanceList = core.GetInstanceListSimplifier();
+
     while (!settings.GetQuit())
     {
         eventHandler.HandleEvents();
-        std::this_thread::sleep_for(std::chrono::duration<double, std::nano>(100));
+        std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(1));
     }
 }

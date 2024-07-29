@@ -5,6 +5,7 @@ import VulkanSimplifiers.Main.Data;
 import ListTemplates.IDObject;
 import VulkanSimplifiers.EventHandling;
 import VulkanSimplifiers.Main.Internal;
+import VulkanSimplifiers.InstanceList;
 import VulkanSimplifiers.WindowList;
 
 export class MainSimplifier
@@ -17,6 +18,7 @@ public:
 	MainSimplifier& operator=(const MainSimplifier&) = delete;
 
 	EventHandlingSimplifier GetEventHandler();
+	InstanceListSimplifier GetInstanceListSimplifier();
 	WindowListSimplifier GetWindowListSimplifier();
 
 private:

@@ -1,8 +1,7 @@
 module VulkanSimplifiers.Instance;
 
-Instance::Instance()
+Instance::Instance(InstanceInternal& ref) : _internal(ref)
 {
-	stump = 0;
 }
 
 Instance::~Instance()

@@ -1,11 +1,15 @@
 export module VulkanSimplifiers.Instance;
 
+import VulkanSimplifiers.Instance.Internal;
+
 export class Instance
 {
 public:
-	Instance();
+	Instance(InstanceInternal& ref);
 	~Instance();
 
+	Instance& operator=(const Instance&) noexcept = delete;
+
 private:
-	int stump;
+	InstanceInternal& _internal;
 };

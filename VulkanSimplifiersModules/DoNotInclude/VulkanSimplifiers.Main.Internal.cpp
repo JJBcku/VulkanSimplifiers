@@ -26,6 +26,11 @@ EventHandlingInternal& MainInternal::GetEventHandler()
 	return _eventHandler;
 }
 
+InstanceListInternal& MainInternal::GetInstanceListSimplifier()
+{
+	return _instanceList;
+}
+
 WindowListInternal& MainInternal::GetWindowListSimplifier()
 {
 	return _windowList;
@@ -34,6 +39,11 @@ WindowListInternal& MainInternal::GetWindowListSimplifier()
 const EventHandlingInternal& MainInternal::GetEventHandler() const
 {
 	return _eventHandler;
+}
+
+const InstanceListInternal& MainInternal::GetInstanceListSimplifier() const
+{
+	return _instanceList;
 }
 
 const WindowListInternal& MainInternal::GetWindowListSimplifier() const
